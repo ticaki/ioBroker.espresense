@@ -5,16 +5,24 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from '@iobroker/adapter-core';
+import { Library } from './lib/library.js';
+import { MQTTClientClass, MQTTServerClass } from './lib/mqtt.js';
+import { genericStateObjects, statesObjects } from './lib/definition.js';
+import 'source-map-support/register';
 
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 
-class Espresense extends utils.Adapter {
+export class Espresense extends utils.Adapter {
+    library: Library;
+    mqttClient: MQTTClientClass | undefined;
+    mqttServer: MQTTServerClass | undefined;
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
             name: 'espresense',
         });
+        this.library = new Library(this);
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         // this.on('objectChange', this.onObjectChange.bind(this));
@@ -26,72 +34,94 @@ class Espresense extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     private async onReady(): Promise<void> {
-        // Initialize your adapter here
-
         // Reset the connection indicator during startup
-        this.setState('info.connection', false, true);
+        this.setStateAsync('info.connection', false, true);
 
-        // The adapters config (in the instance object everything under the attribute "native") is accessible via
-        // this.config:
-        this.log.info('config option1: ' + this.config.option1);
-        this.log.info('config option2: ' + this.config.option2);
+        await this.library.init();
+        await this.library.initStates(await this.getStatesAsync('*'));
 
-        /*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-        await this.setObjectNotExistsAsync('testVariable', {
-            type: 'state',
-            common: {
-                name: 'testVariable',
-                type: 'boolean',
-                role: 'indicator',
-                read: true,
-                write: true,
-            },
-            native: {},
-        });
+        this.library.writedp('devices', undefined, genericStateObjects.devices);
+        this.library.writedp('rooms', undefined, genericStateObjects.rooms);
+        this.library.writedp('configs', undefined, genericStateObjects.configs);
 
-        // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-        this.subscribeStates('testVariable');
-        // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-        // this.subscribeStates('lights.*');
-        // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-        // this.subscribeStates('*');
+        //check config
+        let testIt: any = this.config.MQTTServerIp;
+        if (testIt == '' || typeof testIt != 'string') {
+            this.log.warn(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
+            this.stop!();
+            return;
+        }
+        testIt = this.config.MQTTServerPort;
+        if (typeof testIt != 'number' || testIt <= 0) {
+            this.log.warn(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
+            this.stop!();
+            return;
+        }
+        testIt = this.config.MQTTPassword;
+        if (typeof testIt != 'string') {
+            this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
+            this.stop!();
+            return;
+        }
+        testIt = this.config.MQTTUsername;
+        if (typeof testIt != 'string') {
+            this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
+            this.stop!();
+            return;
+        }
 
-        /*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-        // the variable testVariable is set to true as command (ack=false)
-        await this.setStateAsync('testVariable', true);
-
-        // same thing, but the value is flagged "ack"
-        // ack should be always set to true if the value is received from or acknowledged from the target system
-        await this.setStateAsync('testVariable', { val: true, ack: true });
-
-        // same thing, but the state is deleted after 30s (getState will return null afterwards)
-        await this.setStateAsync('testVariable', { val: true, ack: true, expire: 30 });
-
-        // examples for the checkPassword/checkGroup functions
-        let result = await this.checkPasswordAsync('admin', 'iobroker');
-        this.log.info('check user admin pw iobroker: ' + result);
-
-        result = await this.checkGroupAsync('admin', 'admin');
-        this.log.info('check group user admin group admin: ' + result);
+        // configuration ok
+        if (this.config.MQTTUseServer) {
+            this.mqttServer = new MQTTServerClass(
+                this,
+                this.config.MQTTServerPort,
+                this.config.MQTTUsername,
+                this.config.MQTTPassword,
+            );
+        }
+        this.mqttClient = new MQTTClientClass(
+            this,
+            this.config.MQTTUseServer ? '127.0.0.1' : this.config.MQTTServerIp,
+            this.config.MQTTServerPort,
+            this.config.MQTTUsername,
+            this.config.MQTTPassword,
+            this.handleMessage,
+        );
     }
 
+    async handleMessage(topic: string, message: any): Promise<void> {
+        if (!topic || message == undefined) return;
+        const topicA = topic.split('/');
+        topicA.shift();
+        const typ = topicA.shift();
+        if (typ !== 'rooms' && typ !== 'settings' && typ !== 'devices') return;
+        const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
+
+        let name = topicA.shift();
+        name = name ? name : 'no_name';
+        temp.common.name = name;
+
+        await this.library.writedp(`${typ}.${name}`, undefined, temp);
+
+        if (typ === 'rooms' || typ === 'settings') {
+            const data: any = {};
+            data[topicA.join('.')] = message;
+            await this.library.writeFromJson(`${typ}.${name}`, typ, statesObjects, data);
+        } else if (typ === 'devices') {
+            let subName = topicA.shift();
+            subName = subName ? subName : 'no_name';
+            const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
+            temp.common.name = subName;
+            await this.library.writedp(`${typ}.${name}.${subName}`, undefined, temp);
+            await this.library.writeFromJson(`${typ}.${name}.${subName}`, typ, statesObjects, message);
+        }
+    }
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      */
     private onUnload(callback: () => void): void {
         try {
-            // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            // clearInterval(interval1);
+            if (this.mqttClient) this.mqttClient.destroy();
 
             callback();
         } catch (e) {

@@ -1,5 +1,11 @@
 {
     "espresense adapter settings": "espresense的适配器设置",
     "option1": "选项1",
-    "option2": "选项2"
+    "option2": "选项2",
+    "MQTTUseServer": "启动自己的mqtt服务器",
+    "MQTTUseServerHint": "在 ESPresence 中输入此处输入的用户名、密码和端口。输入 iobroker 的 Ip 作为 mqtt-server。 iobroker 上的端口必须空闲。",
+    "MQTTServerIp": "外部mqtt服务器的服务器ip",
+    "MQTTServerPort": "端口 (1024-49151)",
+    "MQTTUsername": "用户名",
+    "MQTTPassword": "密码"
 }

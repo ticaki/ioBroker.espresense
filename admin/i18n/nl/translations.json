@@ -1,5 +1,11 @@
 {
     "espresense adapter settings": "Adapterinstellingen voor espresense",
     "option1": "Optie 1",
-    "option2": "Optie 2"
+    "option2": "Optie 2",
+    "MQTTUseServer": "Start een eigen mqtt-server",
+    "MQTTUseServerHint": "Voer de gebruikersnaam, het wachtwoord en de poort in die hier in ESPresence zijn ingevoerd. Voer daar het IP-adres van de iobroker in als mqtt-server. Poort moet vrij zijn op de iobroker.",
+    "MQTTServerIp": "Server-IP van externe mqtt-server",
+    "MQTTServerPort": "Haven (1024-49151)",
+    "MQTTUsername": "Gebruikersnaam",
+    "MQTTPassword": "Wachtwoord"
 }

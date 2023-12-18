@@ -4,8 +4,11 @@
 declare global {
     namespace ioBroker {
         interface AdapterConfig {
-            option1: boolean;
-            option2: string;
+            MQTTServerIp: string;
+            MQTTUsername: string;
+            MQTTPassword: string;
+            MQTTServerPort: number;
+            MQTTUseServer: boolean;
         }
     }
 }

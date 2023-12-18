@@ -44,8 +44,13 @@
             "uk": "Підключіться до ESPresense",
             "zh-cn": "连接至 ESPresense"
         },
-        "authors": ["ticaki <github@renopoint.de>"],
-        "keywords": ["esp", "presense"],
+        "authors": [
+            "ticaki <github@renopoint.de>"
+        ],
+        "keywords": [
+            "esp",
+            "presense"
+        ],
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "build/main.js",
@@ -56,6 +61,7 @@
         "loglevel": "info",
         "mode": "daemon",
         "type": "geoposition",
+        "tier": 2,
         "compact": true,
         "connectionType": "local",
         "dataSource": "push",
@@ -71,11 +77,21 @@
             {
                 "admin": ">=5.1.13"
             }
-        ]
+        ],
+        "messagebox": true
     },
+    "protectedNative": [
+        "MQTTPassword"
+    ],
+    "encryptedNative": [
+        "MQTTPassword"
+    ],
     "native": {
-        "option1": true,
-        "option2": "42"
+        "MQTTServerIp": "127.0.0.1",
+        "MQTTUsername": "",
+        "MQTTPassword": "",
+        "MQTTServerPort": 1883,
+        "MQTTUseServer": false
     },
     "objects": [],
     "instanceObjects": [

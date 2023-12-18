@@ -2,15 +2,36 @@
     "i18n": true,
     "type": "panel",
     "items": {
-        "option1": {
+        "MQTTUseServer": {
             "type": "checkbox",
-            "label": "option1",
+            "label": "MQTTUseServer",
+            "tooltip": "MQTTUseServerHint",
+            "default": false,
             "newLine": true
         },
-        "option2": {
+        "MQTTServerIp": {
             "type": "text",
-            "label": "option2",
+            "label": "MQTTServerIp",
+            "disabled": "${data.MQTTUseServer}",
             "newLine": true
-        }
+        },
+        "MQTTServerPort": {
+            "type": "number",
+            "default": 1883,
+            "min": 1024,
+            "max": 49151,
+            "label": "MQTTServerPort",
+            "newLine": false
+        },
+        "MQTTUsername": {
+            "type": "text",
+            "label": "MQTTUsername",
+            "newLine": true
+        },
+        "MQTTPassword": {
+            "type": "password",
+            "label": "MQTTPassword",
+            "newLine": false
+        }    
     }
 }
