@@ -56,25 +56,21 @@ class Espresense extends utils.Adapter {
     let testIt = this.config.MQTTServerIp;
     if (testIt == "" || typeof testIt != "string") {
       this.log.warn(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
-      this.stop();
       return;
     }
     testIt = this.config.MQTTServerPort;
     if (typeof testIt != "number" || testIt <= 1023) {
       this.log.warn(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
-      this.stop();
       return;
     }
     testIt = this.config.MQTTPassword;
     if (typeof testIt != "string") {
       this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
-      this.stop();
       return;
     }
     testIt = this.config.MQTTUsername;
     if (typeof testIt != "string") {
       this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
-      this.stop();
       return;
     }
     if (this.config.MQTTUseServer) {
