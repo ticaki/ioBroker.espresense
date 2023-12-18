@@ -106,12 +106,21 @@ class MQTTServerClass extends import_library.BaseClass {
     super(adapter, "mqttServer");
     this.aedes = new import_aedes.default();
     this.server = (0, import_net.createServer)(this.aedes.handle);
-    this.server.listen(port, function() {
-      console.log("server started and listening on port ", port);
+    this.server.listen(port, () => {
+      this.log.debug("server started and listening on port ", String(port));
     });
-    this.aedes.authenticate = (cleint, un, pw, callback) => {
-      callback(null, username === un && password == pw);
+    this.aedes.authenticate = (client, un, pw, callback) => {
+      const confirm = username === un && password == pw.toString();
+      if (!confirm)
+        this.log.warn("MQTT client login denied. User name or password wrong!");
+      else
+        this.log.debug("MQTT client login successful.");
+      callback(null, confirm);
     };
+  }
+  destroy() {
+    this.aedes.close();
+    this.server.close();
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

@@ -161,7 +161,7 @@ class Library extends BaseClass {
       if (k && k[k.length - 1].startsWith("_")) {
         result = import_definition.genericStateObjects.customString;
       } else {
-        this.log.warn(`No definition for ${key}!`);
+        this.log.debug(`No definition for ${key}!`);
         result = import_definition.genericStateObjects.default;
       }
     }

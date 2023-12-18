@@ -98,7 +98,7 @@ const statesObjects = {
   rooms: {
     _channel: {
       _id: "",
-      type: "channel",
+      type: "device",
       common: {
         name: "room.channel"
       },
@@ -112,7 +112,7 @@ const statesObjects = {
         type: "string",
         role: "text",
         read: true,
-        write: false
+        write: true
       },
       native: {}
     },
@@ -123,8 +123,9 @@ const statesObjects = {
         name: "room.distance",
         type: "number",
         role: "value",
+        unit: "m",
         read: true,
-        write: false
+        write: true
       },
       native: {}
     },
@@ -136,7 +137,7 @@ const statesObjects = {
         type: "number",
         role: "value",
         read: true,
-        write: false
+        write: true
       },
       native: {}
     },
@@ -172,7 +173,7 @@ const statesObjects = {
         type: "string",
         role: "text",
         read: true,
-        write: false
+        write: true
       },
       native: {}
     },
@@ -184,7 +185,7 @@ const statesObjects = {
         type: "string",
         role: "text",
         read: true,
-        write: false
+        write: true
       },
       native: {}
     },
@@ -536,9 +537,9 @@ const statesObjects = {
   devices: {
     _channel: {
       _id: "",
-      type: "channel",
+      type: "device",
       common: {
-        name: "device.channel"
+        name: "devices.channel"
       },
       native: {}
     },
@@ -546,7 +547,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.mac",
+        name: "devices.mac",
         type: "string",
         role: "text",
         read: true,
@@ -558,7 +559,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.id",
+        name: "devices.id",
         type: "string",
         role: "text",
         read: true,
@@ -570,7 +571,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.disc",
+        name: "devices.disc",
         type: "string",
         role: "text",
         read: true,
@@ -582,7 +583,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.telemetry.idType",
+        name: "devices.idType",
         type: "number",
         role: "value",
         read: true,
@@ -594,7 +595,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.telemetry.rssi@1m",
+        name: "devices.rssi@1m",
         type: "number",
         role: "value",
         read: true,
@@ -606,7 +607,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.telemetry.rssi",
+        name: "devices.rssi",
         type: "number",
         role: "value",
         read: true,
@@ -618,7 +619,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.telemetry.raw",
+        name: "devices.raw",
         type: "number",
         role: "value",
         read: true,
@@ -630,7 +631,7 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.telemetry.distance",
+        name: "devices.distance",
         type: "number",
         role: "value",
         read: true,
@@ -642,9 +643,21 @@ const statesObjects = {
       _id: "",
       type: "state",
       common: {
-        name: "room.telemetry.int",
+        name: "devices.int",
         type: "number",
         role: "value",
+        read: true,
+        write: false
+      },
+      native: {}
+    },
+    close: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "devices.close",
+        type: "boolean",
+        role: "indicator",
         read: true,
         write: false
       },
@@ -656,33 +669,43 @@ const statesObjects = {
       _id: "",
       type: "channel",
       common: {
-        name: "config.channel"
+        name: "settings.channel"
       },
       native: {}
     },
-    id: {
-      _id: "",
-      type: "state",
-      common: {
-        name: "room.id",
-        type: "string",
-        role: "text",
-        read: true,
-        write: false
+    config: {
+      _channel: {
+        _id: "",
+        type: "channel",
+        common: {
+          name: "settings.config.channel"
+        },
+        native: {}
       },
-      native: {}
-    },
-    name: {
-      _id: "",
-      type: "state",
-      common: {
-        name: "room.name",
-        type: "string",
-        role: "text",
-        read: true,
-        write: false
+      id: {
+        _id: "",
+        type: "state",
+        common: {
+          name: "settings.config.id",
+          type: "string",
+          role: "text",
+          read: true,
+          write: false
+        },
+        native: {}
       },
-      native: {}
+      name: {
+        _id: "",
+        type: "state",
+        common: {
+          name: "settings.config.name",
+          type: "string",
+          role: "text",
+          read: true,
+          write: false
+        },
+        native: {}
+      }
     }
   }
 };

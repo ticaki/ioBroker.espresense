@@ -42,7 +42,7 @@ export class Espresense extends utils.Adapter {
 
         this.library.writedp('devices', undefined, genericStateObjects.devices);
         this.library.writedp('rooms', undefined, genericStateObjects.rooms);
-        this.library.writedp('configs', undefined, genericStateObjects.configs);
+        this.library.writedp('settings', undefined, genericStateObjects.configs);
 
         //check config
         let testIt: any = this.config.MQTTServerIp;
@@ -103,10 +103,15 @@ export class Espresense extends utils.Adapter {
 
         await this.library.writedp(`${typ}.${name}`, undefined, temp);
 
-        if (typ === 'rooms' || typ === 'settings') {
+        if (typ === 'rooms') {
             const data: any = {};
             data[topicA.join('.')] = message;
             await this.library.writeFromJson(`${typ}.${name}`, typ, statesObjects, data);
+        } else if (typ === 'settings') {
+            const data: any = {};
+            data[topicA.join('.')] = message;
+            await this.library.writeFromJson(`${typ}.${name}`, typ, statesObjects, data);
+            if (typ === 'settings') this.log.debug(JSON.stringify(data));
         } else if (typ === 'devices') {
             let subName = topicA.shift();
             subName = subName ? subName : 'no_name';
@@ -122,7 +127,7 @@ export class Espresense extends utils.Adapter {
     private onUnload(callback: () => void): void {
         try {
             if (this.mqttClient) this.mqttClient.destroy();
-
+            if (this.mqttServer) this.mqttServer.destroy();
             callback();
         } catch (e) {
             callback();

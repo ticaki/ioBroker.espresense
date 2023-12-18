@@ -3,7 +3,7 @@ import { AdapterClassDefinition, BaseClass } from './library';
 
 type mqttCallbackType = (a: string, b: object) => void;
 
-import Aedes from 'aedes';
+import Aedes, { Client } from 'aedes';
 import { Server, createServer } from 'net';
 import { Espresense } from '../main';
 
@@ -93,16 +93,23 @@ export class MQTTServerClass extends BaseClass {
         this.aedes = new Aedes();
         this.server = createServer(this.aedes.handle);
 
-        this.server.listen(port, function () {
-            console.log('server started and listening on port ', port);
+        this.server.listen(port, () => {
+            this.log.debug('server started and listening on port ', String(port));
         });
         this.aedes.authenticate = (
-            cleint: any,
+            client: Client,
             un: Readonly<string | undefined>,
             pw: Readonly<Buffer | undefined>,
             callback: any,
         ) => {
-            callback(null, username === un && password == (pw as unknown as string));
+            const confirm = username === un && password == pw!.toString();
+            if (!confirm) this.log.warn('MQTT client login denied. User name or password wrong!');
+            else this.log.debug('MQTT client login successful.');
+            callback(null, confirm);
         };
+    }
+    destroy(): void {
+        this.aedes.close();
+        this.server.close();
     }
 }

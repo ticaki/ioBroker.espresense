@@ -50,6 +50,7 @@ export type device = {
     raw: number;
     distance: number;
     int: number;
+    close: boolean;
 };
 
 export type settings = {
