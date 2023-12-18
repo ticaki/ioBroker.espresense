@@ -100,10 +100,9 @@
     "MQTTPassword"
   ],
   "native": {
-    "MQTTServerIp": "127.0.0.1",
+    "MQTTServerIp": "",
     "MQTTUsername": "",
     "MQTTPassword": "",
-    "MQTTServerPort": 1883,
     "MQTTUseServer": false
   },
   "objects": [],

@@ -12,7 +12,7 @@
         "MQTTServerIp": {
             "type": "text",
             "label": "MQTTServerIp",
-            "disabled": "${data.MQTTUseServer}",
+            "disabled": "data.MQTTUseServer",
             "newLine": true
         },
         "MQTTServerPort": {

@@ -52,7 +52,7 @@ export class Espresense extends utils.Adapter {
             return;
         }
         testIt = this.config.MQTTServerPort;
-        if (typeof testIt != 'number' || testIt <= 0) {
+        if (typeof testIt != 'number' || testIt <= 1023) {
             this.log.warn(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
             this.stop!();
             return;
