@@ -26,7 +26,7 @@ Was geht:
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.0.3 (2023-12-19)
 * (ticaki) Added: Mqtt Server with file db
 
 ### 0.0.2 (2023-12-18)
