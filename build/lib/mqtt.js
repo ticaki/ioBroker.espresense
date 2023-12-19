@@ -29,16 +29,16 @@ __export(mqtt_exports, {
 });
 module.exports = __toCommonJS(mqtt_exports);
 var import_mqtt = __toESM(require("mqtt"));
+var import_level = require("level");
+var import_aedes_persistence_level = __toESM(require("aedes-persistence-level"));
 var import_library = require("./library");
 var import_aedes = __toESM(require("aedes"));
 var import_net = require("net");
 class MQTTClientClass extends import_library.BaseClass {
-  callback;
   client;
   data = {};
-  constructor(adapter, ip, port, username, password, callback) {
+  constructor(adapter, ip, port, username, password) {
     super(adapter, "mqttClient");
-    this.callback = callback;
     this.client = import_mqtt.default.connect(`mqtt://${ip}:${port}`, { username, password });
     this.client.on("connect", () => {
       this.log.info(`connection is active.`);
@@ -92,7 +92,7 @@ class MQTTClientClass extends import_library.BaseClass {
       if (key !== void 0)
         this.data[test.join("_")][key] = value;
       this.log.debug(`${topic}: ${type} - ${value}`);
-      this.callback(topic, value);
+      this.adapter.handleMessage(topic, value);
     });
   }
   destroy() {
@@ -104,7 +104,8 @@ class MQTTServerClass extends import_library.BaseClass {
   server;
   constructor(adapter, port, username, password) {
     super(adapter, "mqttServer");
-    this.aedes = new import_aedes.default();
+    const persistence = (0, import_aedes_persistence_level.default)(new import_level.Level("./mydb"));
+    this.aedes = new import_aedes.default({ persistence });
     this.server = (0, import_net.createServer)(this.aedes.handle);
     this.server.listen(port, () => {
       this.log.debug("server started and listening on port ", String(port));

@@ -22,6 +22,8 @@
   "dependencies": {
     "@iobroker/adapter-core": "^3.0.4",
     "aedes": "^0.50.1",
+    "aedes-persistence-level": "^8.0.1",
+    "level": "^8.0.0",
     "mqtt": "^5.3.3"
   },
   "devDependencies": {

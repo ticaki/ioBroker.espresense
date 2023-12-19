@@ -17,6 +17,10 @@ export class Espresense extends utils.Adapter {
     library: Library;
     mqttClient: MQTTClientClass | undefined;
     mqttServer: MQTTServerClass | undefined;
+    namedDevices: { [key: string]: string } = {};
+    timeout: ioBroker.Interval | undefined = undefined;
+    timeoutDelete: ioBroker.Interval | undefined = undefined;
+    unseenCheckTime: number = 10000;
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
@@ -39,11 +43,13 @@ export class Espresense extends utils.Adapter {
 
         await this.library.init();
         await this.library.initStates(await this.getStatesAsync('*'));
+        this.library.defaults.updateStateOnChangeOnly = false;
 
         this.library.writedp('devices', undefined, genericStateObjects.devices);
         this.library.writedp('rooms', undefined, genericStateObjects.rooms);
         this.library.writedp('settings', undefined, genericStateObjects.configs);
 
+        this.namedDevices = {};
         //check config
         let testIt: any = this.config.MQTTServerIp;
         if (testIt == '' || typeof testIt != 'string') {
@@ -65,7 +71,11 @@ export class Espresense extends utils.Adapter {
             this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
             return;
         }
-
+        testIt = this.config.unseenTime;
+        if (isNaN(testIt) || testIt == '' || testIt < 5) {
+            this.config.unseenTime = 20;
+        }
+        this.config.unseenTime *= 1000;
         // configuration ok
         if (this.config.MQTTUseServer) {
             this.mqttServer = new MQTTServerClass(
@@ -81,8 +91,13 @@ export class Espresense extends utils.Adapter {
             this.config.MQTTServerPort,
             this.config.MQTTUsername,
             this.config.MQTTPassword,
-            this.handleMessage,
         );
+        this.timeout = this.setInterval(() => {
+            this.library.garbageColleting('devices.', this.config.unseenTime);
+        }, this.unseenCheckTime);
+        this.timeoutDelete = this.setInterval(() => {
+            this.library.garbageColleting('devices.', 2592000000, true);
+        }, 3600000);
     }
 
     async handleMessage(topic: string, message: any): Promise<void> {
@@ -93,28 +108,48 @@ export class Espresense extends utils.Adapter {
         if (typ !== 'rooms' && typ !== 'settings' && typ !== 'devices') return;
         const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
 
-        let name = topicA.shift();
-        name = name ? name : 'no_name';
-        temp.common.name = name;
+        let device = topicA.shift();
+        device = device ? device : 'no_name';
+        if (message && typeof message.name && message.id) {
+            this.namedDevices[message.id] = message.name;
+        }
+        temp.common.name = this.namedDevices[device] || device;
 
-        await this.library.writedp(`${typ}.${name}`, undefined, temp);
+        await this.library.writedp(`${typ}.${device}`, undefined, temp);
 
         if (typ === 'rooms') {
             const data: any = {};
             data[topicA.join('.')] = message;
-            await this.library.writeFromJson(`${typ}.${name}`, typ, statesObjects, data);
+            await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
         } else if (typ === 'settings') {
             const data: any = {};
+            this.namedDevices[message.id] = message.name;
+
+            const states = await this.library.getStates(`\\.${message.id}\\.`);
+            for (const dp in states) {
+                if (states[dp] !== undefined)
+                    this.library.setdb(
+                        dp,
+                        states[dp]!.type,
+                        states[dp]!.val,
+                        states[dp]!.stateTyp,
+                        states[dp]!.ack,
+                        states[dp]!.ts,
+                        true,
+                    );
+            }
+
             data[topicA.join('.')] = message;
-            await this.library.writeFromJson(`${typ}.${name}`, typ, statesObjects, data);
+            await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
             if (typ === 'settings') this.log.debug(JSON.stringify(data));
         } else if (typ === 'devices') {
-            let subName = topicA.shift();
-            subName = subName ? subName : 'no_name';
+            let subDevice = topicA.shift();
+            subDevice = subDevice ? subDevice : 'no_name';
             const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
-            temp.common.name = subName;
-            await this.library.writedp(`${typ}.${name}.${subName}`, undefined, temp);
-            await this.library.writeFromJson(`${typ}.${name}.${subName}`, typ, statesObjects, message);
+            temp.common.name = this.namedDevices[subDevice] || subDevice;
+            await this.library.writedp(`${typ}.${device}.${subDevice}`, undefined, temp);
+            await this.library.writedp(`${typ}.${device}.presense`, true, genericStateObjects.presense);
+            await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, statesObjects, message);
         }
     }
     /**
@@ -124,6 +159,8 @@ export class Espresense extends utils.Adapter {
         try {
             if (this.mqttClient) this.mqttClient.destroy();
             if (this.mqttServer) this.mqttServer.destroy();
+            if (this.timeoutDelete) this.clearInterval(this.timeoutDelete);
+            if (this.timeout) this.clearInterval(this.timeout);
             callback();
         } catch (e) {
             callback();

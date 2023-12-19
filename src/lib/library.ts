@@ -65,11 +65,13 @@ class CustomLog {
 }
 
 export class Library extends BaseClass {
-    stateDataBase: { [key: string]: LibraryStateVal } = {};
-    language: ioBroker.Languages | 'uk' = 'en';
-    forbiddenDirs: string[] = [];
-    translation: { [key: string]: string } = {};
-
+    private stateDataBase: { [key: string]: LibraryStateVal } = {};
+    private language: ioBroker.Languages | 'uk' = 'en';
+    private forbiddenDirs: string[] = [];
+    private translation: { [key: string]: string } = {};
+    defaults = {
+        updateStateOnChangeOnly: true,
+    };
     constructor(adapter: AdapterClassDefinition, _options: any = null) {
         super(adapter, 'library');
         this.stateDataBase = {};
@@ -235,7 +237,7 @@ export class Library extends BaseClass {
 
         if (node) this.setdb(dp, node.type, val, node.stateTyp, true);
 
-        if (node && (node.val != val || !node.ack)) {
+        if (node && (this.defaults.updateStateOnChangeOnly || node.val != val || !node.ack)) {
             const typ = (obj && obj.common && obj.common.type) || node.stateTyp;
             if (typ && typ != typeof val && val !== undefined) val = this.convertToType(val, typ);
             if (!del)
@@ -431,7 +433,7 @@ export class Library extends BaseClass {
      * @param offset Time in ms since last update.
      * @returns void
      */
-    async garbageColleting(prefix: string, offset: number = 2000): Promise<void> {
+    async garbageColleting(prefix: string, offset: number = 2000, del = false): Promise<void> {
         if (!prefix) return;
         if (this.stateDataBase) {
             for (const id in this.stateDataBase) {
@@ -439,6 +441,10 @@ export class Library extends BaseClass {
                     const state = this.stateDataBase[id];
                     if (!state || state.val == undefined) continue;
                     if (state.ts < Date.now() - offset) {
+                        if (del) {
+                            await this.cleanUpTree([], [id], -1);
+                            continue;
+                        }
                         let newVal: -1 | '' | '{}' | '[]' | false | null | undefined;
                         switch (state.stateTyp) {
                             case 'string':

@@ -37,6 +37,7 @@ export const genericStateObjects: {
     devices: ioBroker.FolderObject;
     rooms: ioBroker.FolderObject;
     configs: ioBroker.FolderObject;
+    presense: ioBroker.StateObject;
 } = {
     default: {
         _id: 'No_definition',
@@ -44,6 +45,18 @@ export const genericStateObjects: {
         common: {
             name: 'genericStateObjects.state',
             type: 'string',
+            role: 'text',
+            read: true,
+            write: false,
+        },
+        native: {},
+    },
+    presense: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'genericStateObjects.presense',
+            type: 'boolean',
             role: 'text',
             read: true,
             write: false,
@@ -109,6 +122,54 @@ export const statesObjects: statesObjectsType = {
             },
             native: {},
         },
+        known_irks: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'room.known_irks',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: true,
+            },
+            native: {},
+        },
+        known_macs: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'room.known_macs',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: true,
+            },
+            native: {},
+        },
+        query: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'room.query',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: true,
+            },
+            native: {},
+        },
+        exclude: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'room.exclude',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: true,
+            },
+            native: {},
+        },
         status: {
             _id: '',
             type: 'state',
@@ -153,6 +214,7 @@ export const statesObjects: statesObjectsType = {
                 name: 'room.tx_ref_rssi',
                 type: 'number',
                 role: 'value',
+                unit: 'db',
                 read: true,
                 write: false,
             },
@@ -165,6 +227,7 @@ export const statesObjects: statesObjectsType = {
                 name: 'room.rx_adj_rssi',
                 type: 'number',
                 role: 'value',
+                unit: 'db',
                 read: true,
                 write: false,
             },
@@ -412,6 +475,7 @@ export const statesObjects: statesObjectsType = {
                     name: 'room.telemetry.rssi',
                     type: 'number',
                     role: 'value',
+                    unit: 'db',
                     read: true,
                     write: false,
                 },
@@ -572,6 +636,18 @@ export const statesObjects: statesObjectsType = {
             },
             native: {},
         },
+        name: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'devices.name',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: false,
+            },
+            native: {},
+        },
         disc: {
             _id: '',
             type: 'state',
@@ -603,6 +679,7 @@ export const statesObjects: statesObjectsType = {
                 name: 'devices.rssi@1m',
                 type: 'number',
                 role: 'value',
+                unit: 'db',
                 read: true,
                 write: false,
             },
@@ -615,6 +692,7 @@ export const statesObjects: statesObjectsType = {
                 name: 'devices.rssi',
                 type: 'number',
                 role: 'value',
+                unit: 'db',
                 read: true,
                 write: false,
             },
@@ -639,6 +717,7 @@ export const statesObjects: statesObjectsType = {
                 name: 'devices.distance',
                 type: 'number',
                 role: 'value',
+                unit: 'm',
                 read: true,
                 write: false,
             },

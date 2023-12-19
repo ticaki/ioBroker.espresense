@@ -45,6 +45,18 @@ const genericStateObjects = {
     },
     native: {}
   },
+  presense: {
+    _id: "",
+    type: "state",
+    common: {
+      name: "genericStateObjects.presense",
+      type: "boolean",
+      role: "text",
+      read: true,
+      write: false
+    },
+    native: {}
+  },
   customString: {
     _id: "User_State",
     type: "state",
@@ -104,6 +116,54 @@ const statesObjects = {
       },
       native: {}
     },
+    known_irks: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "room.known_irks",
+        type: "string",
+        role: "text",
+        read: true,
+        write: true
+      },
+      native: {}
+    },
+    known_macs: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "room.known_macs",
+        type: "string",
+        role: "text",
+        read: true,
+        write: true
+      },
+      native: {}
+    },
+    query: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "room.query",
+        type: "string",
+        role: "text",
+        read: true,
+        write: true
+      },
+      native: {}
+    },
+    exclude: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "room.exclude",
+        type: "string",
+        role: "text",
+        read: true,
+        write: true
+      },
+      native: {}
+    },
     status: {
       _id: "",
       type: "state",
@@ -148,6 +208,7 @@ const statesObjects = {
         name: "room.tx_ref_rssi",
         type: "number",
         role: "value",
+        unit: "db",
         read: true,
         write: false
       },
@@ -160,6 +221,7 @@ const statesObjects = {
         name: "room.rx_adj_rssi",
         type: "number",
         role: "value",
+        unit: "db",
         read: true,
         write: false
       },
@@ -407,6 +469,7 @@ const statesObjects = {
           name: "room.telemetry.rssi",
           type: "number",
           role: "value",
+          unit: "db",
           read: true,
           write: false
         },
@@ -567,6 +630,18 @@ const statesObjects = {
       },
       native: {}
     },
+    name: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "devices.name",
+        type: "string",
+        role: "text",
+        read: true,
+        write: false
+      },
+      native: {}
+    },
     disc: {
       _id: "",
       type: "state",
@@ -598,6 +673,7 @@ const statesObjects = {
         name: "devices.rssi@1m",
         type: "number",
         role: "value",
+        unit: "db",
         read: true,
         write: false
       },
@@ -610,6 +686,7 @@ const statesObjects = {
         name: "devices.rssi",
         type: "number",
         role: "value",
+        unit: "db",
         read: true,
         write: false
       },
@@ -634,6 +711,7 @@ const statesObjects = {
         name: "devices.distance",
         type: "number",
         role: "value",
+        unit: "m",
         read: true,
         write: false
       },

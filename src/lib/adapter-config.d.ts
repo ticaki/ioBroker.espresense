@@ -9,6 +9,7 @@ declare global {
             MQTTPassword: string;
             MQTTServerPort: number;
             MQTTUseServer: boolean;
+            unseenTime: number;
         }
     }
 }

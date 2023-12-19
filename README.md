@@ -14,7 +14,12 @@
 
 Connect to ESPresense
 
-Arbeitet schon, aber loglevel des Adapters auf error stellen, gibt noch warnungen wegen nicht bekannter Datenpunkte. Ich lass den jetzt mal ein paar Tage bei mir laufen um alle nicht bekannten zusammen zu bekommen.
+Was geht:
+- Daten werden in States geschrieben.
+- Server und Clientmodus für MQTT
+- Es gibt je Gerät einen Anwesenheitsdatenpunkt - incl. Adminkonfiguration ab welcher Abwesenheitszeit dieser auf false gehen soll. Aktualisierung im espresense muß natürlich kleiner sein als diese Zeit.
+- Datenpunkte unterhalb von devices. werden nach 30 Tagen inaktivität entfernt
+- Datenpunkt werden aktualisiert auch wenn der Wert gleich bleibt.
 
 ## Changelog
 <!--

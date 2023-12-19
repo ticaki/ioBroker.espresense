@@ -7,5 +7,6 @@
     "MQTTServerIp": "Adresse IP du serveur mqtt externe",
     "MQTTServerPort": "Port (1024-49151)",
     "MQTTUsername": "Nom d'utilisateur",
-    "MQTTPassword": "Mot de passe"
+    "MQTTPassword": "Mot de passe",
+    "unseenTime": "Temps après qu’un appareil soit affiché comme absent."
 }

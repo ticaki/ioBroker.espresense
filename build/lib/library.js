@@ -99,6 +99,9 @@ class Library extends BaseClass {
   language = "en";
   forbiddenDirs = [];
   translation = {};
+  defaults = {
+    updateStateOnChangeOnly: true
+  };
   constructor(adapter, _options = null) {
     super(adapter, "library");
     this.stateDataBase = {};
@@ -215,7 +218,7 @@ class Library extends BaseClass {
       return;
     if (node)
       this.setdb(dp, node.type, val, node.stateTyp, true);
-    if (node && (node.val != val || !node.ack)) {
+    if (node && (this.defaults.updateStateOnChangeOnly || node.val != val || !node.ack)) {
       const typ = obj && obj.common && obj.common.type || node.stateTyp;
       if (typ && typ != typeof val && val !== void 0)
         val = this.convertToType(val, typ);
@@ -367,7 +370,7 @@ class Library extends BaseClass {
       }
     }
   }
-  async garbageColleting(prefix, offset = 2e3) {
+  async garbageColleting(prefix, offset = 2e3, del = false) {
     if (!prefix)
       return;
     if (this.stateDataBase) {
@@ -377,6 +380,10 @@ class Library extends BaseClass {
           if (!state || state.val == void 0)
             continue;
           if (state.ts < Date.now() - offset) {
+            if (del) {
+              await this.cleanUpTree([], [id], -1);
+              continue;
+            }
             let newVal;
             switch (state.stateTyp) {
               case "string":

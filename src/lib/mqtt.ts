@@ -1,26 +1,20 @@
 import mqtt from 'mqtt'; // import namespace "mqtt"
-import { AdapterClassDefinition, BaseClass } from './library';
+import { Level } from 'level';
 
-type mqttCallbackType = (a: string, b: object) => void;
+//@ts-expect-error no types
+import aedesPersistencelevel from 'aedes-persistence-level';
+
+import { AdapterClassDefinition, BaseClass } from './library';
 
 import Aedes, { Client } from 'aedes';
 import { Server, createServer } from 'net';
 import { Espresense } from '../main';
 
 export class MQTTClientClass extends BaseClass {
-    callback: mqttCallbackType;
     client: mqtt.MqttClient;
     data: any = {};
-    constructor(
-        adapter: AdapterClassDefinition,
-        ip: string,
-        port: number,
-        username: string,
-        password: string,
-        callback: mqttCallbackType,
-    ) {
+    constructor(adapter: AdapterClassDefinition, ip: string, port: number, username: string, password: string) {
         super(adapter, 'mqttClient');
-        this.callback = callback;
         this.client = mqtt.connect(`mqtt://${ip}:${port}`, { username: username, password: password });
         this.client.on('connect', () => {
             this.log.info(`connection is active.`);
@@ -76,7 +70,7 @@ export class MQTTClientClass extends BaseClass {
 
             this.log.debug(`${topic}: ${type} - ${value}`);
             //this.log.debug(`json: ${JSON.stringify(this.data)}`);
-            this.callback(topic, value);
+            this.adapter.handleMessage(topic, value);
         });
     }
 
@@ -90,7 +84,8 @@ export class MQTTServerClass extends BaseClass {
     server: Server;
     constructor(adapter: Espresense, port: number, username: string, password: string) {
         super(adapter, 'mqttServer');
-        this.aedes = new Aedes();
+        const persistence = aedesPersistencelevel(new Level('./mydb'));
+        this.aedes = new Aedes({ persistence: persistence });
         this.server = createServer(this.aedes.handle);
 
         this.server.listen(port, () => {

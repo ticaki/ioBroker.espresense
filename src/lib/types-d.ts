@@ -5,6 +5,9 @@ export type room = {
     tx_ref_rssi: number;
     rx_adj_rssi: number;
     include: string;
+    query: string;
+    exclude: string;
+    known_macs: string;
     count_ids: string;
     arduino_ota: boolean;
     auto_update: boolean;
@@ -43,6 +46,7 @@ export type room = {
 export type device = {
     mac: string;
     id: string;
+    name: string;
     disc: string;
     idType: number;
     'rssi@1m': number;

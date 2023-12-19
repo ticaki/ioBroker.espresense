@@ -7,5 +7,6 @@
     "MQTTServerIp": "外部mqtt服务器的服务器ip",
     "MQTTServerPort": "端口 (1024-49151)",
     "MQTTUsername": "用户名",
-    "MQTTPassword": "密码"
+    "MQTTPassword": "密码",
+    "unseenTime": "设备显示为缺席后的时间。"
 }

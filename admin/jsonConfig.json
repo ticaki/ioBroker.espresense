@@ -7,13 +7,21 @@
             "label": "MQTTUseServer",
             "tooltip": "MQTTUseServerHint",
             "default": false,
-            "newLine": true
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6
         },
         "MQTTServerIp": {
             "type": "text",
             "label": "MQTTServerIp",
             "disabled": "data.MQTTUseServer",
-            "newLine": true
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6
         },
         "MQTTServerPort": {
             "type": "number",
@@ -21,17 +29,40 @@
             "min": 1024,
             "max": 49151,
             "label": "MQTTServerPort",
-            "newLine": false
+            "newLine": false,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6
         },
         "MQTTUsername": {
             "type": "text",
             "label": "MQTTUsername",
-            "newLine": true
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6
         },
         "MQTTPassword": {
             "type": "password",
             "label": "MQTTPassword",
-            "newLine": false
+            "newLine": false,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6
+        },
+        "unseenTime": {
+            "type": "number",
+            "default": 20,
+            "min": 10,
+            "label": "unseenTime",
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 6
         }    
     }
 }
