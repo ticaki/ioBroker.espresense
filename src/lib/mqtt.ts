@@ -17,7 +17,7 @@ export class MQTTClientClass extends BaseClass {
         super(adapter, 'mqttClient');
         this.client = mqtt.connect(`mqtt://${ip}:${port}`, { username: username, password: password });
         this.client.on('connect', () => {
-            this.log.info(`connection is active.`);
+            this.log.info(`Connection is active.`);
             this.adapter.setState('info.connection', true, true);
             this.client.subscribe('espresense/#', (err) => {
                 if (err) {
@@ -35,7 +35,7 @@ export class MQTTClientClass extends BaseClass {
 
         this.client.on('close', () => {
             this.adapter.setState('info.connection', false, true);
-            this.log.info(`connection is closed.`);
+            this.log.info(`Connection is closed.`);
         });
 
         this.client.on('message', (topic, message) => {
@@ -89,7 +89,7 @@ export class MQTTServerClass extends BaseClass {
         this.server = createServer(this.aedes.handle);
 
         this.server.listen(port, () => {
-            this.log.debug('server started and listening on port ', String(port));
+            this.log.info(`Started and listening on port ${port}`);
         });
         this.aedes.authenticate = (
             client: Client,
@@ -98,8 +98,8 @@ export class MQTTServerClass extends BaseClass {
             callback: any,
         ) => {
             const confirm = username === un && password == pw!.toString();
-            if (!confirm) this.log.warn('MQTT client login denied. User name or password wrong!');
-            else this.log.debug('MQTT client login successful.');
+            if (!confirm) this.log.warn(`Login denied client: ${client.id}. User name or password wrong!`);
+            else this.log.info(`Client ${client.id} login successful.`);
             callback(null, confirm);
         };
     }
