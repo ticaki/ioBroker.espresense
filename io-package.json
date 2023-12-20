@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "news": {
+      "0.1.1": {
+        "en": "fixed: sometimes adapter crashed after login.",
+        "de": "fix: manchmal adapter abgestürzt nach anmeldung.",
+        "ru": "исправлено: иногда адаптер сбил после входа.",
+        "pt": "corrigido: às vezes o adaptador caiu após o login.",
+        "nl": "soms crashte adapter na login.",
+        "fr": "fixe: parfois l'adaptateur s'est écrasé après la connexion.",
+        "it": "fisso: a volte adattatore bloccato dopo il login.",
+        "es": "fijo: a veces el adaptador se estrelló después de iniciar sesión.",
+        "pl": "niekiedy adapter rozbił się po locie.",
+        "uk": "виправлено: іноді адаптер збитий після входу.",
+        "zh-cn": "固定:有时在伐木之后被拖进。."
+      },
       "0.1.0": {
         "en": "Added: send configuration datapoints to esp",
         "de": "Hinzugefügt: senden Sie Konfigurationsdatenpunkte zu esp",
