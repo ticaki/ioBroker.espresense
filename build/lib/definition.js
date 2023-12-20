@@ -73,7 +73,7 @@ const genericStateObjects = {
     _id: "",
     type: "folder",
     common: {
-      name: "devises"
+      name: "devices.folder"
     },
     native: {}
   },
@@ -81,15 +81,15 @@ const genericStateObjects = {
     _id: "",
     type: "folder",
     common: {
-      name: "devises"
+      name: "rooms.folder"
     },
     native: {}
   },
-  configs: {
+  settings: {
     _id: "",
     type: "folder",
     common: {
-      name: "devises"
+      name: "settings.folder"
     },
     native: {}
   }
@@ -124,7 +124,7 @@ const statesObjects = {
         type: "string",
         role: "text",
         read: true,
-        write: true
+        write: false
       },
       native: {}
     },
@@ -136,7 +136,7 @@ const statesObjects = {
         type: "string",
         role: "text",
         read: true,
-        write: true
+        write: false
       },
       native: {}
     },
@@ -148,7 +148,7 @@ const statesObjects = {
         type: "string",
         role: "text",
         read: true,
-        write: true
+        write: false
       },
       native: {}
     },
@@ -247,7 +247,7 @@ const statesObjects = {
         type: "string",
         role: "text",
         read: true,
-        write: true
+        write: false
       },
       native: {}
     },
@@ -261,7 +261,9 @@ const statesObjects = {
         read: true,
         write: true
       },
-      native: {}
+      native: {
+        convert: 'val ? "ON" : "OFF"'
+      }
     },
     auto_update: {
       _id: "",
@@ -273,7 +275,9 @@ const statesObjects = {
         read: true,
         write: true
       },
-      native: {}
+      native: {
+        convert: 'val ? "ON" : "OFF"'
+      }
     },
     prerelease: {
       _id: "",
@@ -285,7 +289,9 @@ const statesObjects = {
         read: true,
         write: true
       },
-      native: {}
+      native: {
+        convert: 'val ? "ON" : "OFF"'
+      }
     },
     motion: {
       _id: "",
@@ -400,7 +406,7 @@ const statesObjects = {
         _id: "",
         type: "channel",
         common: {
-          name: "room.channel"
+          name: "room.led_1.channel"
         },
         native: {}
       },
@@ -412,7 +418,7 @@ const statesObjects = {
           type: "boolean",
           role: "switch",
           read: true,
-          write: true
+          write: false
         },
         native: {}
       }
@@ -422,7 +428,7 @@ const statesObjects = {
         _id: "",
         type: "channel",
         common: {
-          name: "room.channel"
+          name: "room.telemetry.channel"
         },
         native: {}
       },

@@ -36,7 +36,7 @@ export const genericStateObjects: {
     customString: ioBroker.StateObject;
     devices: ioBroker.FolderObject;
     rooms: ioBroker.FolderObject;
-    configs: ioBroker.FolderObject;
+    settings: ioBroker.FolderObject;
     presense: ioBroker.StateObject;
 } = {
     default: {
@@ -79,7 +79,7 @@ export const genericStateObjects: {
         _id: '',
         type: 'folder',
         common: {
-            name: 'devises',
+            name: 'devices.folder',
         },
         native: {},
     },
@@ -87,15 +87,15 @@ export const genericStateObjects: {
         _id: '',
         type: 'folder',
         common: {
-            name: 'devises',
+            name: 'rooms.folder',
         },
         native: {},
     },
-    configs: {
+    settings: {
         _id: '',
         type: 'folder',
         common: {
-            name: 'devises',
+            name: 'settings.folder',
         },
         native: {},
     },
@@ -130,7 +130,7 @@ export const statesObjects: statesObjectsType = {
                 type: 'string',
                 role: 'text',
                 read: true,
-                write: true,
+                write: false,
             },
             native: {},
         },
@@ -142,7 +142,7 @@ export const statesObjects: statesObjectsType = {
                 type: 'string',
                 role: 'text',
                 read: true,
-                write: true,
+                write: false,
             },
             native: {},
         },
@@ -154,7 +154,7 @@ export const statesObjects: statesObjectsType = {
                 type: 'string',
                 role: 'text',
                 read: true,
-                write: true,
+                write: false,
             },
             native: {},
         },
@@ -253,7 +253,7 @@ export const statesObjects: statesObjectsType = {
                 type: 'string',
                 role: 'text',
                 read: true,
-                write: true,
+                write: false,
             },
             native: {},
         },
@@ -267,7 +267,9 @@ export const statesObjects: statesObjectsType = {
                 read: true,
                 write: true,
             },
-            native: {},
+            native: {
+                convert: 'val ? "ON" : "OFF"',
+            },
         },
         auto_update: {
             _id: '',
@@ -279,7 +281,9 @@ export const statesObjects: statesObjectsType = {
                 read: true,
                 write: true,
             },
-            native: {},
+            native: {
+                convert: 'val ? "ON" : "OFF"',
+            },
         },
         prerelease: {
             _id: '',
@@ -291,7 +295,9 @@ export const statesObjects: statesObjectsType = {
                 read: true,
                 write: true,
             },
-            native: {},
+            native: {
+                convert: 'val ? "ON" : "OFF"',
+            },
         },
         motion: {
             _id: '',
@@ -406,7 +412,7 @@ export const statesObjects: statesObjectsType = {
                 _id: '',
                 type: 'channel',
                 common: {
-                    name: 'room.channel',
+                    name: 'room.led_1.channel',
                 },
                 native: {},
             },
@@ -418,7 +424,7 @@ export const statesObjects: statesObjectsType = {
                     type: 'boolean',
                     role: 'switch',
                     read: true,
-                    write: true,
+                    write: false,
                 },
                 native: {},
             },
@@ -428,7 +434,7 @@ export const statesObjects: statesObjectsType = {
                 _id: '',
                 type: 'channel',
                 common: {
-                    name: 'room.channel',
+                    name: 'room.telemetry.channel',
                 },
                 native: {},
             },

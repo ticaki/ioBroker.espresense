@@ -12,6 +12,7 @@ type LibraryStateValJson = {
     val: ioBroker.StateValue | undefined;
     ts: number;
     ack: boolean;
+    obj: ioBroker.Object | undefined;
     init: boolean;
 };
 
@@ -227,7 +228,7 @@ export class Library extends BaseClass {
             if (typeof obj.common.name == 'string') obj.common.name = await this.getTranslationObj(obj.common.name);
             if (!del) await this.adapter.extendObjectAsync(dp, obj);
             const stateType = obj && obj.common && obj.common.type;
-            node = this.setdb(dp, obj.type, undefined, stateType, true);
+            node = this.setdb(dp, obj.type, undefined, stateType, true, Date.now(), obj);
         } else if (node.init && obj) {
             if (typeof obj.common.name == 'string') obj.common.name = await this.getTranslationObj(obj.common.name);
             if (!del) await this.adapter.extendObjectAsync(dp, obj);
@@ -352,6 +353,7 @@ export class Library extends BaseClass {
         stateType: string | undefined,
         ack: boolean = true,
         ts: number = Date.now(),
+        obj: ioBroker.Object | undefined = undefined,
         init: boolean = false,
     ): LibraryStateVal {
         this.stateDataBase[dp] = {
@@ -365,6 +367,12 @@ export class Library extends BaseClass {
             val: val,
             ack: ack,
             ts: ts ? ts : Date.now(),
+            obj:
+                obj !== undefined
+                    ? obj
+                    : this.stateDataBase[dp] !== undefined && this.stateDataBase[dp]!.obj !== undefined
+                      ? this.stateDataBase[dp]!.obj
+                      : undefined,
             init: init,
         };
         return this.stateDataBase[dp];
@@ -415,6 +423,7 @@ export class Library extends BaseClass {
                     obj && obj.common && obj.common.type ? obj.common.type : undefined,
                     states[state] && states[state].ack,
                     states[state] && states[state].ts ? states[state].ts : Date.now(),
+                    obj == null ? undefined : obj,
                     true,
                 );
             } else {

@@ -52,59 +52,62 @@ class Espresense extends utils.Adapter {
   }
   async onReady() {
     this.setStateAsync("info.connection", false, true);
-    await this.library.init();
-    await this.library.initStates(await this.getStatesAsync("*"));
-    this.library.defaults.updateStateOnChangeOnly = false;
-    this.library.writedp("devices", void 0, import_definition.genericStateObjects.devices);
-    this.library.writedp("rooms", void 0, import_definition.genericStateObjects.rooms);
-    this.library.writedp("settings", void 0, import_definition.genericStateObjects.configs);
-    this.namedDevices = {};
-    let testIt = this.config.MQTTServerIp;
-    if (testIt == "" || typeof testIt != "string") {
-      this.log.warn(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
-      return;
-    }
-    testIt = this.config.MQTTServerPort;
-    if (typeof testIt != "number" || testIt <= 1023) {
-      this.log.warn(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
-      return;
-    }
-    testIt = this.config.MQTTPassword;
-    if (typeof testIt != "string") {
-      this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
-      return;
-    }
-    testIt = this.config.MQTTUsername;
-    if (typeof testIt != "string") {
-      this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
-      return;
-    }
-    testIt = this.config.unseenTime;
-    if (isNaN(testIt) || testIt == "" || testIt < 5) {
-      this.config.unseenTime = 20;
-    }
-    this.config.unseenTime *= 1e3;
-    if (this.config.MQTTUseServer) {
-      this.mqttServer = new import_mqtt.MQTTServerClass(
+    setTimeout(async () => {
+      await this.library.init();
+      await this.library.initStates(await this.getStatesAsync("*"));
+      this.library.defaults.updateStateOnChangeOnly = false;
+      this.library.writedp("devices", void 0, import_definition.genericStateObjects.devices);
+      this.library.writedp("rooms", void 0, import_definition.genericStateObjects.rooms);
+      this.library.writedp("settings", void 0, import_definition.genericStateObjects.settings);
+      await this.subscribeStatesAsync("rooms.*");
+      this.namedDevices = {};
+      let testIt = this.config.MQTTServerIp;
+      if (testIt == "" || typeof testIt != "string") {
+        this.log.warn(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
+        return;
+      }
+      testIt = this.config.MQTTServerPort;
+      if (typeof testIt != "number" || testIt <= 1023) {
+        this.log.warn(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
+        return;
+      }
+      testIt = this.config.MQTTPassword;
+      if (typeof testIt != "string") {
+        this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
+        return;
+      }
+      testIt = this.config.MQTTUsername;
+      if (typeof testIt != "string") {
+        this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
+        return;
+      }
+      testIt = this.config.unseenTime;
+      if (isNaN(testIt) || testIt == "" || testIt < 5) {
+        this.config.unseenTime = 20;
+      }
+      this.config.unseenTime *= 1e3;
+      if (this.config.MQTTUseServer) {
+        this.mqttServer = new import_mqtt.MQTTServerClass(
+          this,
+          this.config.MQTTServerPort,
+          this.config.MQTTUsername,
+          this.config.MQTTPassword
+        );
+      }
+      this.mqttClient = new import_mqtt.MQTTClientClass(
         this,
+        this.config.MQTTUseServer ? "127.0.0.1" : this.config.MQTTServerIp,
         this.config.MQTTServerPort,
         this.config.MQTTUsername,
         this.config.MQTTPassword
       );
-    }
-    this.mqttClient = new import_mqtt.MQTTClientClass(
-      this,
-      this.config.MQTTUseServer ? "127.0.0.1" : this.config.MQTTServerIp,
-      this.config.MQTTServerPort,
-      this.config.MQTTUsername,
-      this.config.MQTTPassword
-    );
-    this.timeout = this.setInterval(() => {
-      this.library.garbageColleting("devices.", this.config.unseenTime);
-    }, this.unseenCheckTime);
-    this.timeoutDelete = this.setInterval(() => {
-      this.library.garbageColleting("devices.", 2592e6, true);
-    }, 36e5);
+      this.timeout = this.setInterval(() => {
+        this.library.garbageColleting("devices.", this.config.unseenTime);
+      }, this.unseenCheckTime);
+      this.timeoutDelete = this.setInterval(() => {
+        this.library.garbageColleting("devices.", 2592e6, true);
+      }, 36e5);
+    }, 1e3);
   }
   async handleMessage(topic, message) {
     if (!topic || message == void 0)
@@ -123,25 +126,14 @@ class Espresense extends utils.Adapter {
     temp.common.name = this.namedDevices[device] || device;
     await this.library.writedp(`${typ}.${device}`, void 0, temp);
     if (typ === "rooms") {
+      if (topicA[topicA.length - 1] == "set")
+        return;
       const data = {};
       data[topicA.join(".")] = message;
       await this.library.writeFromJson(`${typ}.${device}`, typ, import_definition.statesObjects, data);
     } else if (typ === "settings") {
       const data = {};
       this.namedDevices[message.id] = message.name;
-      const states = await this.library.getStates(`\\.${message.id}\\.`);
-      for (const dp in states) {
-        if (states[dp] !== void 0)
-          this.library.setdb(
-            dp,
-            states[dp].type,
-            states[dp].val,
-            states[dp].stateTyp,
-            states[dp].ack,
-            states[dp].ts,
-            true
-          );
-      }
       data[topicA.join(".")] = message;
       await this.library.writeFromJson(`${typ}.${device}`, typ, import_definition.statesObjects, data);
       if (typ === "settings")
@@ -171,11 +163,23 @@ class Espresense extends utils.Adapter {
       callback();
     }
   }
-  onStateChange(id, state) {
-    if (state) {
-      this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+  async onStateChange(id, state) {
+    if (state && !state.ack) {
+      id = id.replace(`${this.namespace}.`, "");
+      this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
+      const dbEntry = this.library.readdp(id);
+      if (dbEntry && dbEntry.obj && dbEntry.obj.common && dbEntry.obj.common.write) {
+        const native = dbEntry.obj.native;
+        let val = dbEntry.val;
+        if (native && native.convert) {
+          const fn = new Function("val", `return ${native.convert}`);
+          val = fn(val);
+        }
+        const topic = `espresense/${id.split(".").join("/")}/set`;
+        if (this.mqttClient)
+          await this.mqttClient.publish(topic, String(val));
+      }
     } else {
-      this.log.info(`state ${id} deleted`);
     }
   }
 }

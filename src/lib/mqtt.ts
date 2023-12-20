@@ -73,6 +73,10 @@ export class MQTTClientClass extends BaseClass {
             this.adapter.handleMessage(topic, value);
         });
     }
+    async publish(topic: string, message: string): Promise<void> {
+        this.log.debug(`Publishing topic: ${topic} with message: ${message}.`);
+        await this.client.publishAsync(topic, message);
+    }
 
     destroy(): void {
         this.client.end();
