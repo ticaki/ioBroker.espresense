@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.0.3",
+    "version": "0.1.0",
     "news": {
+      "0.1.0": {
+        "en": "Added: send configuration datapoints to esp",
+        "de": "Hinzugefügt: senden Sie Konfigurationsdatenpunkte zu esp",
+        "ru": "Добавлена: отправьте настройки данных точек в esp",
+        "pt": "Adicionado: envie datapoints de configuração para esp",
+        "nl": "Vertaling:",
+        "fr": "Ajouté : envoyer des points de données de configuration à esp",
+        "it": "Aggiunto: inviare datapoint di configurazione a esp",
+        "es": "Añadido: enviar datos de configuración a esp",
+        "pl": "Added: wysyłać konfiguracyjne punkty danych do esp",
+        "uk": "Додано: відправляйте конфігурацію даних точок доступу до електронної пошти",
+        "zh-cn": "增 编:将数据点发送给项目"
+      },
       "0.0.3": {
         "en": "Added: Mqtt Server with file db",
         "de": "Hinzugefügt: Mqt Server mit Datei db",
