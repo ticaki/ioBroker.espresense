@@ -124,7 +124,12 @@ export class Espresense extends utils.Adapter {
 
             const data: any = {};
             data[topicA.join('.')] = message;
-            await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
+            try {
+                await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
+            } catch (e: any) {
+                this.log.error(e);
+                this.log.error(`Topic:${topic} data: ${JSON.stringify(data)}`);
+            }
         } else if (typ === 'settings') {
             const data: any = {};
             this.namedDevices[message.id] = message.name;
