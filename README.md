@@ -28,6 +28,9 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+ ### **WORK IN PROGRESS**
+* (ticaki) prepare for lastest
+
 ### 0.1.2 (2023-12-21)
 * (ticaki) add common.name to states
 
