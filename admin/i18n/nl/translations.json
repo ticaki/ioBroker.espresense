@@ -78,5 +78,7 @@
     "selectDevice": "Apparaatselectie voor toevoegen/verwijderen",
     "addDevice": "Voeg toestel toe",
     "removeDevice": "Verwijder apparaat",
-    "selectedDevices": "Alle bekende apparaten"
+    "selectedDevices": "Alle bekende apparaten",
+    "room.button_1": "Knop 1",
+    "room.restart": "Herstarten"
 }

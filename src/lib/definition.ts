@@ -135,6 +135,18 @@ export const statesObjects: statesObjectsType = {
             },
             native: {},
         },
+        restart: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'room.restart',
+                type: 'boolean',
+                role: 'button',
+                read: false,
+                write: true,
+            },
+            native: {},
+        },
         known_irks: {
             _id: '',
             type: 'state',
@@ -391,6 +403,18 @@ export const statesObjects: statesObjectsType = {
                 name: 'room.switch_2_timeout',
                 type: 'number',
                 role: 'value',
+                read: true,
+                write: false,
+            },
+            native: {},
+        },
+        button_1: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'room.button_1',
+                type: 'boolean',
+                role: 'indicator',
                 read: true,
                 write: false,
             },

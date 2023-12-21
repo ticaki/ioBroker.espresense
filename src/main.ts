@@ -152,6 +152,7 @@ export class Espresense extends utils.Adapter {
             const data: any = {};
             data[topicA.join('.')] = message;
             try {
+                data.restart = false;
                 await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
             } catch (e: any) {
                 this.log.error(e);
@@ -219,7 +220,9 @@ export class Espresense extends utils.Adapter {
                     val = fn(val);
                 }
                 const topic = `espresense/${id.split('.').join('/')}/set`;
-                if (this.mqttClient) await this.mqttClient.publish(topic, String(val));
+                if (this.mqttClient) {
+                    await this.mqttClient.publish(topic, String(val));
+                }
             }
         } else {
         }

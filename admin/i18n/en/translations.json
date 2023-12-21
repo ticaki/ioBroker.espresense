@@ -75,6 +75,9 @@
     "selectDevice": "Device selection for adding/removing ",
     "addDevice": "Add device",
     "removeDevice": "Remove device",
-    "selectedDevices": "All known devices"
+    "selectedDevices": "All known devices",
+    "room.button_1": "Button 1",
+    "room.restart": "Restart"
+
 
 }

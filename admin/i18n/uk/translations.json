@@ -78,5 +78,7 @@
     "selectDevice": "Вибір пристрою для додавання/видалення",
     "addDevice": "Додайте пристрій",
     "removeDevice": "Видаліть пристрій",
-    "selectedDevices": "Всі відомі пристрої"
+    "selectedDevices": "Всі відомі пристрої",
+    "room.button_1": "Кнопка 1",
+    "room.restart": "Перезапустіть"
 }

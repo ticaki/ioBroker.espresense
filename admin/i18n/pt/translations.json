@@ -78,5 +78,7 @@
     "selectDevice": "Seleção de dispositivo para adicionar/remover",
     "addDevice": "Adicionar Dispositivo",
     "removeDevice": "Remover dispositivo",
-    "selectedDevices": "Todos os dispositivos conhecidos"
+    "selectedDevices": "Todos os dispositivos conhecidos",
+    "room.button_1": "Botão 1",
+    "room.restart": "Reiniciar"
 }

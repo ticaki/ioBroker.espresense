@@ -75,5 +75,7 @@
     "selectDevice": "Geräteauswahl zum Hinzufügen/Entfernen",
     "addDevice": "Gerät hinzufügen",
     "removeDevice": "Gerät entfernen",
-    "selectedDevices": "Alle bekannten Geräte"
+    "selectedDevices": "Alle bekannten Geräte",
+    "room.button_1": "Knopf 1",
+    "room.restart": "Neu starten"
 }

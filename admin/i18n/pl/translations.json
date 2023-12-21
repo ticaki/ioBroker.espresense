@@ -78,5 +78,7 @@
     "selectDevice": "Wybór urządzenia do dodania/usunięcia",
     "addDevice": "Dodaj urządzenie",
     "removeDevice": "Odłącz urządzenie",
-    "selectedDevices": "Wszystkie znane urządzenia"
+    "selectedDevices": "Wszystkie znane urządzenia",
+    "room.button_1": "Przycisk 1",
+    "room.restart": "Uruchom ponownie"
 }

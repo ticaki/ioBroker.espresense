@@ -1,5 +1,6 @@
 export type room = {
     status: string;
+    restart: boolean;
     max_distance: number;
     absorption: number;
     tx_ref_rssi: number;
@@ -17,6 +18,7 @@ export type room = {
     button: boolean;
     pir_timeout: number;
     radar_timeout: number;
+    button_1: boolean;
     switch_1_timeout: number;
     switch_2_timeout: number;
     button_1_timeout: number;

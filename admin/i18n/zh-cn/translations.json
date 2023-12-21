@@ -78,5 +78,7 @@
     "selectDevice": "用于添加/删除的设备选择",
     "addDevice": "添加设备",
     "removeDevice": "删除设备",
-    "selectedDevices": "所有已知设备"
+    "selectedDevices": "所有已知设备",
+    "room.button_1": "按钮1",
+    "room.restart": "重新开始"
 }
