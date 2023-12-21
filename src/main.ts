@@ -20,6 +20,7 @@ export class Espresense extends utils.Adapter {
     namedDevices: { [key: string]: string } = {};
     timeout: ioBroker.Interval | undefined = undefined;
     timeoutDelete: ioBroker.Interval | undefined = undefined;
+    startDelay: ioBroker.Timeout | undefined = undefined;
     unseenCheckTime: number = 10000;
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
@@ -40,7 +41,7 @@ export class Espresense extends utils.Adapter {
     private async onReady(): Promise<void> {
         // Reset the connection indicator during startup
         this.setStateAsync('info.connection', false, true);
-        setTimeout(async () => {
+        this.startDelay = this.setTimeout(async () => {
             await this.library.init();
             await this.library.initStates(await this.getStatesAsync('*'));
             this.library.defaults.updateStateOnChangeOnly = false;
@@ -156,6 +157,7 @@ export class Espresense extends utils.Adapter {
             if (this.mqttServer) this.mqttServer.destroy();
             if (this.timeoutDelete) this.clearInterval(this.timeoutDelete);
             if (this.timeout) this.clearInterval(this.timeout);
+            if (this.startDelay) this.clearTimeout(this.startDelay);
             callback();
         } catch (e) {
             callback();

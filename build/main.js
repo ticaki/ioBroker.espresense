@@ -39,6 +39,7 @@ class Espresense extends utils.Adapter {
   namedDevices = {};
   timeout = void 0;
   timeoutDelete = void 0;
+  startDelay = void 0;
   unseenCheckTime = 1e4;
   constructor(options = {}) {
     super({
@@ -52,7 +53,7 @@ class Espresense extends utils.Adapter {
   }
   async onReady() {
     this.setStateAsync("info.connection", false, true);
-    setTimeout(async () => {
+    this.startDelay = this.setTimeout(async () => {
       await this.library.init();
       await this.library.initStates(await this.getStatesAsync("*"));
       this.library.defaults.updateStateOnChangeOnly = false;
@@ -163,6 +164,8 @@ class Espresense extends utils.Adapter {
         this.clearInterval(this.timeoutDelete);
       if (this.timeout)
         this.clearInterval(this.timeout);
+      if (this.startDelay)
+        this.clearTimeout(this.startDelay);
       callback();
     } catch (e) {
       callback();
