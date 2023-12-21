@@ -135,24 +135,8 @@ export class Espresense extends utils.Adapter {
             const data: any = {};
             this.namedDevices[message.id] = message.name;
 
-            /*const states = await this.library.getStates(`\\.${message.id}\\.`);
-            for (const dp in states) {
-                if (states[dp] !== undefined)
-                    this.library.setdb(
-                        dp,
-                        states[dp]!.type,
-                        states[dp]!.val,
-                        states[dp]!.stateTyp,
-                        states[dp]!.ack,
-                        states[dp]!.ts,
-                        states[dp]!.obj,
-                        true,
-                    );
-            }*/
-
             data[topicA.join('.')] = message;
             await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
-            if (typ === 'settings') this.log.debug(JSON.stringify(data));
         } else if (typ === 'devices') {
             let subDevice = topicA.shift();
             subDevice = subDevice ? subDevice : 'no_name';

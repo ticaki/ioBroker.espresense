@@ -12,22 +12,16 @@
 
 ## espresense adapter for ioBroker
 
-Connect to ESPresense
+Connect to [ESPresense](https://espresense.com)
 
-Was geht:
-- Daten werden in States geschrieben.
-- Server und Clientmodus für MQTT
-- Es gibt je Gerät einen Anwesenheitsdatenpunkt - incl. Adminkonfiguration ab welcher Abwesenheitszeit dieser auf false gehen soll. Aktualisierung im espresense muß natürlich kleiner sein als diese Zeit.
-- Datenpunkte unterhalb von devices. werden nach 30 Tagen inaktivität entfernt
-- Datenpunkte werden immer aktualisiert wenn Daten rein kommen.
-- Datenpunkte unter rooms die beschreibbar sind, werden an den ESP gesendet zur Konfiguration
-- Filtern muß aktuell vom ESP übernommen werden.
+- MQTT server and clientmodue 
+- `Start own mqtt server` activate server mode
+- `Server ip` use only for external mqtt server
+- `Port, Username & Passowrd` of internal or external mqtt Server
 
-Noch zu tun:
-- Filter über den Admin konfigurierbar machen, die 30 Tage entfernen und alle Geräte, die nicht ausgewählt sind, ignorieren. 
-- Name der States hinzufügen (rooms.folder z.B. ist nur ein Token)
+Best practice: Pair the devices to be monitored with espresense and filter the output so that you are not overwhelmed by devices.
 
-Noch zu tun
+For help use issue or if u understand german https://forum.iobroker.net/topic/71189/test-adapter-espresense
 
 ## Changelog
 <!--

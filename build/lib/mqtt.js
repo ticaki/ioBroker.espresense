@@ -39,7 +39,11 @@ class MQTTClientClass extends import_library.BaseClass {
   data = {};
   constructor(adapter, ip, port, username, password) {
     super(adapter, "mqttClient");
-    this.client = import_mqtt.default.connect(`mqtt://${ip}:${port}`, { username, password });
+    this.client = import_mqtt.default.connect(`mqtt://${ip}:${port}`, {
+      username,
+      password,
+      clientId: `iobroker_${this.adapter.namespace}`
+    });
     this.client.on("connect", () => {
       this.log.info(`Connection is active.`);
       this.adapter.setState("info.connection", true, true);

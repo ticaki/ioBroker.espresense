@@ -15,7 +15,11 @@ export class MQTTClientClass extends BaseClass {
     data: any = {};
     constructor(adapter: AdapterClassDefinition, ip: string, port: number, username: string, password: string) {
         super(adapter, 'mqttClient');
-        this.client = mqtt.connect(`mqtt://${ip}:${port}`, { username: username, password: password });
+        this.client = mqtt.connect(`mqtt://${ip}:${port}`, {
+            username: username,
+            password: password,
+            clientId: `iobroker_${this.adapter.namespace}`,
+        });
         this.client.on('connect', () => {
             this.log.info(`Connection is active.`);
             this.adapter.setState('info.connection', true, true);

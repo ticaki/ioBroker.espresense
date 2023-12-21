@@ -143,8 +143,6 @@ class Espresense extends utils.Adapter {
       this.namedDevices[message.id] = message.name;
       data[topicA.join(".")] = message;
       await this.library.writeFromJson(`${typ}.${device}`, typ, import_definition.statesObjects, data);
-      if (typ === "settings")
-        this.log.debug(JSON.stringify(data));
     } else if (typ === "devices") {
       let subDevice = topicA.shift();
       subDevice = subDevice ? subDevice : "no_name";
