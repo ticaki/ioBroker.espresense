@@ -80,5 +80,6 @@
     "removeDevice": "Rimuovi il dispositivo",
     "selectedDevices": "Tutti i dispositivi conosciuti",
     "room.button_1": "Pulsante 1",
-    "room.restart": "Ricomincia"
+    "room.restart": "Ricomincia",
+    "genericStateObjects.deviceDB": "Panoramica del dispositivo per l'amministratore"
 }

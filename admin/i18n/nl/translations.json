@@ -80,5 +80,6 @@
     "removeDevice": "Verwijder apparaat",
     "selectedDevices": "Alle bekende apparaten",
     "room.button_1": "Knop 1",
-    "room.restart": "Herstarten"
+    "room.restart": "Herstarten",
+    "genericStateObjects.deviceDB": "Apparaatoverzicht voor beheerder"
 }

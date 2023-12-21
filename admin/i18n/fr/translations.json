@@ -80,5 +80,6 @@
     "removeDevice": "Enlevez l'appareil",
     "selectedDevices": "Tous les appareils connus",
     "room.button_1": "Bouton 1",
-    "room.restart": "Redémarrage"
+    "room.restart": "Redémarrage",
+    "genericStateObjects.deviceDB": "Présentation de l'appareil pour l'administrateur"
 }

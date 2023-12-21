@@ -80,5 +80,6 @@
     "removeDevice": "删除设备",
     "selectedDevices": "所有已知设备",
     "room.button_1": "按钮1",
-    "room.restart": "重新开始"
+    "room.restart": "重新开始",
+    "genericStateObjects.deviceDB": "管理员设备概览"
 }

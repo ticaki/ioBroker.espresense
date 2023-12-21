@@ -107,7 +107,7 @@ export class Espresense extends utils.Adapter {
             }, this.unseenCheckTime);
             if ((this.config.selectedDevices || []).length > 0) {
                 await this.library.cleanUpTree(
-                    this.config.selectedDevices.map((a) => `devices.${a.id}`),
+                    this.config.selectedDevices.map((a) => `devices.${this.library.cleandp(a.id, false, true)}`),
                     [`devices.`],
                     -1,
                 );
@@ -143,6 +143,7 @@ export class Espresense extends utils.Adapter {
                     return;
             }
         }
+        device = this.library.cleandp(device, false, true);
         await this.library.writedp(`${typ}.${device}`, undefined, temp);
 
         if (typ === 'rooms') {
@@ -167,6 +168,7 @@ export class Espresense extends utils.Adapter {
         } else if (typ === 'devices') {
             let subDevice = topicA.shift();
             subDevice = subDevice ? subDevice : 'no_name';
+            subDevice = this.library.cleandp(subDevice, false, true);
             const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
             temp.common.name = this.namedDevices[subDevice] || subDevice;
             await this.library.writedp(`${typ}.${device}.${subDevice}`, undefined, temp);

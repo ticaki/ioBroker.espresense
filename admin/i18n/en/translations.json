@@ -77,7 +77,7 @@
     "removeDevice": "Remove device",
     "selectedDevices": "All known devices",
     "room.button_1": "Button 1",
-    "room.restart": "Restart"
-
+    "room.restart": "Restart",
+    "genericStateObjects.deviceDB": "Device overview for admin"
 
 }

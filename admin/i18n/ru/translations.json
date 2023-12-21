@@ -80,5 +80,6 @@
     "removeDevice": "Удалить устройство",
     "selectedDevices": "Все известные устройства",
     "room.button_1": "Кнопка 1",
-    "room.restart": "Перезапуск"
+    "room.restart": "Перезапуск",
+    "genericStateObjects.deviceDB": "Обзор устройства для администратора"
 }

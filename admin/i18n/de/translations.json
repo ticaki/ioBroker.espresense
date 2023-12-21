@@ -77,5 +77,6 @@
     "removeDevice": "Gerät entfernen",
     "selectedDevices": "Alle bekannten Geräte",
     "room.button_1": "Knopf 1",
-    "room.restart": "Neu starten"
+    "room.restart": "Neu starten",
+    "genericStateObjects.deviceDB": "Geräteübersicht für Administratoren"
 }

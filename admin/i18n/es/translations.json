@@ -80,5 +80,6 @@
     "removeDevice": "Retire el dispositivo",
     "selectedDevices": "Todos los dispositivos conocidos",
     "room.button_1": "Botón 1",
-    "room.restart": "Reanudar"
+    "room.restart": "Reanudar",
+    "genericStateObjects.deviceDB": "Descripción general del dispositivo para administrador"
 }

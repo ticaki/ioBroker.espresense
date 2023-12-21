@@ -80,5 +80,6 @@
     "removeDevice": "Odłącz urządzenie",
     "selectedDevices": "Wszystkie znane urządzenia",
     "room.button_1": "Przycisk 1",
-    "room.restart": "Uruchom ponownie"
+    "room.restart": "Uruchom ponownie",
+    "genericStateObjects.deviceDB": "Przegląd urządzenia dla administratora"
 }

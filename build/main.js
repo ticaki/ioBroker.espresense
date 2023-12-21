@@ -116,7 +116,7 @@ class Espresense extends utils.Adapter {
       }, this.unseenCheckTime);
       if ((this.config.selectedDevices || []).length > 0) {
         await this.library.cleanUpTree(
-          this.config.selectedDevices.map((a) => `devices.${a.id}`),
+          this.config.selectedDevices.map((a) => `devices.${this.library.cleandp(a.id, false, true)}`),
           [`devices.`],
           -1
         );
@@ -151,6 +151,7 @@ class Espresense extends utils.Adapter {
           return;
       }
     }
+    device = this.library.cleandp(device, false, true);
     await this.library.writedp(`${typ}.${device}`, void 0, temp);
     if (typ === "rooms") {
       if (topicA[topicA.length - 1] == "set")
@@ -172,6 +173,7 @@ class Espresense extends utils.Adapter {
     } else if (typ === "devices") {
       let subDevice = topicA.shift();
       subDevice = subDevice ? subDevice : "no_name";
+      subDevice = this.library.cleandp(subDevice, false, true);
       const temp2 = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
       temp2.common.name = this.namedDevices[subDevice] || subDevice;
       await this.library.writedp(`${typ}.${device}.${subDevice}`, void 0, temp2);

@@ -80,5 +80,6 @@
     "removeDevice": "Видаліть пристрій",
     "selectedDevices": "Всі відомі пристрої",
     "room.button_1": "Кнопка 1",
-    "room.restart": "Перезапустіть"
+    "room.restart": "Перезапустіть",
+    "genericStateObjects.deviceDB": "Огляд пристрою для адміністратора"
 }

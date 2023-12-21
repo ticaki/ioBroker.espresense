@@ -296,14 +296,16 @@ export class Library extends BaseClass {
      * Remove forbidden chars from datapoint string.
      * @param string Datapoint string to clean
      * @param lowerCase lowerCase() first param.
+     * @param removePoints remove . from dp
      * @returns void
      */
-    cleandp(string: string, lowerCase: boolean = false): string {
+    cleandp(string: string, lowerCase: boolean = false, removePoints: boolean = false): string {
         if (!string && typeof string != 'string') return string;
 
         string = string.replace(this.adapter.FORBIDDEN_CHARS, '_');
         // hardliner
-        string = string.replace(/[^0-9A-Za-z\._-]/gu, '_');
+        if (removePoints) string = string.replace(/[^0-9A-Za-z_-]/gu, '_');
+        else string = string.replace(/[^0-9A-Za-z\._-]/gu, '_');
         return lowerCase ? string.toLowerCase() : string;
     }
 

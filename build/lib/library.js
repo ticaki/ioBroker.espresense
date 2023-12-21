@@ -272,11 +272,14 @@ class Library extends BaseClass {
       this.log.debug(`Clean up tree delete: ${del[a]}`);
     }
   }
-  cleandp(string, lowerCase = false) {
+  cleandp(string, lowerCase = false, removePoints = false) {
     if (!string && typeof string != "string")
       return string;
     string = string.replace(this.adapter.FORBIDDEN_CHARS, "_");
-    string = string.replace(/[^0-9A-Za-z\._-]/gu, "_");
+    if (removePoints)
+      string = string.replace(/[^0-9A-Za-z_-]/gu, "_");
+    else
+      string = string.replace(/[^0-9A-Za-z\._-]/gu, "_");
     return lowerCase ? string.toLowerCase() : string;
   }
   convertToType(value, type) {
