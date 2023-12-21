@@ -10,6 +10,7 @@ declare global {
             MQTTServerPort: number;
             MQTTUseServer: boolean;
             unseenTime: number;
+            selectedDevices: { name: string; id: string }[];
         }
     }
 }

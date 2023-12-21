@@ -7,6 +7,7 @@
     "MQTTUsername": "User name",
     "MQTTPassword": "Password",
     "unseenTime": "Time after a device is displayed as absent. (seconds)",
+    "deviceHeader": "Devices",
     "genericStateObjects.presense": "Presense",
     "genericStateObjects.customString": "User data point",
     "devices.folder": "Device folder",
@@ -70,5 +71,10 @@
     "devices.int": "int",
     "devices.close": "Close",
     "settings.config.channel": "config",
-    "settings.config.id": "Device ID"
+    "settings.config.id": "Device ID",
+    "selectDevice": "Device selection for adding/removing ",
+    "addDevice": "Add device",
+    "removeDevice": "Remove device",
+    "selectedDevices": "All known devices"
+
 }

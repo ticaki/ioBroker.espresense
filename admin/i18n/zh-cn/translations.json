@@ -73,5 +73,10 @@
     "devices.close": "关闭",
     "settings.config.channel": "配置",
     "settings.config.id": "Device ID",
-    "settings.config.name": "友好名称"
+    "settings.config.name": "友好名称",
+    "deviceHeader": "设备",
+    "selectDevice": "用于添加/删除的设备选择",
+    "addDevice": "添加设备",
+    "removeDevice": "删除设备",
+    "selectedDevices": "所有已知设备"
 }

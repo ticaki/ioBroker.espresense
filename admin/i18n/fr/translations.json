@@ -73,5 +73,10 @@
     "devices.close": "Fermer",
     "settings.config.channel": "configuration",
     "settings.config.id": "Reference de l'appareil",
-    "settings.config.name": "Nom familier"
+    "settings.config.name": "Nom familier",
+    "deviceHeader": "Dispositifs",
+    "selectDevice": "Sélection d'appareil pour ajouter/supprimer",
+    "addDevice": "Ajouter un appareil",
+    "removeDevice": "Enlevez l'appareil",
+    "selectedDevices": "Tous les appareils connus"
 }

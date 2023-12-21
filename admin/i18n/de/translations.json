@@ -70,6 +70,10 @@
     "devices.int": "int",
     "devices.close": "Schließen",
     "settings.config.channel": "config",
-    "settings.config.id": "Geräte ID"
-
+    "settings.config.id": "Geräte ID",
+    "deviceHeader": "Geräte",
+    "selectDevice": "Geräteauswahl zum Hinzufügen/Entfernen",
+    "addDevice": "Gerät hinzufügen",
+    "removeDevice": "Gerät entfernen",
+    "selectedDevices": "Alle bekannten Geräte"
 }

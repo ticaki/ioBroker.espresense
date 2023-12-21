@@ -73,5 +73,10 @@
     "devices.close": "Vicino",
     "settings.config.channel": "config",
     "settings.config.id": "ID del dispositivo",
-    "settings.config.name": "Nome amichevole"
+    "settings.config.name": "Nome amichevole",
+    "deviceHeader": "Dispositivi",
+    "selectDevice": "Selezione del dispositivo per l'aggiunta/rimozione",
+    "addDevice": "Aggiungi dispositivo",
+    "removeDevice": "Rimuovi il dispositivo",
+    "selectedDevices": "Tutti i dispositivi conosciuti"
 }

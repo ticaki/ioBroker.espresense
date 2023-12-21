@@ -73,5 +73,10 @@
     "devices.close": "Закрити",
     "settings.config.channel": "конфігурація",
     "settings.config.id": "ID пристрою",
-    "settings.config.name": "Дружнє ім'я"
+    "settings.config.name": "Дружнє ім'я",
+    "deviceHeader": "Пристрої",
+    "selectDevice": "Вибір пристрою для додавання/видалення",
+    "addDevice": "Додайте пристрій",
+    "removeDevice": "Видаліть пристрій",
+    "selectedDevices": "Всі відомі пристрої"
 }

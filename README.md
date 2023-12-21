@@ -19,7 +19,9 @@ Connect to [ESPresense](https://espresense.com)
 - `Server ip` use only for external mqtt server
 - `Port, Username & Passowrd` of internal or external mqtt Server
 
-Best practice: Pair the devices to be monitored with espresense and filter the output so that you are not overwhelmed by devices.
+- If devices have been added to the configuration, only these will be displayed in the objects. 
+
+Best practice: Pair the devices to be monitored with espresense and filter the output to avoid unnecessary network traffic.
 
 For help use issue or if u understand german https://forum.iobroker.net/topic/71189/test-adapter-espresense
 
@@ -28,6 +30,9 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (ticaki) Add/Remove Devices
+
 ### 0.1.3 (2023-12-21)
 * (ticaki) prepare for lastest
 

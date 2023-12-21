@@ -45,6 +45,18 @@ const genericStateObjects = {
     },
     native: {}
   },
+  deviceDB: {
+    _id: "",
+    type: "state",
+    common: {
+      name: "genericStateObjects.deviceDB",
+      type: "string",
+      role: "json",
+      read: true,
+      write: false
+    },
+    native: {}
+  },
   presense: {
     _id: "",
     type: "state",

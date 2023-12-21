@@ -73,5 +73,10 @@
     "devices.close": "Закрывать",
     "settings.config.channel": "конфигурация",
     "settings.config.id": "Идентификатор устройства",
-    "settings.config.name": "Дружественное имя"
+    "settings.config.name": "Дружественное имя",
+    "deviceHeader": "Устройства",
+    "selectDevice": "Выбор устройства для добавления/удаления",
+    "addDevice": "Добавить устройство",
+    "removeDevice": "Удалить устройство",
+    "selectedDevices": "Все известные устройства"
 }

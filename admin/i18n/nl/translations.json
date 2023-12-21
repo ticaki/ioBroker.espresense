@@ -73,5 +73,10 @@
     "devices.close": "Dichtbij",
     "settings.config.channel": "configuratie",
     "settings.config.id": "Apparaat ID",
-    "settings.config.name": "Vriendelijke naam"
+    "settings.config.name": "Vriendelijke naam",
+    "deviceHeader": "Apparaten",
+    "selectDevice": "Apparaatselectie voor toevoegen/verwijderen",
+    "addDevice": "Voeg toestel toe",
+    "removeDevice": "Verwijder apparaat",
+    "selectedDevices": "Alle bekende apparaten"
 }

@@ -38,9 +38,9 @@ class Espresense extends utils.Adapter {
   mqttServer;
   namedDevices = {};
   timeout = void 0;
-  timeoutDelete = void 0;
   startDelay = void 0;
-  unseenCheckTime = 1e4;
+  unseenCheckTime = 5e3;
+  deviceDB = {};
   constructor(options = {}) {
     super({
       ...options,
@@ -49,6 +49,7 @@ class Espresense extends utils.Adapter {
     this.library = new import_library.Library(this);
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));
+    this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
   }
   async onReady() {
@@ -60,6 +61,10 @@ class Espresense extends utils.Adapter {
       this.library.writedp("devices", void 0, import_definition.genericStateObjects.devices);
       this.library.writedp("rooms", void 0, import_definition.genericStateObjects.rooms);
       this.library.writedp("settings", void 0, import_definition.genericStateObjects.settings);
+      const temp = this.library.readdp("deviceDB");
+      if (temp && temp.val && typeof temp.val == "string") {
+        this.deviceDB = JSON.parse(temp.val);
+      }
       await this.subscribeStatesAsync("rooms.*");
       this.namedDevices = {};
       let testIt = this.config.MQTTServerIp;
@@ -86,6 +91,10 @@ class Espresense extends utils.Adapter {
       if (isNaN(testIt) || testIt == "" || testIt < 5) {
         this.config.unseenTime = 20;
       }
+      testIt = this.config.selectedDevices;
+      if (typeof testIt != "object" || !Array.isArray(testIt)) {
+        this.config.selectedDevices = [];
+      }
       this.config.unseenTime *= 1e3;
       if (this.config.MQTTUseServer) {
         this.mqttServer = new import_mqtt.MQTTServerClass(
@@ -105,9 +114,13 @@ class Espresense extends utils.Adapter {
       this.timeout = this.setInterval(() => {
         this.library.garbageColleting("devices.", this.config.unseenTime);
       }, this.unseenCheckTime);
-      this.timeoutDelete = this.setInterval(() => {
-        this.library.garbageColleting("devices.", 2592e6, true);
-      }, 36e5);
+      if ((this.config.selectedDevices || []).length > 0) {
+        await this.library.cleanUpTree(
+          this.config.selectedDevices.map((a) => `devices.${a.id}`),
+          [`devices.`],
+          -1
+        );
+      }
     }, 1e3);
   }
   async handleMessage(topic, message) {
@@ -115,9 +128,10 @@ class Espresense extends utils.Adapter {
       return;
     const topicA = topic.split("/");
     topicA.shift();
-    const typ = topicA.shift();
-    if (typ !== "rooms" && typ !== "settings" && typ !== "devices")
+    const typTemp = topicA.shift();
+    if (typTemp !== "rooms" && typTemp !== "settings" && typTemp !== "devices")
       return;
+    const typ = typTemp;
     const temp = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
     let device = topicA.shift();
     device = device ? device : "no_name";
@@ -127,6 +141,16 @@ class Espresense extends utils.Adapter {
     temp.common.name = this.namedDevices[device] || device;
     if (typ === "settings" && message.name)
       temp.common.name = message.name;
+    if (typ === "devices") {
+      this.deviceDB[device] = { name: this.namedDevices[device] || device, lc: Date.now() };
+      this.library.writedp("deviceDB", JSON.stringify(this.deviceDB), import_definition.genericStateObjects.deviceDB);
+      if (this.config.selectedDevices.length > 0) {
+        if (this.config.selectedDevices.findIndex((i) => {
+          return i.id === device;
+        }) == -1)
+          return;
+      }
+    }
     await this.library.writedp(`${typ}.${device}`, void 0, temp);
     if (typ === "rooms") {
       if (topicA[topicA.length - 1] == "set")
@@ -160,8 +184,6 @@ class Espresense extends utils.Adapter {
         this.mqttClient.destroy();
       if (this.mqttServer)
         this.mqttServer.destroy();
-      if (this.timeoutDelete)
-        this.clearInterval(this.timeoutDelete);
       if (this.timeout)
         this.clearInterval(this.timeout);
       if (this.startDelay)
@@ -188,6 +210,85 @@ class Espresense extends utils.Adapter {
           await this.mqttClient.publish(topic, String(val));
       }
     } else {
+    }
+  }
+  onMessage(obj) {
+    if (typeof obj === "object" && obj.message) {
+      switch (obj.command) {
+        case "getDevices":
+          {
+            let result = [];
+            for (const id in this.config.selectedDevices) {
+              result.push({
+                label: this.config.selectedDevices[id].name,
+                value: this.config.selectedDevices[id].id
+              });
+            }
+            for (const id in this.deviceDB) {
+              const data = this.deviceDB[id];
+              if (data.lc < Date.now() - 3e5) {
+                delete this.deviceDB[id];
+                continue;
+              } else {
+                result.push({ label: data.name, value: id });
+              }
+            }
+            result = result.filter(
+              (a, b) => result.findIndex((c) => {
+                return c.value == a.value;
+              }) == b
+            );
+            this.library.writedp("deviceDB", JSON.stringify(this.deviceDB), import_definition.genericStateObjects.deviceDB);
+            if (obj.callback)
+              this.sendTo(obj.from, obj.command, result, obj.callback);
+          }
+          break;
+        case "addDevice":
+          {
+            if (this.config.selectedDevices.findIndex((i) => {
+              return i.id == obj.message.id;
+            }) == -1) {
+              this.config.selectedDevices.push({
+                id: obj.message.id,
+                name: this.deviceDB[obj.message.id] && this.deviceDB[obj.message.id].name || obj.message.id
+              });
+            }
+            if (obj.callback)
+              this.sendTo(
+                obj.from,
+                obj.command,
+                { native: { selectedDevices: this.config.selectedDevices } },
+                obj.callback
+              );
+          }
+          break;
+        case "removeDevice":
+          {
+            if (this.config.selectedDevices.findIndex((i) => {
+              i.id == obj.message.id;
+            }) != -1) {
+              this.config.selectedDevices.splice(
+                this.config.selectedDevices.findIndex((i) => {
+                  i.id == obj.message.id;
+                }),
+                1
+              );
+            }
+            if (obj.callback)
+              this.sendTo(
+                obj.from,
+                obj.command,
+                { native: { selectedDevices: this.config.selectedDevices } },
+                obj.callback
+              );
+          }
+          break;
+      }
+      if (obj.command === "send") {
+        this.log.info("send command");
+        if (obj.callback)
+          this.sendTo(obj.from, obj.command, "Message received", obj.callback);
+      }
     }
   }
 }

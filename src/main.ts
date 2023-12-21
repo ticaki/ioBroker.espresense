@@ -19,9 +19,9 @@ export class Espresense extends utils.Adapter {
     mqttServer: MQTTServerClass | undefined;
     namedDevices: { [key: string]: string } = {};
     timeout: ioBroker.Interval | undefined = undefined;
-    timeoutDelete: ioBroker.Interval | undefined = undefined;
     startDelay: ioBroker.Timeout | undefined = undefined;
-    unseenCheckTime: number = 10000;
+    unseenCheckTime: number = 5000;
+    deviceDB: { [id: string]: { name: string; lc: number } } = {};
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
@@ -30,8 +30,7 @@ export class Espresense extends utils.Adapter {
         this.library = new Library(this);
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
-        // this.on('objectChange', this.onObjectChange.bind(this));
-        // this.on('message', this.onMessage.bind(this));
+        this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
     }
 
@@ -49,6 +48,12 @@ export class Espresense extends utils.Adapter {
             this.library.writedp('devices', undefined, genericStateObjects.devices);
             this.library.writedp('rooms', undefined, genericStateObjects.rooms);
             this.library.writedp('settings', undefined, genericStateObjects.settings);
+
+            const temp = this.library.readdp('deviceDB');
+            if (temp && temp.val && typeof temp.val == 'string') {
+                this.deviceDB = JSON.parse(temp.val);
+            }
+
             await this.subscribeStatesAsync('rooms.*');
             this.namedDevices = {};
             //check config
@@ -76,6 +81,10 @@ export class Espresense extends utils.Adapter {
             if (isNaN(testIt) || testIt == '' || testIt < 5) {
                 this.config.unseenTime = 20;
             }
+            testIt = this.config.selectedDevices;
+            if (typeof testIt != 'object' || !Array.isArray(testIt)) {
+                this.config.selectedDevices = [];
+            }
             this.config.unseenTime *= 1000;
             // configuration ok
             if (this.config.MQTTUseServer) {
@@ -96,9 +105,13 @@ export class Espresense extends utils.Adapter {
             this.timeout = this.setInterval(() => {
                 this.library.garbageColleting('devices.', this.config.unseenTime);
             }, this.unseenCheckTime);
-            this.timeoutDelete = this.setInterval(() => {
-                this.library.garbageColleting('devices.', 2592000000, true);
-            }, 3600000);
+            if ((this.config.selectedDevices || []).length > 0) {
+                await this.library.cleanUpTree(
+                    this.config.selectedDevices.map((a) => `devices.${a.id}`),
+                    [`devices.`],
+                    -1,
+                );
+            }
         }, 1000);
     }
 
@@ -106,8 +119,9 @@ export class Espresense extends utils.Adapter {
         if (!topic || message == undefined) return;
         const topicA = topic.split('/');
         topicA.shift();
-        const typ = topicA.shift();
-        if (typ !== 'rooms' && typ !== 'settings' && typ !== 'devices') return;
+        const typTemp = topicA.shift();
+        if (typTemp !== 'rooms' && typTemp !== 'settings' && typTemp !== 'devices') return;
+        const typ: 'settings' | 'devices' | 'rooms' = typTemp;
         const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
 
         let device = topicA.shift();
@@ -117,7 +131,18 @@ export class Espresense extends utils.Adapter {
         }
         temp.common.name = this.namedDevices[device] || device;
         if (typ === 'settings' && message.name) temp.common.name = message.name;
-
+        if (typ === 'devices') {
+            this.deviceDB[device] = { name: this.namedDevices[device] || device, lc: Date.now() };
+            this.library.writedp('deviceDB', JSON.stringify(this.deviceDB), genericStateObjects.deviceDB);
+            if (this.config.selectedDevices.length > 0) {
+                if (
+                    this.config.selectedDevices.findIndex((i) => {
+                        return i.id === device;
+                    }) == -1
+                )
+                    return;
+            }
+        }
         await this.library.writedp(`${typ}.${device}`, undefined, temp);
 
         if (typ === 'rooms') {
@@ -155,7 +180,6 @@ export class Espresense extends utils.Adapter {
         try {
             if (this.mqttClient) this.mqttClient.destroy();
             if (this.mqttServer) this.mqttServer.destroy();
-            if (this.timeoutDelete) this.clearInterval(this.timeoutDelete);
             if (this.timeout) this.clearInterval(this.timeout);
             if (this.startDelay) this.clearTimeout(this.startDelay);
             callback();
@@ -201,22 +225,98 @@ export class Espresense extends utils.Adapter {
         }
     }
 
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-    // /**
-    //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-    //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-    //  */
-    // private onMessage(obj: ioBroker.Message): void {
-    //     if (typeof obj === 'object' && obj.message) {
-    //         if (obj.command === 'send') {
-    //             // e.g. send email or pushover or whatever
-    //             this.log.info('send command');
+    //If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
+    /**
+     * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
+     * Using this method requires "common.messagebox" property to be set to true in io-package.json
+     */
+    private onMessage(obj: ioBroker.Message): void {
+        if (typeof obj === 'object' && obj.message) {
+            switch (obj.command) {
+                case 'getDevices':
+                    {
+                        let result: { label: string; value: string }[] = [];
+                        for (const id in this.config.selectedDevices) {
+                            result.push({
+                                label: this.config.selectedDevices[id].name,
+                                value: this.config.selectedDevices[id].id,
+                            });
+                        }
+                        for (const id in this.deviceDB) {
+                            const data = this.deviceDB[id];
+                            if (data.lc < Date.now() - 300000) {
+                                delete this.deviceDB[id];
+                                continue;
+                            } else {
+                                result.push({ label: data.name, value: id });
+                            }
+                        }
+                        result = result.filter(
+                            (a, b) =>
+                                result.findIndex((c) => {
+                                    return c.value == a.value;
+                                }) == b,
+                        );
+                        this.library.writedp('deviceDB', JSON.stringify(this.deviceDB), genericStateObjects.deviceDB);
+                        if (obj.callback) this.sendTo(obj.from, obj.command, result, obj.callback);
+                    }
+                    break;
+                case 'addDevice':
+                    {
+                        if (
+                            this.config.selectedDevices.findIndex((i) => {
+                                return i.id == obj.message.id;
+                            }) == -1
+                        ) {
+                            this.config.selectedDevices.push({
+                                id: obj.message.id,
+                                name:
+                                    (this.deviceDB[obj.message.id] && this.deviceDB[obj.message.id].name) ||
+                                    obj.message.id,
+                            });
+                        }
+                        if (obj.callback)
+                            this.sendTo(
+                                obj.from,
+                                obj.command,
+                                { native: { selectedDevices: this.config.selectedDevices } },
+                                obj.callback,
+                            );
+                    }
+                    break;
+                case 'removeDevice':
+                    {
+                        if (
+                            this.config.selectedDevices.findIndex((i) => {
+                                i.id == obj.message.id;
+                            }) != -1
+                        ) {
+                            this.config.selectedDevices.splice(
+                                this.config.selectedDevices.findIndex((i) => {
+                                    i.id == obj.message.id;
+                                }),
+                                1,
+                            );
+                        }
+                        if (obj.callback)
+                            this.sendTo(
+                                obj.from,
+                                obj.command,
+                                { native: { selectedDevices: this.config.selectedDevices } },
+                                obj.callback,
+                            );
+                    }
+                    break;
+            }
+            if (obj.command === 'send') {
+                // e.g. send email or pushover or whatever
+                this.log.info('send command');
 
-    //             // Send response in callback if required
-    //             if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-    //         }
-    //     }
-    // }
+                // Send response in callback if required
+                if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
+            }
+        }
+    }
 }
 
 if (require.main !== module) {

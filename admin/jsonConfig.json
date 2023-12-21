@@ -63,6 +63,82 @@
             "sm": 12,
             "md": 6,
             "lg": 6
-        }    
+        },
+        "devices": {
+            "newLine": true,
+            "type": "header",
+            "text": "deviceHeader",
+            "size": 2
+        },
+        "selectDevice": {
+            "type": "selectSendTo",
+            "command": "getDevices",
+            "jsonData": "{ \"id\": \"${data.selectDevice}\" }",
+            "manual": false,
+            "multiple": false,
+            "doNotSave": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 8,
+            "lg": 4,
+            "label": "selectDevice",
+            "newLine": true
+        },
+        "addDevice": {
+            "type": "sendTo",
+            "command": "addDevice",
+            "jsonData": "{ \"id\": \"${data.selectDevice}\"}",
+            "newLine": true,
+            "label": "addDevice",
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 6,
+            "disabled": "!data.selectDevice",
+            "useNative": true
+        },
+        "removeDevice": {
+            "type": "sendTo",
+            "command": "removeDevice",
+            "jsonData": "{ \"id\": \"${data.selectDevice}\"}",
+            "newLine": true,
+            "label": "removeDevice",
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 6,
+            "disabled": "!data.selectDevice",
+            "useNative": true
+        },
+        "selectedDevices": {
+            "type": "table",
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "noDelete": true,
+            "label": "selectedDevices",
+            "items": [
+                {
+                    "type": "text",
+                    "attr": "id",
+                    "width": "50% ",
+                    "title": "id",
+                    "filter": false,
+                    "sort": false,
+                    "readOnly": true
+                },
+                {
+                    "type": "text",
+                    "attr": "name",
+                    "width": "50% ",
+                    "title": "name",
+                    "filter": false,
+                    "sort": false,
+                    "readOnly": true
+                }
+            ]
+        }
     }
 }

@@ -73,5 +73,10 @@
     "devices.close": "Zamknąć",
     "settings.config.channel": "konfiguracja",
     "settings.config.id": "Identyfikator urzadzenia",
-    "settings.config.name": "Przyjazne imię"
+    "settings.config.name": "Przyjazne imię",
+    "deviceHeader": "Urządzenia",
+    "selectDevice": "Wybór urządzenia do dodania/usunięcia",
+    "addDevice": "Dodaj urządzenie",
+    "removeDevice": "Odłącz urządzenie",
+    "selectedDevices": "Wszystkie znane urządzenia"
 }

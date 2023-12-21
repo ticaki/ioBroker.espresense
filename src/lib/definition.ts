@@ -38,6 +38,7 @@ export const genericStateObjects: {
     rooms: ioBroker.FolderObject;
     settings: ioBroker.FolderObject;
     presense: ioBroker.StateObject;
+    deviceDB: ioBroker.StateObject;
 } = {
     default: {
         _id: 'No_definition',
@@ -46,6 +47,18 @@ export const genericStateObjects: {
             name: 'genericStateObjects.state',
             type: 'string',
             role: 'text',
+            read: true,
+            write: false,
+        },
+        native: {},
+    },
+    deviceDB: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'genericStateObjects.deviceDB',
+            type: 'string',
+            role: 'json',
             read: true,
             write: false,
         },
