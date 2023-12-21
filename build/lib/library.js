@@ -178,6 +178,8 @@ class Library extends BaseClass {
     let c = 0, s = data;
     while (c < k.length) {
       s = s[k[c++]];
+      if (s === void 0)
+        return null;
     }
     return s;
   }

@@ -80,18 +80,11 @@ class MQTTClientClass extends import_library.BaseClass {
         } else if (value == "") {
           type = "string";
         } else {
-          type = "number1";
-          this.log.debug(typeof value);
+          type = "number";
           value = parseFloat(value);
         }
       }
-      const test = topic.split("/");
-      const key = test.pop();
-      if (this.data[test.join("_")] === void 0)
-        this.data[test.join("_")] = {};
-      if (key !== void 0)
-        this.data[test.join("_")][key] = value;
-      this.log.debug(`${topic}: ${type} - ${value}`);
+      this.log.debug(`${topic}: ${type} - ${typeof value == "object" ? JSON.stringify(value) : value}`);
       this.adapter.handleMessage(topic, value);
     });
   }

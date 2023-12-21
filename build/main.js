@@ -120,10 +120,12 @@ class Espresense extends utils.Adapter {
     const temp = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
     let device = topicA.shift();
     device = device ? device : "no_name";
-    if (message && typeof message.name && message.id) {
+    if (message && message.name && message.id) {
       this.namedDevices[message.id] = message.name;
     }
     temp.common.name = this.namedDevices[device] || device;
+    if (typ === "settings" && message.name)
+      temp.common.name = message.name;
     await this.library.writedp(`${typ}.${device}`, void 0, temp);
     if (typ === "rooms") {
       if (topicA[topicA.length - 1] == "set")

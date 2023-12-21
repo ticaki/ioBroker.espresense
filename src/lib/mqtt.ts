@@ -39,7 +39,6 @@ export class MQTTClientClass extends BaseClass {
         });
 
         this.client.on('message', (topic, message) => {
-            //this.log.debug('topic: ' + topic + ' message: ' + message.toString() + ' type:');
             let value: any;
             let type: string = '';
             try {
@@ -58,18 +57,11 @@ export class MQTTClientClass extends BaseClass {
                 } else if (value == '') {
                     type = 'string';
                 } else {
-                    type = 'number1';
-                    this.log.debug(typeof value);
+                    type = 'number';
                     value = parseFloat(value);
                 }
             }
-            const test = topic.split('/');
-            const key = test.pop();
-            if (this.data[test.join('_')] === undefined) this.data[test.join('_')] = {};
-            if (key !== undefined) this.data[test.join('_')][key] = value;
-
-            this.log.debug(`${topic}: ${type} - ${value}`);
-            //this.log.debug(`json: ${JSON.stringify(this.data)}`);
+            this.log.debug(`${topic}: ${type} - ${typeof value == 'object' ? JSON.stringify(value) : value}`);
             this.adapter.handleMessage(topic, value);
         });
     }

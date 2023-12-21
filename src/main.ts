@@ -111,10 +111,11 @@ export class Espresense extends utils.Adapter {
 
         let device = topicA.shift();
         device = device ? device : 'no_name';
-        if (message && typeof message.name && message.id) {
+        if (message && message.name && message.id) {
             this.namedDevices[message.id] = message.name;
         }
         temp.common.name = this.namedDevices[device] || device;
+        if (typ === 'settings' && message.name) temp.common.name = message.name;
 
         await this.library.writedp(`${typ}.${device}`, undefined, temp);
 

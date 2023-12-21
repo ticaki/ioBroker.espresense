@@ -414,13 +414,71 @@ const statesObjects = {
         _id: "",
         type: "state",
         common: {
-          name: "room.led_1",
+          name: "room.led_1.state",
           type: "boolean",
-          role: "switch",
+          role: "indicator",
           read: true,
           write: false
         },
         native: {}
+      },
+      brightness: {
+        _id: "",
+        type: "state",
+        common: {
+          name: "room.led_1.brightness",
+          type: "number",
+          role: "value",
+          read: true,
+          write: false
+        },
+        native: {}
+      },
+      color: {
+        _channel: {
+          _id: "",
+          type: "channel",
+          common: {
+            name: "room.led_1.color.channel"
+          },
+          native: {}
+        },
+        r: {
+          _id: "",
+          type: "state",
+          common: {
+            name: "red",
+            type: "number",
+            role: "value",
+            read: true,
+            write: false
+          },
+          native: {}
+        },
+        g: {
+          _id: "",
+          type: "state",
+          common: {
+            name: "green",
+            type: "number",
+            role: "value",
+            read: true,
+            write: false
+          },
+          native: {}
+        },
+        b: {
+          _id: "",
+          type: "state",
+          common: {
+            name: "blue",
+            type: "number",
+            role: "value",
+            read: true,
+            write: false
+          },
+          native: {}
+        }
       }
     },
     telemetry: {

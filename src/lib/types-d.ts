@@ -24,6 +24,12 @@ export type room = {
     known_irks: string;
     led_1: {
         state: boolean;
+        brightness: number;
+        color: {
+            r: number;
+            g: number;
+            b: number;
+        };
     };
     telemetry: {
         ip: string;

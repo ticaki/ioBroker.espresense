@@ -183,6 +183,7 @@ export class Library extends BaseClass {
             s = data;
         while (c < k.length) {
             s = s[k[c++]];
+            if (s === undefined) return null;
         }
         return s;
     }

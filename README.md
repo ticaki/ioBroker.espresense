@@ -34,6 +34,9 @@ Noch zu tun
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (ticaki) add common.name to states
+
 ### 0.1.1 (2023-12-20)
 * (ticaki) fixed: sometimes adapter crashed after login.
 
