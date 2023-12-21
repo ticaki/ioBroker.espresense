@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "news": {
+      "0.1.3": {
+        "en": "prepare for lastest",
+        "de": "vorbereitung auf die letzte",
+        "ru": "подготовиться к последнему",
+        "pt": "preparar para o último",
+        "nl": "bereid je voor op het laatste",
+        "fr": "préparer pour le dernier",
+        "it": "prepararsi per ultimo",
+        "es": "prepararse para las pruebas",
+        "pl": "gotowy",
+        "uk": "підготовка до останнього",
+        "zh-cn": "准备最后准备"
+      },
       "0.1.2": {
         "en": "add common.name to states",
         "de": "fügen sie gemeinsam hinzu. name auf staaten",
