@@ -30,7 +30,7 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.2.0 (2023-12-21)
 * (ticaki) Add/Remove Devices
 
 ### 0.1.3 (2023-12-21)
