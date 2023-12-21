@@ -34,7 +34,7 @@ Noch zu tun
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.1.2 (2023-12-21)
 * (ticaki) add common.name to states
 
 ### 0.1.1 (2023-12-20)

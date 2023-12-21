@@ -840,7 +840,7 @@ const statesObjects = {
         _id: "",
         type: "state",
         common: {
-          name: "settings.config.name",
+          name: "devices.name",
           type: "string",
           role: "text",
           read: true,
