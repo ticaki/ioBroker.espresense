@@ -58,13 +58,13 @@ export class Espresense extends utils.Adapter {
             this.namedDevices = {};
             //check config
             let testIt: any = this.config.MQTTServerIp;
-            if (testIt == '' || typeof testIt != 'string') {
-                this.log.warn(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
+            if ((testIt == '' || typeof testIt != 'string') && !this.config.MQTTUseServer) {
+                this.log.error(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
                 return;
             }
             testIt = this.config.MQTTServerPort;
             if (typeof testIt != 'number' || testIt <= 1023) {
-                this.log.warn(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
+                this.log.error(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
                 return;
             }
             testIt = this.config.MQTTPassword;
