@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "news": {
+      "0.3.0": {
+        "en": "Breaking Change: move datadir from node_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (instance). move the files there and use iobroker fix after it.",
+        "de": "Breaking Change: bewege datadir von node_modules/iobroker.espresense/mydp auf iobroker-data/espresense.0 (Instance). Bewege die Dateien dort hin und verwende anschließend iobroker fix.",
+        "ru": "Изменение: переместить datadir из node_modules/iobroker.espresense/mydp в iobroker-data/espresense.0 (instance). переместить файлы там и использовать iobroker исправить после него.",
+        "pt": "Breaking Change: mover datadir de node_modules/iobroker.espresense/mydp para iobroker-data/espresense.0 (instância). mover os arquivos lá e usar iobroker corrigir depois dele.",
+        "nl": "Verplaats datadir van nodemodules/iobroker. Verplaats de bestanden en gebruik iobroker reparatie daarna.",
+        "fr": "Changement de rupture : déplacer datadir de node_modules/iobroker.espresense/mydp à iobroker-data/espresense.0 (instance). déplacer les fichiers là-bas et utiliser iobroker réparer après.",
+        "it": "Cambiamento di rottura: spostare datadir da node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). spostare i file lì e utilizzare iobroker fix dopo di esso.",
+        "es": "Cambio de ruptura: mueva datadir de node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). mover los archivos allí y utilizar iobroker arreglar después de él.",
+        "pl": "Breaking Change: move datadir from nodes_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (ang.). Przesuwa pliki tam i wykorzystuje iobrokera po nim.",
+        "uk": "Зміна несправностей: переміщення даних з вершини_модулів/iobroker.espresense/mydp до iobroker-data/espresense.0 (інтенсивність). перемістіть файли після цього і використовуйте iobroker.",
+        "zh-cn": "失调:将数据从不de_modules/iobroker.espresense/mydp转向iobroker-data/espresense.0(instance). 将档案移到那里,并在档案之后使用零碎器。."
+      },
       "0.2.1": {
         "en": "fixed: object not exist sometimes.",
         "de": "fix: objekt existiert nicht manchmal.",
@@ -80,19 +93,6 @@
         "pl": "Added: wysyłać konfiguracyjne punkty danych do esp",
         "uk": "Додано: відправляйте конфігурацію даних точок доступу до електронної пошти",
         "zh-cn": "增 编:将数据点发送给项目"
-      },
-      "0.0.3": {
-        "en": "Added: Mqtt Server with file db",
-        "de": "Hinzugefügt: Mqt Server mit Datei db",
-        "ru": "Добавлена: Mqtt Server с файлом db",
-        "pt": "Adicionado: Mqtt Server with file db",
-        "nl": "Vertaling:",
-        "fr": "Ajouté: Mqtt Server avec fichier db",
-        "it": "Aggiunto: Mqtt Server con file db",
-        "es": "Añadido: Mqtt Server con archivo db",
-        "pl": "Added: Mqtt Server z plikiem db",
-        "uk": "Додано: Mqtt Server з файлом db",
-        "zh-cn": "增 编:有档案的Mqt Server"
       }
     },
     "titleLang": {
