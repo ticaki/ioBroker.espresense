@@ -119,7 +119,7 @@ class Library extends BaseClass {
       return;
     if (data === void 0 || ["string", "number", "boolean", "object"].indexOf(typeof data) == -1)
       return;
-    const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def) : null;
+    const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def, data) : null;
     if (objectDefinition)
       objectDefinition.native = {
         ...objectDefinition.native || {},
@@ -157,18 +157,46 @@ class Library extends BaseClass {
       await this.writedp(prefix, data, objectDefinition);
     }
   }
-  async getObjectDefFromJson(key, data) {
-    let result = this.deepJsonValue(key, data);
+  async getObjectDefFromJson(key, def, data) {
+    let result = this.deepJsonValue(key, def);
     if (result === null || result === void 0) {
       const k = key.split(".");
       if (k && k[k.length - 1].startsWith("_")) {
         result = import_definition.genericStateObjects.customString;
+        result = this.cloneObject(result);
       } else {
         this.log.debug(`No definition for ${key}!`);
         result = import_definition.genericStateObjects.default;
+        result = this.cloneObject(result);
+        switch (typeof data) {
+          case "number":
+          case "bigint":
+            {
+              result.common.type = "number";
+              result.common.role = "value";
+            }
+            break;
+          case "boolean":
+            {
+              result.common.type = "boolean";
+              result.common.role = "indicator";
+            }
+            break;
+          case "string":
+          case "symbol":
+          case "undefined":
+          case "object":
+          case "function":
+            {
+              result.common.type = "string";
+              result.common.role = "text";
+            }
+            break;
+        }
       }
-    }
-    return this.cloneObject(result);
+    } else
+      result = this.cloneObject(result);
+    return result;
   }
   deepJsonValue(key, data) {
     if (!key || !data || typeof data !== "object" || typeof key !== "string") {
@@ -298,7 +326,7 @@ class Library extends BaseClass {
           newValue = value.toString() || "";
           break;
         case "number":
-          newValue = value ? Number(value) : 0;
+          newValue = value ? parseFloat(value) : 0;
           break;
         case "boolean":
           newValue = !!value;
@@ -351,6 +379,7 @@ class Library extends BaseClass {
   async initStates(states) {
     if (!states)
       return;
+    this.stateDataBase = {};
     const removedChannels = [];
     for (const state in states) {
       const dp = state.replace(`${this.adapter.name}.${this.adapter.instance}.`, "");

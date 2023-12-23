@@ -82,9 +82,9 @@ export class MQTTClientClass extends BaseClass {
 export class MQTTServerClass extends BaseClass {
     aedes: Aedes;
     server: Server;
-    constructor(adapter: Espresense, port: number, username: string, password: string) {
+    constructor(adapter: Espresense, port: number, username: string, password: string, path: string) {
         super(adapter, 'mqttServer');
-        const persistence = aedesPersistencelevel(new Level('./mydb'));
+        const persistence = aedesPersistencelevel(new Level(path));
         this.aedes = new Aedes({ persistence: persistence });
         this.server = createServer(this.aedes.handle);
 

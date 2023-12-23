@@ -96,12 +96,21 @@ class Espresense extends utils.Adapter {
         this.config.selectedDevices = [];
       }
       this.config.unseenTime *= 1e3;
+      if ((this.config.selectedDevices || []).length > 0) {
+        await this.library.cleanUpTree(
+          this.config.selectedDevices.map((a) => `devices.${this.library.cleandp(a.id, false, true)}`),
+          [`devices.`],
+          -1
+        );
+      }
+      await this.library.initStates(await this.getStatesAsync("*"));
       if (this.config.MQTTUseServer) {
         this.mqttServer = new import_mqtt.MQTTServerClass(
           this,
           this.config.MQTTServerPort,
           this.config.MQTTUsername,
-          this.config.MQTTPassword
+          this.config.MQTTPassword,
+          utils.getAbsoluteInstanceDataDir(this)
         );
       }
       this.mqttClient = new import_mqtt.MQTTClientClass(
@@ -114,13 +123,6 @@ class Espresense extends utils.Adapter {
       this.timeout = this.setInterval(() => {
         this.library.garbageColleting("devices.", this.config.unseenTime);
       }, this.unseenCheckTime);
-      if ((this.config.selectedDevices || []).length > 0) {
-        await this.library.cleanUpTree(
-          this.config.selectedDevices.map((a) => `devices.${this.library.cleandp(a.id, false, true)}`),
-          [`devices.`],
-          -1
-        );
-      }
     }, 1e3);
   }
   async handleMessage(topic, message) {

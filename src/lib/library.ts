@@ -107,7 +107,7 @@ export class Library extends BaseClass {
         if (!def || typeof def !== 'object') return;
         if (data === undefined || ['string', 'number', 'boolean', 'object'].indexOf(typeof data) == -1) return;
 
-        const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def) : null;
+        const objectDefinition = objNode ? await this.getObjectDefFromJson(`${objNode}`, def, data) : null;
 
         if (objectDefinition)
             objectDefinition.native = {
@@ -159,19 +159,46 @@ export class Library extends BaseClass {
      * @param data  is the definition dataset
      * @returns ioBroker.ChannelObject | ioBroker.DeviceObject | ioBroker.StateObject
      */
-    async getObjectDefFromJson(key: string, data: any): Promise<ioBroker.Object> {
+    async getObjectDefFromJson(key: string, def: any, data: any): Promise<ioBroker.Object> {
         //let result = await jsonata(`${key}`).evaluate(data);
-        let result = this.deepJsonValue(key, data);
+        let result = this.deepJsonValue(key, def);
         if (result === null || result === undefined) {
             const k = key.split('.');
             if (k && k[k.length - 1].startsWith('_')) {
                 result = genericStateObjects.customString;
+                result = this.cloneObject(result);
             } else {
                 this.log.debug(`No definition for ${key}!`);
                 result = genericStateObjects.default;
+                result = this.cloneObject(result);
+                switch (typeof data) {
+                    case 'number':
+                    case 'bigint':
+                        {
+                            result.common.type = 'number';
+                            result.common.role = 'value';
+                        }
+                        break;
+                    case 'boolean':
+                        {
+                            result.common.type = 'boolean';
+                            result.common.role = 'indicator';
+                        }
+                        break;
+                    case 'string':
+                    case 'symbol':
+                    case 'undefined':
+                    case 'object':
+                    case 'function':
+                        {
+                            result.common.type = 'string';
+                            result.common.role = 'text';
+                        }
+                        break;
+                }
             }
-        }
-        return this.cloneObject(result);
+        } else result = this.cloneObject(result);
+        return result;
     }
 
     deepJsonValue(key: string, data: any): any {
@@ -330,7 +357,7 @@ export class Library extends BaseClass {
                     newValue = value.toString() || '';
                     break;
                 case 'number':
-                    newValue = value ? Number(value) : 0;
+                    newValue = value ? parseFloat(value as string) : 0;
                     break;
                 case 'boolean':
                     newValue = !!value;
@@ -341,7 +368,6 @@ export class Library extends BaseClass {
                     break;
             }
         }
-        // get a warning message when we try to convert a object/array.
         return newValue;
     }
 
@@ -413,6 +439,7 @@ export class Library extends BaseClass {
      */
     async initStates(states: { [key: string]: { val: ioBroker.StateValue; ts: number; ack: boolean } }): Promise<void> {
         if (!states) return;
+        this.stateDataBase = {};
         const removedChannels: string[] = [];
         for (const state in states) {
             const dp = state.replace(`${this.adapter.name}.${this.adapter.instance}.`, '');
