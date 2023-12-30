@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "news": {
+      "0.4.0": {
+        "en": "fixed: no names/ids.\nAdded: global esp32 configuration (retained)",
+        "de": "Behoben: keine Namen/ids.\nHinzugefügt: globale esp32 Konfiguration (retained)",
+        "ru": "исправлено: нет имен.\nДобавлена: глобальная конфигурация esp32 (retained)",
+        "pt": "fixo: nenhum nome.\nAdicionado: global esp32 configuração (retido)",
+        "nl": "geen namen.\nToegevoegd: globale esp32 configuratie (geretineerd)",
+        "fr": "fixe: pas de noms.\nAjouté : configuration globale esp32 (retained)",
+        "it": "fisso: nessun nome.\nAggiunto: global esp32 Configurazione (retenuta)",
+        "es": "fijo: sin nombres.\nAñadido: configuración global de esp32 (retenido)",
+        "pl": "nie ma nazw.\nAdded: konfiguracja globalna esp32",
+        "uk": "фіксована: імена імен.\nДоданий: глобальна конфігурація esp32 (затриманий)",
+        "zh-cn": "固定:无姓名。.\n增 编:全球分组(续会)"
+      },
       "0.3.0": {
         "en": "Breaking Change: move datadir from node_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (instance). move the files there and use iobroker fix after it.",
         "de": "Breaking Change: bewege datadir von node_modules/iobroker.espresense/mydp auf iobroker-data/espresense.0 (Instance). Bewege die Dateien dort hin und verwende anschließend iobroker fix.",
@@ -80,19 +93,6 @@
         "pl": "niekiedy adapter rozbił się po locie.",
         "uk": "виправлено: іноді адаптер збитий після входу.",
         "zh-cn": "固定:有时在伐木之后被拖进。."
-      },
-      "0.1.0": {
-        "en": "Added: send configuration datapoints to esp",
-        "de": "Hinzugefügt: senden Sie Konfigurationsdatenpunkte zu esp",
-        "ru": "Добавлена: отправьте настройки данных точек в esp",
-        "pt": "Adicionado: envie datapoints de configuração para esp",
-        "nl": "Vertaling:",
-        "fr": "Ajouté : envoyer des points de données de configuration à esp",
-        "it": "Aggiunto: inviare datapoint di configurazione a esp",
-        "es": "Añadido: enviar datos de configuración a esp",
-        "pl": "Added: wysyłać konfiguracyjne punkty danych do esp",
-        "uk": "Додано: відправляйте конфігурацію даних точок доступу до електронної пошти",
-        "zh-cn": "增 编:将数据点发送给项目"
       }
     },
     "titleLang": {
