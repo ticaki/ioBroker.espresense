@@ -92,9 +92,9 @@ class MQTTClientClass extends import_library.BaseClass {
       this.adapter.handleMessage(topic, value);
     });
   }
-  async publish(topic, message) {
+  async publish(topic, message, opt) {
     this.log.debug(`Publishing topic: ${topic} with message: ${message}.`);
-    await this.client.publishAsync(topic, message);
+    await this.client.publishAsync(topic, message, opt);
   }
   destroy() {
     this.client.end();

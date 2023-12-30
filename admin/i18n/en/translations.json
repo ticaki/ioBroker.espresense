@@ -78,6 +78,9 @@
     "selectedDevices": "All known devices",
     "room.button_1": "Button 1",
     "room.restart": "Restart",
-    "genericStateObjects.deviceDB": "Device overview for admin"
-
+    "genericStateObjects.deviceDB": "Device overview for admin",
+    "retainGlobalTip": "You can use global to update all ESPresense base stations at the same time. If you activate this option even NEW nodes will upon startup get the configuration. Attention only changed states will be saved as retained.",
+    "retainGlobal": "retained",
+    "settings.global": "Global settings",
+    "name": "Name"
 }

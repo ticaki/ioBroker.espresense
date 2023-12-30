@@ -104,6 +104,14 @@ const genericStateObjects = {
       name: "settings.folder"
     },
     native: {}
+  },
+  global: {
+    _id: "",
+    type: "folder",
+    common: {
+      name: "settings.global"
+    },
+    native: {}
   }
 };
 const statesObjects = {

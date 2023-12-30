@@ -64,6 +64,17 @@
             "md": 6,
             "lg": 6
         },
+        "retainGlobal": {
+            "type": "checkbox",
+            "default": false,
+            "label": "retainGlobal",
+            "tooltip": "retainGlobalTip",
+            "newLine": true,
+            
+            "sm": 12,
+            "md": 6,
+            "lg": 6
+        },
         "devices": {
             "newLine": true,
             "type": "header",

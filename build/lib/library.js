@@ -223,9 +223,9 @@ class Library extends BaseClass {
     };
     return result;
   }
-  async writedp(dp, val, obj = null) {
+  async writedp(dp, val, obj = null, ack = true) {
     dp = this.cleandp(dp);
-    let node = this.readdp(dp);
+    let node = this.readdb(dp);
     const del = !this.isDirAllowed(dp);
     if (node === void 0) {
       if (!obj) {
@@ -256,7 +256,7 @@ class Library extends BaseClass {
         await this.adapter.setStateAsync(dp, {
           val,
           ts: Date.now(),
-          ack: true
+          ack
         });
     }
   }
@@ -338,19 +338,25 @@ class Library extends BaseClass {
     }
     return newValue;
   }
-  readdp(dp) {
+  readdb(dp) {
     return this.stateDataBase[this.cleandp(dp)];
   }
-  setdb(dp, type, val, stateType, ack = true, ts = Date.now(), obj = void 0, init = false) {
-    this.stateDataBase[dp] = {
-      type,
-      stateTyp: stateType !== void 0 ? stateType : this.stateDataBase[dp] !== void 0 && this.stateDataBase[dp].stateTyp !== void 0 ? this.stateDataBase[dp].stateTyp : void 0,
-      val,
-      ack,
-      ts: ts ? ts : Date.now(),
-      obj: obj !== void 0 ? obj : this.stateDataBase[dp] !== void 0 && this.stateDataBase[dp].obj !== void 0 ? this.stateDataBase[dp].obj : void 0,
-      init
-    };
+  setdb(dp, type, val = void 0, stateType = void 0, ack = true, ts = Date.now(), obj = void 0, init = false) {
+    if (typeof type == "object") {
+      type = type;
+      this.stateDataBase[dp] = type;
+    } else {
+      type = type;
+      this.stateDataBase[dp] = {
+        type,
+        stateTyp: stateType !== void 0 ? stateType : this.stateDataBase[dp] !== void 0 && this.stateDataBase[dp].stateTyp !== void 0 ? this.stateDataBase[dp].stateTyp : void 0,
+        val,
+        ack,
+        ts: ts ? ts : Date.now(),
+        obj: obj !== void 0 ? obj : this.stateDataBase[dp] !== void 0 && this.stateDataBase[dp].obj !== void 0 ? this.stateDataBase[dp].obj : void 0,
+        init
+      };
+    }
     return this.stateDataBase[dp];
   }
   async memberDeleteAsync(data) {

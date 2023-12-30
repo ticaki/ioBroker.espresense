@@ -45,16 +45,35 @@ export class Espresense extends utils.Adapter {
             await this.library.initStates(await this.getStatesAsync('*'));
             this.library.defaults.updateStateOnChangeOnly = false;
 
-            this.library.writedp('devices', undefined, genericStateObjects.devices);
-            this.library.writedp('rooms', undefined, genericStateObjects.rooms);
-            this.library.writedp('settings', undefined, genericStateObjects.settings);
-
-            const temp = this.library.readdp('deviceDB');
+            await this.library.writedp('devices', undefined, genericStateObjects.devices);
+            await this.library.writedp('rooms', undefined, genericStateObjects.rooms);
+            await this.library.writedp('settings', undefined, genericStateObjects.settings);
+            await this.library.writedp('global', undefined, genericStateObjects.global);
+            for (const id in statesObjects.rooms) {
+                //@ts-expect-error id is keyof
+                const obj = statesObjects.rooms[id];
+                if (obj && obj.common && obj.common.write === true) {
+                    const val = this.library.readdb(`global.${id}`);
+                    if (val == undefined) {
+                        const val: any =
+                            obj.common.type == 'string'
+                                ? ''
+                                : obj.common.type == 'number'
+                                  ? -1
+                                  : obj.common.type == 'boolean'
+                                    ? false
+                                    : null;
+                        await this.library.writedp(`global.${id}`, val, obj, false);
+                    }
+                }
+            }
+            const temp = this.library.readdb('deviceDB');
             if (temp && temp.val && typeof temp.val == 'string') {
                 this.deviceDB = JSON.parse(temp.val);
             }
 
             await this.subscribeStatesAsync('rooms.*');
+            await this.subscribeStatesAsync('global.*');
             this.namedDevices = {};
             //check config
             let testIt: any = this.config.MQTTServerIp;
@@ -84,6 +103,10 @@ export class Espresense extends utils.Adapter {
             testIt = this.config.selectedDevices;
             if (typeof testIt != 'object' || !Array.isArray(testIt)) {
                 this.config.selectedDevices = [];
+            } else {
+                this.config.selectedDevices = this.config.selectedDevices.filter((a) => {
+                    return typeof a.id == 'string' && a.id != '';
+                });
             }
             this.config.unseenTime *= 1000;
             // configuration ok
@@ -116,6 +139,14 @@ export class Espresense extends utils.Adapter {
             this.timeout = this.setInterval(() => {
                 this.library.garbageColleting('devices.', this.config.unseenTime);
             }, this.unseenCheckTime);
+            if (!this.config.retainGlobal) {
+                for (const id in statesObjects.rooms) {
+                    const topic = `espresense/rooms/*/${id}/set`;
+                    if (this.mqttClient) {
+                        await this.mqttClient.publish(topic, '', { retain: true });
+                    }
+                }
+            }
         }, 1000);
     }
 
@@ -148,17 +179,23 @@ export class Espresense extends utils.Adapter {
             }
         }
         device = this.library.cleandp(device, false, true);
-        await this.library.writedp(`${typ}.${device}`, undefined, temp);
+        if (typ !== 'rooms' && device != '*') await this.library.writedp(`${typ}.${device}`, undefined, temp);
 
         if (typ === 'rooms') {
             // ignore set commands
-            if (topicA[topicA.length - 1] == 'set') return;
+            let path = `${typ}.${device}`;
+            if (device == '*') {
+                path = 'global';
+                if (topicA[topicA.length - 1] == 'set') topicA.pop();
+            } else if (topicA[topicA.length - 1] == 'set') {
+                return;
+            }
 
             const data: any = {};
             data[topicA.join('.')] = message;
             try {
                 data.restart = false;
-                await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
+                await this.library.writeFromJson(path, typ, statesObjects, data);
             } catch (e: any) {
                 this.log.error(e);
                 this.log.error(`Topic:${topic} data: ${JSON.stringify(data)}`);
@@ -217,7 +254,7 @@ export class Espresense extends utils.Adapter {
         if (state && !state.ack) {
             id = id.replace(`${this.namespace}.`, '');
             this.library.setdb(id, 'state', state.val, undefined, state.ack, state.ts);
-            const dbEntry = this.library.readdp(id);
+            const dbEntry = this.library.readdb(id);
             if (dbEntry && dbEntry.obj && dbEntry.obj.common && dbEntry.obj.common.write) {
                 const native = dbEntry.obj.native;
                 let val = dbEntry.val;
@@ -225,9 +262,14 @@ export class Espresense extends utils.Adapter {
                     const fn = new Function('val', `return ${native.convert}`);
                     val = fn(val);
                 }
-                const topic = `espresense/${id.split('.').join('/')}/set`;
+                const global = id.split('.')[1] === 'global';
+                const topic = global
+                    ? `espresense/rooms/*/${id.split('.')[2]}/set`
+                    : `espresense/${id.split('.').join('/')}/set`;
                 if (this.mqttClient) {
-                    await this.mqttClient.publish(topic, String(val));
+                    await this.mqttClient.publish(topic, String(val), {
+                        retain: id.endsWith('.restart') ? false : !!this.config.retainGlobal,
+                    });
                 }
             }
         } else {
@@ -257,6 +299,8 @@ export class Espresense extends utils.Adapter {
                                 delete this.deviceDB[id];
                                 continue;
                             } else {
+                                if (id == '') continue;
+                                if (data.name == '') data.name = id;
                                 result.push({ label: data.name, value: id });
                             }
                         }

@@ -241,11 +241,17 @@ export class Library extends BaseClass {
      * @param dp Data point to be written. Library.clean() is called with it.
      * @param val Value for this data point. Channel vals (old and new) are undefined so they never will be written.
      * @param obj The object definition for this data point (ioBroker.ChannelObject | ioBroker.DeviceObject | ioBroker.StateObject)
+     * @param ack set ack to false if needed - NEVER after u subscript to states)
      * @returns void
      */
-    async writedp(dp: string, val: ioBroker.StateValue | undefined, obj: ioBroker.Object | null = null): Promise<void> {
+    async writedp(
+        dp: string,
+        val: ioBroker.StateValue | undefined,
+        obj: ioBroker.Object | null = null,
+        ack: boolean = true,
+    ): Promise<void> {
         dp = this.cleandp(dp);
-        let node = this.readdp(dp);
+        let node = this.readdb(dp);
         const del = !this.isDirAllowed(dp);
 
         if (node === undefined) {
@@ -273,7 +279,7 @@ export class Library extends BaseClass {
                 await this.adapter.setStateAsync(dp, {
                     val: val,
                     ts: Date.now(),
-                    ack: true,
+                    ack: ack,
                 });
         }
     }
@@ -371,39 +377,45 @@ export class Library extends BaseClass {
         return newValue;
     }
 
-    readdp(dp: string): LibraryStateVal {
+    readdb(dp: string): LibraryStateVal {
         return this.stateDataBase[this.cleandp(dp)];
     }
 
     setdb(
         dp: string,
-        type: ioBroker.ObjectType,
-        val: ioBroker.StateValue | undefined,
-        stateType: string | undefined,
+        type: ioBroker.ObjectType | LibraryStateVal,
+        val: ioBroker.StateValue | undefined = undefined,
+        stateType: string | undefined = undefined,
         ack: boolean = true,
         ts: number = Date.now(),
         obj: ioBroker.Object | undefined = undefined,
         init: boolean = false,
     ): LibraryStateVal {
-        this.stateDataBase[dp] = {
-            type: type,
-            stateTyp:
-                stateType !== undefined
-                    ? stateType
-                    : this.stateDataBase[dp] !== undefined && this.stateDataBase[dp]!.stateTyp !== undefined
-                      ? this.stateDataBase[dp]!.stateTyp
-                      : undefined,
-            val: val,
-            ack: ack,
-            ts: ts ? ts : Date.now(),
-            obj:
-                obj !== undefined
-                    ? obj
-                    : this.stateDataBase[dp] !== undefined && this.stateDataBase[dp]!.obj !== undefined
-                      ? this.stateDataBase[dp]!.obj
-                      : undefined,
-            init: init,
-        };
+        if (typeof type == 'object') {
+            type = type as LibraryStateVal;
+            this.stateDataBase[dp] = type;
+        } else {
+            type = type as ioBroker.ObjectType;
+            this.stateDataBase[dp] = {
+                type: type,
+                stateTyp:
+                    stateType !== undefined
+                        ? stateType
+                        : this.stateDataBase[dp] !== undefined && this.stateDataBase[dp]!.stateTyp !== undefined
+                          ? this.stateDataBase[dp]!.stateTyp
+                          : undefined,
+                val: val,
+                ack: ack,
+                ts: ts ? ts : Date.now(),
+                obj:
+                    obj !== undefined
+                        ? obj
+                        : this.stateDataBase[dp] !== undefined && this.stateDataBase[dp]!.obj !== undefined
+                          ? this.stateDataBase[dp]!.obj
+                          : undefined,
+                init: init,
+            };
+        }
         return this.stateDataBase[dp];
     }
 

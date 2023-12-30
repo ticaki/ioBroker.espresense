@@ -58,14 +58,26 @@ class Espresense extends utils.Adapter {
       await this.library.init();
       await this.library.initStates(await this.getStatesAsync("*"));
       this.library.defaults.updateStateOnChangeOnly = false;
-      this.library.writedp("devices", void 0, import_definition.genericStateObjects.devices);
-      this.library.writedp("rooms", void 0, import_definition.genericStateObjects.rooms);
-      this.library.writedp("settings", void 0, import_definition.genericStateObjects.settings);
-      const temp = this.library.readdp("deviceDB");
+      await this.library.writedp("devices", void 0, import_definition.genericStateObjects.devices);
+      await this.library.writedp("rooms", void 0, import_definition.genericStateObjects.rooms);
+      await this.library.writedp("settings", void 0, import_definition.genericStateObjects.settings);
+      await this.library.writedp("global", void 0, import_definition.genericStateObjects.global);
+      for (const id in import_definition.statesObjects.rooms) {
+        const obj = import_definition.statesObjects.rooms[id];
+        if (obj && obj.common && obj.common.write === true) {
+          const val = this.library.readdb(`global.${id}`);
+          if (val == void 0) {
+            const val2 = obj.common.type == "string" ? "" : obj.common.type == "number" ? -1 : obj.common.type == "boolean" ? false : null;
+            await this.library.writedp(`global.${id}`, val2, obj, false);
+          }
+        }
+      }
+      const temp = this.library.readdb("deviceDB");
       if (temp && temp.val && typeof temp.val == "string") {
         this.deviceDB = JSON.parse(temp.val);
       }
       await this.subscribeStatesAsync("rooms.*");
+      await this.subscribeStatesAsync("global.*");
       this.namedDevices = {};
       let testIt = this.config.MQTTServerIp;
       if ((testIt == "" || typeof testIt != "string") && !this.config.MQTTUseServer) {
@@ -94,6 +106,10 @@ class Espresense extends utils.Adapter {
       testIt = this.config.selectedDevices;
       if (typeof testIt != "object" || !Array.isArray(testIt)) {
         this.config.selectedDevices = [];
+      } else {
+        this.config.selectedDevices = this.config.selectedDevices.filter((a) => {
+          return typeof a.id == "string" && a.id != "";
+        });
       }
       this.config.unseenTime *= 1e3;
       if ((this.config.selectedDevices || []).length > 0) {
@@ -123,6 +139,14 @@ class Espresense extends utils.Adapter {
       this.timeout = this.setInterval(() => {
         this.library.garbageColleting("devices.", this.config.unseenTime);
       }, this.unseenCheckTime);
+      if (!this.config.retainGlobal) {
+        for (const id in import_definition.statesObjects.rooms) {
+          const topic = `espresense/rooms/*/${id}/set`;
+          if (this.mqttClient) {
+            await this.mqttClient.publish(topic, "", { retain: true });
+          }
+        }
+      }
     }, 1e3);
   }
   async handleMessage(topic, message) {
@@ -154,15 +178,22 @@ class Espresense extends utils.Adapter {
       }
     }
     device = this.library.cleandp(device, false, true);
-    await this.library.writedp(`${typ}.${device}`, void 0, temp);
+    if (typ !== "rooms" && device != "*")
+      await this.library.writedp(`${typ}.${device}`, void 0, temp);
     if (typ === "rooms") {
-      if (topicA[topicA.length - 1] == "set")
+      let path = `${typ}.${device}`;
+      if (device == "*") {
+        path = "global";
+        if (topicA[topicA.length - 1] == "set")
+          topicA.pop();
+      } else if (topicA[topicA.length - 1] == "set") {
         return;
+      }
       const data = {};
       data[topicA.join(".")] = message;
       try {
         data.restart = false;
-        await this.library.writeFromJson(`${typ}.${device}`, typ, import_definition.statesObjects, data);
+        await this.library.writeFromJson(path, typ, import_definition.statesObjects, data);
       } catch (e) {
         this.log.error(e);
         this.log.error(`Topic:${topic} data: ${JSON.stringify(data)}`);
@@ -202,7 +233,7 @@ class Espresense extends utils.Adapter {
     if (state && !state.ack) {
       id = id.replace(`${this.namespace}.`, "");
       this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
-      const dbEntry = this.library.readdp(id);
+      const dbEntry = this.library.readdb(id);
       if (dbEntry && dbEntry.obj && dbEntry.obj.common && dbEntry.obj.common.write) {
         const native = dbEntry.obj.native;
         let val = dbEntry.val;
@@ -210,9 +241,12 @@ class Espresense extends utils.Adapter {
           const fn = new Function("val", `return ${native.convert}`);
           val = fn(val);
         }
-        const topic = `espresense/${id.split(".").join("/")}/set`;
+        const global = id.split(".")[1] === "global";
+        const topic = global ? `espresense/rooms/*/${id.split(".")[2]}/set` : `espresense/${id.split(".").join("/")}/set`;
         if (this.mqttClient) {
-          await this.mqttClient.publish(topic, String(val));
+          await this.mqttClient.publish(topic, String(val), {
+            retain: id.endsWith(".restart") ? false : !!this.config.retainGlobal
+          });
         }
       }
     } else {
@@ -236,6 +270,10 @@ class Espresense extends utils.Adapter {
                 delete this.deviceDB[id];
                 continue;
               } else {
+                if (id == "")
+                  continue;
+                if (data.name == "")
+                  data.name = id;
                 result.push({ label: data.name, value: id });
               }
             }

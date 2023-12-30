@@ -1,4 +1,4 @@
-import mqtt from 'mqtt'; // import namespace "mqtt"
+import mqtt, { IClientPublishOptions } from 'mqtt'; // import namespace "mqtt"
 import { Level } from 'level';
 
 //@ts-expect-error no types
@@ -69,9 +69,9 @@ export class MQTTClientClass extends BaseClass {
             this.adapter.handleMessage(topic, value);
         });
     }
-    async publish(topic: string, message: string): Promise<void> {
+    async publish(topic: string, message: string, opt: IClientPublishOptions): Promise<void> {
         this.log.debug(`Publishing topic: ${topic} with message: ${message}.`);
-        await this.client.publishAsync(topic, message);
+        await this.client.publishAsync(topic, message, opt);
     }
 
     destroy(): void {

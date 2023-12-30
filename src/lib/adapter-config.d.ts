@@ -11,6 +11,7 @@ declare global {
             MQTTUseServer: boolean;
             unseenTime: number;
             selectedDevices: { name: string; id: string }[];
+            retainGlobal: boolean;
         }
     }
 }

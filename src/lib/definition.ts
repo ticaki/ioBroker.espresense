@@ -24,19 +24,13 @@ export const defaultChannel: ioBroker.ChannelObject = {
     native: {},
 };
 
-export type statesObjectsType = {
-    state: ioBroker.StateObject;
-    rooms: customChannelType | ChangeTypeToChannelAndState<room>;
-    devices: customChannelType | ChangeTypeToChannelAndState<device>;
-    settings: customChannelType & { config: customChannelType | ChangeTypeToChannelAndState<settings> };
-};
-
 export const genericStateObjects: {
     default: ioBroker.StateObject;
     customString: ioBroker.StateObject;
     devices: ioBroker.FolderObject;
     rooms: ioBroker.FolderObject;
     settings: ioBroker.FolderObject;
+    global: ioBroker.FolderObject;
     presense: ioBroker.StateObject;
     deviceDB: ioBroker.StateObject;
 } = {
@@ -112,7 +106,23 @@ export const genericStateObjects: {
         },
         native: {},
     },
+    global: {
+        _id: '',
+        type: 'folder',
+        common: {
+            name: 'settings.global',
+        },
+        native: {},
+    },
 };
+
+export type statesObjectsType = {
+    state: ioBroker.StateObject;
+    rooms: customChannelType | ChangeTypeToChannelAndState<room>;
+    devices: customChannelType | ChangeTypeToChannelAndState<device>;
+    settings: customChannelType & { config: customChannelType | ChangeTypeToChannelAndState<settings> };
+};
+
 export const statesObjects: statesObjectsType = {
     state: {
         _id: 'No_definition',
