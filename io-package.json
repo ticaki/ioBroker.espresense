@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "news": {
+      "0.4.1": {
+        "en": "fixed: no names. (2. try)",
+        "de": "fixiert: keine namen (2. versuch)",
+        "ru": "исправлено: нет имен. (2. попробовать)",
+        "pt": "fixo: sem nomes. (2. tente)",
+        "nl": "geen namen",
+        "fr": "fixe: pas de nom. (2. essai)",
+        "it": "fisso: nessun nome. (2. provare)",
+        "es": "fijo: sin nombres. (2. intento)",
+        "pl": "nie ma nazw (pol.)",
+        "uk": "фіксована: імена імен. (2. спробуйте)",
+        "zh-cn": "固定:没有姓名(2. 审判)"
+      },
       "0.4.0": {
         "en": "fixed: no names/ids.\nAdded: global esp32 configuration (retained)",
         "de": "Behoben: keine Namen/ids.\nHinzugefügt: globale esp32 Konfiguration (retained)",
@@ -80,19 +93,6 @@
         "pl": "dodać powszechne. nazwa państwa",
         "uk": "додати загальний. ім'я в держави",
         "zh-cn": "增加共同之处。 姓名"
-      },
-      "0.1.1": {
-        "en": "fixed: sometimes adapter crashed after login.",
-        "de": "fix: manchmal adapter abgestürzt nach anmeldung.",
-        "ru": "исправлено: иногда адаптер сбил после входа.",
-        "pt": "corrigido: às vezes o adaptador caiu após o login.",
-        "nl": "soms crashte adapter na login.",
-        "fr": "fixe: parfois l'adaptateur s'est écrasé après la connexion.",
-        "it": "fisso: a volte adattatore bloccato dopo il login.",
-        "es": "fijo: a veces el adaptador se estrelló después de iniciar sesión.",
-        "pl": "niekiedy adapter rozbił się po locie.",
-        "uk": "виправлено: іноді адаптер збитий після входу.",
-        "zh-cn": "固定:有时在伐木之后被拖进。."
       }
     },
     "titleLang": {
