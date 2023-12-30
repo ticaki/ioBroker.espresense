@@ -32,6 +32,9 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+ ### **WORK IN PROGRESS**
+* (ticaki) fixed: no names. (2. try)
+
 ### 0.4.0 (2023-12-30)
 * (ticaki) fixed: no names.
 * (ticaki) Added: global esp32 configuration (retained)

@@ -104,9 +104,18 @@ export class Espresense extends utils.Adapter {
             if (typeof testIt != 'object' || !Array.isArray(testIt)) {
                 this.config.selectedDevices = [];
             } else {
+                const oldConfig = JSON.stringify(this.config.selectedDevices);
                 this.config.selectedDevices = this.config.selectedDevices.filter((a) => {
                     return typeof a.id == 'string' && a.id != '';
                 });
+                if (oldConfig != JSON.stringify(this.config.selectedDevices)) {
+                    const obj = await this.getForeignObjectAsync(`system.adapter.${this.name}.${this.instance}`);
+                    if (obj && obj.native) {
+                        obj.native.selectedDevices = this.config.selectedDevices;
+                        await this.setForeignObjectAsync(`system.adapter.${this.name}.${this.instance}`, obj);
+                        this.log.warn('Fixed configuration for selected devices! ');
+                    }
+                }
             }
             this.config.unseenTime *= 1000;
             // configuration ok
