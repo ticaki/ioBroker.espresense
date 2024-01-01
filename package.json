@@ -24,7 +24,7 @@
     "aedes": "^0.50.1",
     "aedes-persistence-level": "^8.0.1",
     "level": "^8.0.0",
-    "mqtt": "^5.3.3"
+    "mqtt": "^5.3.4"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.7.0",
