@@ -5,7 +5,7 @@ import { Espresense } from '../main';
 // only change this for other adapters
 export type AdapterClassDefinition = Espresense;
 
-type LibraryStateVal = LibraryStateValJson | undefined;
+export type LibraryStateVal = LibraryStateValJson | undefined;
 type LibraryStateValJson = {
     type: ioBroker.ObjectType;
     stateTyp: string | undefined;
@@ -260,11 +260,13 @@ export class Library extends BaseClass {
             }
             obj._id = `${this.adapter.name}.${this.adapter.instance}.${dp}`;
             if (typeof obj.common.name == 'string') obj.common.name = await this.getTranslationObj(obj.common.name);
+            if (typeof obj.common.desc == 'string') obj.common.desc = await this.getTranslationObj(obj.common.desc);
             if (!del) await this.adapter.extendObjectAsync(dp, obj);
             const stateType = obj && obj.common && obj.common.type;
             node = this.setdb(dp, obj.type, undefined, stateType, true, Date.now(), obj);
         } else if (node.init && obj) {
             if (typeof obj.common.name == 'string') obj.common.name = await this.getTranslationObj(obj.common.name);
+            if (typeof obj.common.desc == 'string') obj.common.desc = await this.getTranslationObj(obj.common.desc);
             if (!del) await this.adapter.extendObjectAsync(dp, obj);
         }
 

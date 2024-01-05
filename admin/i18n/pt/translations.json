@@ -81,5 +81,12 @@
     "selectedDevices": "Todos os dispositivos conhecidos",
     "room.button_1": "Botão 1",
     "room.restart": "Reiniciar",
-    "genericStateObjects.deviceDB": "Visão geral do dispositivo para administrador"
+    "genericStateObjects.deviceDB": "Visão geral do dispositivo para administrador",
+    "retainGlobalTip": "Você pode usar global para atualizar todas as estações base ESPresense ao mesmo tempo. Se você ativar esta opção, mesmo NOVOS nós obterão a configuração na inicialização. Atenção apenas os estados alterados serão salvos como retidos.",
+    "retainGlobal": "retida",
+    "settings.global": "Configurações globais",
+    "name": "Nome",
+    "devices.convert": "Fator de conversão",
+    "devices.convert.desc": "Insira aqui a distância real em metros até o ESP e o adaptador calculará o fator.",
+    "devices.distanceConverted": "Distância convertida"
 }

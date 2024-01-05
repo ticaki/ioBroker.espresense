@@ -5,7 +5,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from '@iobroker/adapter-core';
-import { Library } from './lib/library.js';
+import { Library, LibraryStateVal } from './lib/library.js';
 import { MQTTClientClass, MQTTServerClass } from './lib/mqtt.js';
 import { genericStateObjects, statesObjects } from './lib/definition.js';
 import 'source-map-support/register';
@@ -71,7 +71,7 @@ export class Espresense extends utils.Adapter {
             if (temp && temp.val && typeof temp.val == 'string') {
                 this.deviceDB = JSON.parse(temp.val);
             }
-
+            await this.subscribeStatesAsync('devices.*');
             await this.subscribeStatesAsync('rooms.*');
             await this.subscribeStatesAsync('global.*');
             this.namedDevices = {};
@@ -221,6 +221,10 @@ export class Espresense extends utils.Adapter {
             subDevice = this.library.cleandp(subDevice, false, true);
             const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
             temp.common.name = this.namedDevices[subDevice] || subDevice;
+            const tempObj: LibraryStateVal = this.library.readdb(`${typ}.${device}.${subDevice}.convert`);
+            message.convert = 1;
+            if (tempObj !== undefined && tempObj !== null) message.convert = tempObj.val;
+            message.distanceConverted = (message.distance * message.convert) / 100;
             await this.library.writedp(`${typ}.${device}.${subDevice}`, undefined, temp);
             await this.library.writedp(`${typ}.${device}.presense`, true, genericStateObjects.presense);
             await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, statesObjects, message);
@@ -262,24 +266,51 @@ export class Espresense extends utils.Adapter {
     private async onStateChange(id: string, state: ioBroker.State | null | undefined): Promise<void> {
         if (state && !state.ack) {
             id = id.replace(`${this.namespace}.`, '');
-            this.library.setdb(id, 'state', state.val, undefined, state.ack, state.ts);
             const dbEntry = this.library.readdb(id);
             if (dbEntry && dbEntry.obj && dbEntry.obj.common && dbEntry.obj.common.write) {
                 const native = dbEntry.obj.native;
-                let val = dbEntry.val;
+                let val = state.val;
                 if (native && native.convert) {
                     const fn = new Function('val', `return ${native.convert}`);
                     val = fn(val);
                 }
-                const global = id.split('.')[1] === 'global';
-                const topic = global
-                    ? `espresense/rooms/*/${id.split('.')[2]}/set`
-                    : `espresense/${id.split('.').join('/')}/set`;
-                if (this.mqttClient) {
-                    await this.mqttClient.publish(topic, String(val), {
-                        retain: id.endsWith('.restart') ? false : !!this.config.retainGlobal,
-                    });
+                if (id.endsWith('.convert') && id.startsWith('devices.')) {
+                    const dist = this.library.readdb(`${id.substring(0, id.lastIndexOf('.'))}.distance`);
+                    const convO = this.library.readdb(`${id.substring(0, id.lastIndexOf('.'))}.convert`);
+                    if (
+                        dist &&
+                        val !== undefined &&
+                        val !== null &&
+                        dist.val !== undefined &&
+                        dist.val !== null &&
+                        !isNaN(val as number) &&
+                        !isNaN(dist.val as number) &&
+                        convO &&
+                        !Number.isNaN(convO.val)
+                    ) {
+                        val = (val as number) / (dist.val as number); // (convO.val as number);
+                        this.library.writedp(id, val * 100, statesObjects.devices.convert, true);
+                        this.library.writedp(
+                            `${id.substring(0, id.lastIndexOf('.'))}.distanceConverted`,
+                            (val as number) * (dist.val as number),
+                            statesObjects.devices.distanceConverted,
+                            true,
+                        );
+                    }
+                } else {
+                    this.library.setdb(id, 'state', state.val, undefined, state.ack, state.ts);
+                    const global = id.split('.')[1] === 'global';
+                    const topic = global
+                        ? `espresense/rooms/*/${id.split('.')[2]}/set`
+                        : `espresense/${id.split('.').join('/')}/set`;
+                    if (this.mqttClient) {
+                        await this.mqttClient.publish(topic, String(val), {
+                            retain: id.endsWith('.restart') ? false : !!this.config.retainGlobal,
+                        });
+                    }
                 }
+            } else {
+                this.library.setdb(id, 'state', state.val, undefined, state.ack, state.ts);
             }
         } else {
         }

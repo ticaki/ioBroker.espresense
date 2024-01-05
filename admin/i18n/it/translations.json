@@ -81,5 +81,12 @@
     "selectedDevices": "Tutti i dispositivi conosciuti",
     "room.button_1": "Pulsante 1",
     "room.restart": "Ricomincia",
-    "genericStateObjects.deviceDB": "Panoramica del dispositivo per l'amministratore"
+    "genericStateObjects.deviceDB": "Panoramica del dispositivo per l'amministratore",
+    "retainGlobalTip": "È possibile utilizzare Global per aggiornare tutte le stazioni base ESPresense contemporaneamente. Se attivi questa opzione anche i NUOVI nodi all'avvio riceveranno la configurazione. Attenzione, solo gli stati modificati verranno salvati come mantenuti.",
+    "retainGlobal": "trattenuto",
+    "settings.global": "Impostazioni globali",
+    "name": "Nome",
+    "devices.convert": "Fattore di conversione",
+    "devices.convert.desc": "Inserisci qui la distanza effettiva in metri dall'ESP e l'adattatore calcolerà il fattore.",
+    "devices.distanceConverted": "Distanza convertita"
 }

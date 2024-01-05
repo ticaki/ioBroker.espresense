@@ -81,5 +81,12 @@
     "selectedDevices": "Alle bekende apparaten",
     "room.button_1": "Knop 1",
     "room.restart": "Herstarten",
-    "genericStateObjects.deviceDB": "Apparaatoverzicht voor beheerder"
+    "genericStateObjects.deviceDB": "Apparaatoverzicht voor beheerder",
+    "retainGlobalTip": "Met Global kunt u alle ESPresense-basisstations tegelijkertijd updaten. Als u deze optie activeert, krijgen zelfs NIEUWE knooppunten bij het opstarten de configuratie. Let op: alleen gewijzigde statussen worden opgeslagen als behouden.",
+    "retainGlobal": "behouden",
+    "settings.global": "Algemene instellingen",
+    "name": "Naam",
+    "devices.convert": "Conversiefactor",
+    "devices.convert.desc": "Vul hier de werkelijke afstand in meters tot de ESP in en de adapter berekent de factor.",
+    "devices.distanceConverted": "Omgerekende afstand"
 }

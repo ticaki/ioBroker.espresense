@@ -82,5 +82,8 @@
     "retainGlobalTip": "You can use global to update all ESPresense base stations at the same time. If you activate this option even NEW nodes will upon startup get the configuration. Attention only changed states will be saved as retained.",
     "retainGlobal": "retained",
     "settings.global": "Global settings",
-    "name": "Name"
+    "name": "Name",
+    "devices.convert": "Conversion factor",
+    "devices.convert.desc": "Enter the actual distance in metres to the ESP here and the adapter will calculate the factor.",
+    "devices.distanceConverted": "Converted distance"
 }

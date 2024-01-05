@@ -76,6 +76,7 @@ class Espresense extends utils.Adapter {
       if (temp && temp.val && typeof temp.val == "string") {
         this.deviceDB = JSON.parse(temp.val);
       }
+      await this.subscribeStatesAsync("devices.*");
       await this.subscribeStatesAsync("rooms.*");
       await this.subscribeStatesAsync("global.*");
       this.namedDevices = {};
@@ -218,6 +219,11 @@ class Espresense extends utils.Adapter {
       subDevice = this.library.cleandp(subDevice, false, true);
       const temp2 = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
       temp2.common.name = this.namedDevices[subDevice] || subDevice;
+      const tempObj = this.library.readdb(`${typ}.${device}.${subDevice}.convert`);
+      message.convert = 1;
+      if (tempObj !== void 0 && tempObj !== null)
+        message.convert = tempObj.val;
+      message.distanceConverted = message.distance * message.convert / 100;
       await this.library.writedp(`${typ}.${device}.${subDevice}`, void 0, temp2);
       await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
       await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, import_definition.statesObjects, message);
@@ -241,22 +247,39 @@ class Espresense extends utils.Adapter {
   async onStateChange(id, state) {
     if (state && !state.ack) {
       id = id.replace(`${this.namespace}.`, "");
-      this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
       const dbEntry = this.library.readdb(id);
       if (dbEntry && dbEntry.obj && dbEntry.obj.common && dbEntry.obj.common.write) {
         const native = dbEntry.obj.native;
-        let val = dbEntry.val;
+        let val = state.val;
         if (native && native.convert) {
           const fn = new Function("val", `return ${native.convert}`);
           val = fn(val);
         }
-        const global = id.split(".")[1] === "global";
-        const topic = global ? `espresense/rooms/*/${id.split(".")[2]}/set` : `espresense/${id.split(".").join("/")}/set`;
-        if (this.mqttClient) {
-          await this.mqttClient.publish(topic, String(val), {
-            retain: id.endsWith(".restart") ? false : !!this.config.retainGlobal
-          });
+        if (id.endsWith(".convert") && id.startsWith("devices.")) {
+          const dist = this.library.readdb(`${id.substring(0, id.lastIndexOf("."))}.distance`);
+          const convO = this.library.readdb(`${id.substring(0, id.lastIndexOf("."))}.convert`);
+          if (dist && val !== void 0 && val !== null && dist.val !== void 0 && dist.val !== null && !isNaN(val) && !isNaN(dist.val) && convO && !Number.isNaN(convO.val)) {
+            val = val / dist.val;
+            this.library.writedp(id, val * 100, import_definition.statesObjects.devices.convert, true);
+            this.library.writedp(
+              `${id.substring(0, id.lastIndexOf("."))}.distanceConverted`,
+              val * dist.val,
+              import_definition.statesObjects.devices.distanceConverted,
+              true
+            );
+          }
+        } else {
+          this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
+          const global = id.split(".")[1] === "global";
+          const topic = global ? `espresense/rooms/*/${id.split(".")[2]}/set` : `espresense/${id.split(".").join("/")}/set`;
+          if (this.mqttClient) {
+            await this.mqttClient.publish(topic, String(val), {
+              retain: id.endsWith(".restart") ? false : !!this.config.retainGlobal
+            });
+          }
         }
+      } else {
+        this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
       }
     } else {
     }

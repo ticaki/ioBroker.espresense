@@ -78,5 +78,12 @@
     "selectedDevices": "Alle bekannten Geräte",
     "room.button_1": "Knopf 1",
     "room.restart": "Neu starten",
-    "genericStateObjects.deviceDB": "Geräteübersicht für Administratoren"
+    "genericStateObjects.deviceDB": "Geräteübersicht für Administratoren",
+    "retainGlobalTip": "Sie können Global verwenden, um alle ESPresense-Basisstationen gleichzeitig zu aktualisieren. Wenn Sie diese Option aktivieren, erhalten auch NEUE Knoten beim Start die Konfiguration. Achtung, nur geänderte Zustände werden als beibehalten gespeichert.",
+    "retainGlobal": "beibehalten",
+    "settings.global": "Globale Einstellungen",
+    "name": "Name",
+    "devices.convert": "Umrechnungsfaktor",
+    "devices.convert.desc": "Geben Sie hier die tatsächliche Entfernung in Metern zum ESP ein und der Adapter berechnet den Faktor.",
+    "devices.distanceConverted": "Umgerechnete Entfernung"
 }

@@ -750,6 +750,21 @@ const statesObjects = {
       },
       native: {}
     },
+    convert: {
+      _id: "",
+      type: "state",
+      common: {
+        def: 1,
+        name: "devices.convert",
+        desc: "devices.convert.desc",
+        type: "number",
+        role: "value",
+        unit: "% / m",
+        read: true,
+        write: true
+      },
+      native: {}
+    },
     disc: {
       _id: "",
       type: "state",
@@ -817,6 +832,19 @@ const statesObjects = {
       type: "state",
       common: {
         name: "devices.distance",
+        type: "number",
+        role: "value",
+        unit: "m",
+        read: true,
+        write: false
+      },
+      native: {}
+    },
+    distanceConverted: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "devices.distanceConverted",
         type: "number",
         role: "value",
         unit: "m",

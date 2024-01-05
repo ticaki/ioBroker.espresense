@@ -234,6 +234,8 @@ class Library extends BaseClass {
       obj._id = `${this.adapter.name}.${this.adapter.instance}.${dp}`;
       if (typeof obj.common.name == "string")
         obj.common.name = await this.getTranslationObj(obj.common.name);
+      if (typeof obj.common.desc == "string")
+        obj.common.desc = await this.getTranslationObj(obj.common.desc);
       if (!del)
         await this.adapter.extendObjectAsync(dp, obj);
       const stateType = obj && obj.common && obj.common.type;
@@ -241,6 +243,8 @@ class Library extends BaseClass {
     } else if (node.init && obj) {
       if (typeof obj.common.name == "string")
         obj.common.name = await this.getTranslationObj(obj.common.name);
+      if (typeof obj.common.desc == "string")
+        obj.common.desc = await this.getTranslationObj(obj.common.desc);
       if (!del)
         await this.adapter.extendObjectAsync(dp, obj);
     }

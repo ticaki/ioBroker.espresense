@@ -81,5 +81,12 @@
     "selectedDevices": "所有已知设备",
     "room.button_1": "按钮1",
     "room.restart": "重新开始",
-    "genericStateObjects.deviceDB": "管理员设备概览"
+    "genericStateObjects.deviceDB": "管理员设备概览",
+    "retainGlobalTip": "您可以使用 global 同时更新所有 ESPresense 基站。如果激活此选项，即使新节点也会在启动时获取配置。注意只有更改的状态才会被保存为保留。",
+    "retainGlobal": "保留",
+    "settings.global": "全局设置",
+    "name": "姓名",
+    "devices.convert": "换算系数",
+    "devices.convert.desc": "在此输入到 ESP 的实际距离（以米为单位），适配器将计算该系数。",
+    "devices.distanceConverted": "换算距离"
 }

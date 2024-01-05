@@ -65,6 +65,11 @@ export type device = {
     close: boolean;
 };
 
+export type additionalDevice = {
+    convert: number;
+    distanceConverted: number;
+} & device;
+
 export type settings = {
     id: string;
     name: string;

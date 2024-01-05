@@ -1,4 +1,4 @@
-import { settings, device, room } from './types-d';
+import { settings, room, additionalDevice } from './types-d';
 
 export type ChangeTypeToChannelAndState<Obj> = Obj extends object
     ? {
@@ -118,8 +118,8 @@ export const genericStateObjects: {
 
 export type statesObjectsType = {
     state: ioBroker.StateObject;
-    rooms: customChannelType | ChangeTypeToChannelAndState<room>;
-    devices: customChannelType | ChangeTypeToChannelAndState<device>;
+    rooms: customChannelType & ChangeTypeToChannelAndState<room>;
+    devices: customChannelType & ChangeTypeToChannelAndState<additionalDevice>;
     settings: customChannelType & { config: customChannelType | ChangeTypeToChannelAndState<settings> };
 };
 
@@ -759,6 +759,21 @@ export const statesObjects: statesObjectsType = {
             },
             native: {},
         },
+        convert: {
+            _id: '',
+            type: 'state',
+            common: {
+                def: 1,
+                name: 'devices.convert',
+                desc: 'devices.convert.desc',
+                type: 'number',
+                role: 'value',
+                unit: '% / m',
+                read: true,
+                write: true,
+            },
+            native: {},
+        },
         disc: {
             _id: '',
             type: 'state',
@@ -826,6 +841,19 @@ export const statesObjects: statesObjectsType = {
             type: 'state',
             common: {
                 name: 'devices.distance',
+                type: 'number',
+                role: 'value',
+                unit: 'm',
+                read: true,
+                write: false,
+            },
+            native: {},
+        },
+        distanceConverted: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'devices.distanceConverted',
                 type: 'number',
                 role: 'value',
                 unit: 'm',

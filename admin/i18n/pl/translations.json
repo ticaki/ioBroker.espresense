@@ -81,5 +81,12 @@
     "selectedDevices": "Wszystkie znane urządzenia",
     "room.button_1": "Przycisk 1",
     "room.restart": "Uruchom ponownie",
-    "genericStateObjects.deviceDB": "Przegląd urządzenia dla administratora"
+    "genericStateObjects.deviceDB": "Przegląd urządzenia dla administratora",
+    "retainGlobalTip": "Możesz użyć opcji globalnej, aby zaktualizować wszystkie stacje bazowe ESPresense w tym samym czasie. Jeśli aktywujesz tę opcję, nawet NOWE węzły po uruchomieniu otrzymają konfigurację. Uwaga, tylko zmienione stany zostaną zapisane jako zachowane.",
+    "retainGlobal": "zachowane",
+    "settings.global": "Ustawienia ogólne",
+    "name": "Nazwa",
+    "devices.convert": "Współczynnik konwersji",
+    "devices.convert.desc": "Wprowadź tutaj rzeczywistą odległość w metrach do ESP, a adapter obliczy współczynnik.",
+    "devices.distanceConverted": "Przeliczona odległość"
 }
