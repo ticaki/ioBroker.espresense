@@ -32,6 +32,9 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (ticaki) Collect incoming MQTT messages and process them every 5 seconds 
+
 ### 0.4.2 (2024-01-05)
 * (ticaki) New state for actual distance/conversion factor and calculated distance
 

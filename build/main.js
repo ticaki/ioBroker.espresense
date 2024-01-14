@@ -34,6 +34,7 @@ var import_definition = require("./lib/definition.js");
 var import_register = require("source-map-support/register");
 class Espresense extends utils.Adapter {
   library;
+  unload = false;
   mqttClient;
   mqttServer;
   namedDevices = {};
@@ -41,6 +42,7 @@ class Espresense extends utils.Adapter {
   startDelay = void 0;
   unseenCheckTime = 5e3;
   deviceDB = {};
+  delayedMessages = {};
   constructor(options = {}) {
     super({
       ...options,
@@ -146,9 +148,16 @@ class Espresense extends utils.Adapter {
         this.config.MQTTUsername,
         this.config.MQTTPassword
       );
-      this.timeout = this.setInterval(() => {
-        this.library.garbageColleting("devices.", this.config.unseenTime);
-      }, this.unseenCheckTime);
+      this.timeout = this.setInterval(
+        async () => {
+          if (this.unload)
+            return;
+          await this.doDelayedMessage();
+          await (0, import_library.sleep)(100);
+          this.library.garbageColleting("devices.", this.config.unseenTime);
+        },
+        this.unseenCheckTime < 1e3 ? 1e3 : this.unseenCheckTime
+      );
       if (!this.config.retainGlobal) {
         for (const id in import_definition.statesObjects.rooms) {
           const topic = `espresense/rooms/*/${id}/set`;
@@ -159,9 +168,28 @@ class Espresense extends utils.Adapter {
       }
     }, 1e3);
   }
-  async handleMessage(topic, message) {
+  async doDelayedMessage() {
+    for (const dp in this.delayedMessages) {
+      const cmd = this.delayedMessages[dp];
+      if (cmd !== void 0) {
+        this.delayedMessages[dp] = void 0;
+        await this.handleMessage(dp, cmd, false);
+      }
+    }
+    this.delayedMessages = Object.fromEntries(
+      Object.entries(this.delayedMessages).filter(([_, v]) => v != void 0)
+    );
+  }
+  async handleMessage(topic, message, delayed = true) {
     if (!topic || message == void 0)
       return;
+    if (delayed) {
+      this.delayedMessages[topic] = message;
+      return;
+    }
+    this.log.debug(
+      `${topic}: ${typeof message} - ${typeof message == "object" ? JSON.stringify(message) : message}`
+    );
     const topicA = topic.split("/");
     topicA.shift();
     const typTemp = topicA.shift();
@@ -231,6 +259,7 @@ class Espresense extends utils.Adapter {
   }
   onUnload(callback) {
     try {
+      this.unload = true;
       if (this.mqttClient)
         this.mqttClient.destroy();
       if (this.mqttServer)
@@ -239,6 +268,7 @@ class Espresense extends utils.Adapter {
         this.clearInterval(this.timeout);
       if (this.startDelay)
         this.clearTimeout(this.startDelay);
+      this.library.delete();
       callback();
     } catch (e) {
       callback();

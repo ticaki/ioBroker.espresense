@@ -50,6 +50,8 @@ class MQTTClientClass extends import_library.BaseClass {
       this.client.subscribe("espresense/#", (err) => {
         if (err) {
           this.log.error(`On subscribe: ${err}`);
+        } else {
+          this.log.info("Subscripe to topic espresense/#");
         }
       });
     });
@@ -88,7 +90,6 @@ class MQTTClientClass extends import_library.BaseClass {
           value = parseFloat(value);
         }
       }
-      this.log.debug(`${topic}: ${type} - ${typeof value == "object" ? JSON.stringify(value) : value}`);
       this.adapter.handleMessage(topic, value);
     });
   }

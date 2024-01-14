@@ -5,7 +5,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from '@iobroker/adapter-core';
-import { Library, LibraryStateVal } from './lib/library.js';
+import { Library, LibraryStateVal, sleep } from './lib/library.js';
 import { MQTTClientClass, MQTTServerClass } from './lib/mqtt.js';
 import { genericStateObjects, statesObjects } from './lib/definition.js';
 import 'source-map-support/register';
@@ -15,6 +15,7 @@ import 'source-map-support/register';
 
 export class Espresense extends utils.Adapter {
     library: Library;
+    unload: boolean = false;
     mqttClient: MQTTClientClass | undefined;
     mqttServer: MQTTServerClass | undefined;
     namedDevices: { [key: string]: string } = {};
@@ -22,6 +23,8 @@ export class Espresense extends utils.Adapter {
     startDelay: ioBroker.Timeout | undefined = undefined;
     unseenCheckTime: number = 5000;
     deviceDB: { [id: string]: { name: string; lc: number } } = {};
+    delayedMessages: { [key: string]: any } = {};
+
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
@@ -145,9 +148,15 @@ export class Espresense extends utils.Adapter {
                 this.config.MQTTUsername,
                 this.config.MQTTPassword,
             );
-            this.timeout = this.setInterval(() => {
-                this.library.garbageColleting('devices.', this.config.unseenTime);
-            }, this.unseenCheckTime);
+            this.timeout = this.setInterval(
+                async () => {
+                    if (this.unload) return;
+                    await this.doDelayedMessage();
+                    await sleep(100);
+                    this.library.garbageColleting('devices.', this.config.unseenTime);
+                },
+                this.unseenCheckTime < 1000 ? 1000 : this.unseenCheckTime,
+            );
             if (!this.config.retainGlobal) {
                 for (const id in statesObjects.rooms) {
                     const topic = `espresense/rooms/*/${id}/set`;
@@ -159,8 +168,28 @@ export class Espresense extends utils.Adapter {
         }, 1000);
     }
 
-    async handleMessage(topic: string, message: any): Promise<void> {
+    private async doDelayedMessage(): Promise<void> {
+        for (const dp in this.delayedMessages) {
+            const cmd = this.delayedMessages[dp];
+            if (cmd !== undefined) {
+                this.delayedMessages[dp] = undefined;
+                await this.handleMessage(dp, cmd, false);
+            }
+        }
+        this.delayedMessages = Object.fromEntries(
+            Object.entries(this.delayedMessages).filter(([_, v]) => v != undefined),
+        );
+    }
+    async handleMessage(topic: string, message: any, delayed: boolean = true): Promise<void> {
         if (!topic || message == undefined) return;
+        if (delayed) {
+            this.delayedMessages[topic] = message;
+            return;
+        }
+        this.log.debug(
+            `${topic}: ${typeof message} - ${typeof message == 'object' ? JSON.stringify(message) : message}`,
+        );
+
         const topicA = topic.split('/');
         topicA.shift();
         const typTemp = topicA.shift();
@@ -230,15 +259,18 @@ export class Espresense extends utils.Adapter {
             await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, statesObjects, message);
         }
     }
+
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      */
     private onUnload(callback: () => void): void {
         try {
+            this.unload = true;
             if (this.mqttClient) this.mqttClient.destroy();
             if (this.mqttServer) this.mqttServer.destroy();
             if (this.timeout) this.clearInterval(this.timeout);
             if (this.startDelay) this.clearTimeout(this.startDelay);
+            this.library.delete();
             callback();
         } catch (e) {
             callback();
