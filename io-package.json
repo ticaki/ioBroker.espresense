@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "news": {
+      "0.4.3": {
+        "en": "Collect incoming MQTT messages and process them every 5 seconds",
+        "de": "Sammel eingehende MQTT-Nachrichten für 5 Sekunden",
+        "ru": "Собирайте поступающие сообщения MQTT и обрабатывайте их каждые 5 секунд",
+        "pt": "Colete mensagens MQTT recebidas e processá-los a cada 5 segundos",
+        "nl": "Inkomende MQTT-berichten verzamelen en elke 5 seconden verwerken",
+        "fr": "Recueillir les messages MQTT entrants et les traiter toutes les 5 secondes",
+        "it": "Raccogliere messaggi MQTT in arrivo e processarli ogni 5 secondi",
+        "es": "Recoger mensajes entrantes de MQTT y procesarlos cada 5 segundos",
+        "pl": "Zbieraj przychodzące wiadomości MQTT i przetwarzaj je co 5 sekund",
+        "uk": "Зберіть вхідні повідомлення MQTT і обробіть їх кожні 5 секунд",
+        "zh-cn": "收集收到的 MQTT 信件, 每5秒处理一次"
+      },
       "0.4.2": {
         "en": "New state for actual distance/conversion factor and calculated distance",
         "de": "Neuer Zustand für den tatsächlichen Abstand/Umleitungsfaktor und berechneter Abstand",
@@ -80,19 +93,6 @@
         "pl": "Addd/Remove Device (ang.)",
         "uk": "Додавання/Ремонти пристроїв",
         "zh-cn": "增 告"
-      },
-      "0.1.3": {
-        "en": "prepare for lastest",
-        "de": "vorbereitung auf die letzte",
-        "ru": "подготовиться к последнему",
-        "pt": "preparar para o último",
-        "nl": "bereid je voor op het laatste",
-        "fr": "préparer pour le dernier",
-        "it": "prepararsi per ultimo",
-        "es": "prepararse para las pruebas",
-        "pl": "gotowy",
-        "uk": "підготовка до останнього",
-        "zh-cn": "准备最后准备"
       }
     },
     "titleLang": {
