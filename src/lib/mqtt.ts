@@ -67,7 +67,8 @@ export class MQTTClientClass extends BaseClass {
                     value = parseFloat(value);
                 }
             }
-            //this.log.debug(`${topic}: ${type} - ${typeof value == 'object' ? JSON.stringify(value) : value}`);
+            if (false)
+                this.log.debug(`${topic}: ${type} - ${typeof value == 'object' ? JSON.stringify(value) : value}`);
             this.adapter.handleMessage(topic, value);
         });
     }

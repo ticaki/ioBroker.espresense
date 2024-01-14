@@ -90,6 +90,8 @@ class MQTTClientClass extends import_library.BaseClass {
           value = parseFloat(value);
         }
       }
+      if (false)
+        this.log.debug(`${topic}: ${type} - ${typeof value == "object" ? JSON.stringify(value) : value}`);
       this.adapter.handleMessage(topic, value);
     });
   }
