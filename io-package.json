@@ -1,199 +1,199 @@
 {
-    "common": {
-        "name": "espresense",
-        "version": "0.4.3",
-        "news": {
-            "0.4.3": {
-                "en": "Collect incoming MQTT messages and process them every 5 seconds",
-                "de": "Sammel eingehende MQTT-Nachrichten für 5 Sekunden",
-                "ru": "Собирайте поступающие сообщения MQTT и обрабатывайте их каждые 5 секунд",
-                "pt": "Colete mensagens MQTT recebidas e processá-los a cada 5 segundos",
-                "nl": "Inkomende MQTT-berichten verzamelen en elke 5 seconden verwerken",
-                "fr": "Recueillir les messages MQTT entrants et les traiter toutes les 5 secondes",
-                "it": "Raccogliere messaggi MQTT in arrivo e processarli ogni 5 secondi",
-                "es": "Recoger mensajes entrantes de MQTT y procesarlos cada 5 segundos",
-                "pl": "Zbieraj przychodzące wiadomości MQTT i przetwarzaj je co 5 sekund",
-                "uk": "Зберіть вхідні повідомлення MQTT і обробіть їх кожні 5 секунд",
-                "zh-cn": "收集收到的 MQTT 信件, 每5秒处理一次"
-            },
-            "0.4.2": {
-                "en": "New state for actual distance/conversion factor and calculated distance",
-                "de": "Neuer Zustand für den tatsächlichen Abstand/Umleitungsfaktor und berechneter Abstand",
-                "ru": "Новое состояние для фактического коэффициента расстояния/переключения и расчетного расстояния",
-                "pt": "Novo estado para o fator de distância/conversão real e distância calculada",
-                "nl": "Nieuwe toestand voor werkelijke afstand/omzettingsfactor en berekende afstand",
-                "fr": "Nouvel état pour la distance réelle/facteur de conversion et la distance calculée",
-                "it": "Nuovo stato per la distanza effettiva / fattore di conversione e la distanza calcolata",
-                "es": "Nuevo estado para el factor de distancia/conversión real y distancia calculada",
-                "pl": "Nowy stan dla rzeczywistej odległości / współczynnika konwersji i obliczonej odległości",
-                "uk": "Новий стан для фактичного коефіцієнта дистанції/конверсії",
-                "zh-cn": "实际距离/换算系数和计算距离的新状态"
-            },
-            "0.4.1": {
-                "en": "fixed: no names. (2. try)",
-                "de": "fixiert: keine namen (2. versuch)",
-                "ru": "исправлено: нет имен. (2. попробовать)",
-                "pt": "fixo: sem nomes. (2. tente)",
-                "nl": "geen namen",
-                "fr": "fixe: pas de nom. (2. essai)",
-                "it": "fisso: nessun nome. (2. provare)",
-                "es": "fijo: sin nombres. (2. intento)",
-                "pl": "nie ma nazw (pol.)",
-                "uk": "фіксована: імена імен. (2. спробуйте)",
-                "zh-cn": "固定:没有姓名(2. 审判)"
-            },
-            "0.4.0": {
-                "en": "fixed: no names/ids.\nAdded: global esp32 configuration (retained)",
-                "de": "Behoben: keine Namen/ids.\nHinzugefügt: globale esp32 Konfiguration (retained)",
-                "ru": "исправлено: нет имен.\nДобавлена: глобальная конфигурация esp32 (retained)",
-                "pt": "fixo: nenhum nome.\nAdicionado: global esp32 configuração (retido)",
-                "nl": "geen namen.\nToegevoegd: globale esp32 configuratie (geretineerd)",
-                "fr": "fixe: pas de noms.\nAjouté : configuration globale esp32 (retained)",
-                "it": "fisso: nessun nome.\nAggiunto: global esp32 Configurazione (retenuta)",
-                "es": "fijo: sin nombres.\nAñadido: configuración global de esp32 (retenido)",
-                "pl": "nie ma nazw.\nAdded: konfiguracja globalna esp32",
-                "uk": "фіксована: імена імен.\nДоданий: глобальна конфігурація esp32 (затриманий)",
-                "zh-cn": "固定:无姓名。.\n增 编:全球分组(续会)"
-            },
-            "0.3.0": {
-                "en": "Breaking Change: move datadir from node_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (instance). move the files there and use iobroker fix after it.",
-                "de": "Breaking Change: bewege datadir von node_modules/iobroker.espresense/mydp auf iobroker-data/espresense.0 (Instance). Bewege die Dateien dort hin und verwende anschließend iobroker fix.",
-                "ru": "Изменение: переместить datadir из node_modules/iobroker.espresense/mydp в iobroker-data/espresense.0 (instance). переместить файлы там и использовать iobroker исправить после него.",
-                "pt": "Breaking Change: mover datadir de node_modules/iobroker.espresense/mydp para iobroker-data/espresense.0 (instância). mover os arquivos lá e usar iobroker corrigir depois dele.",
-                "nl": "Verplaats datadir van nodemodules/iobroker. Verplaats de bestanden en gebruik iobroker reparatie daarna.",
-                "fr": "Changement de rupture : déplacer datadir de node_modules/iobroker.espresense/mydp à iobroker-data/espresense.0 (instance). déplacer les fichiers là-bas et utiliser iobroker réparer après.",
-                "it": "Cambiamento di rottura: spostare datadir da node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). spostare i file lì e utilizzare iobroker fix dopo di esso.",
-                "es": "Cambio de ruptura: mueva datadir de node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). mover los archivos allí y utilizar iobroker arreglar después de él.",
-                "pl": "Breaking Change: move datadir from nodes_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (ang.). Przesuwa pliki tam i wykorzystuje iobrokera po nim.",
-                "uk": "Зміна несправностей: переміщення даних з вершини_модулів/iobroker.espresense/mydp до iobroker-data/espresense.0 (інтенсивність). перемістіть файли після цього і використовуйте iobroker.",
-                "zh-cn": "失调:将数据从不de_modules/iobroker.espresense/mydp转向iobroker-data/espresense.0(instance). 将档案移到那里,并在档案之后使用零碎器。."
-            },
-            "0.2.1": {
-                "en": "fixed: object not exist sometimes.",
-                "de": "fix: objekt existiert nicht manchmal.",
-                "ru": "исправлено: объект не существует иногда.",
-                "pt": "corrigido: objeto não existe às vezes.",
-                "nl": "gerepareerd: object bestaat niet.",
-                "fr": "fixe: l'objet n'existe pas parfois.",
-                "it": "fisso: l'oggetto non esiste a volte.",
-                "es": "fijo: el objeto no existe a veces.",
-                "pl": "niekiedy występuje obiekt: obiekt nie istnieje.",
-                "uk": "виправлено: об'єкт не існує іноді.",
-                "zh-cn": "固定:有时不存在目标。."
-            },
-            "0.2.0": {
-                "en": "Add/Remove Devices",
-                "de": "Geräte hinzufügen/entfernen",
-                "ru": "Добавить/удалить устройства",
-                "pt": "Adicionar/Remover dispositivos",
-                "nl": "Vertaling:",
-                "fr": "Add/Remove Devices",
-                "it": "Aggiungi/Rimuovi dispositivi",
-                "es": "Add/Remove Devices",
-                "pl": "Addd/Remove Device (ang.)",
-                "uk": "Додавання/Ремонти пристроїв",
-                "zh-cn": "增 告"
-            }
-        },
-        "titleLang": {
-            "en": "ESPresense",
-            "de": "ESPresense",
-            "ru": "ESPresense",
-            "pt": "ESPresense",
-            "nl": "ESPresense",
-            "fr": "ESPrésense",
-            "it": "ESPresense",
-            "es": "ESPresense",
-            "pl": "ESPresense",
-            "uk": "ESPresense",
-            "zh-cn": "ESPRESENSE"
-        },
-        "desc": {
-            "en": "Connect to ESPresense",
-            "de": "Stellen Sie eine Verbindung zu ESPresense her",
-            "ru": "Подключиться к ESPresense",
-            "pt": "Conecte-se ao ESPresense",
-            "nl": "Maak verbinding met ESPresense",
-            "fr": "Connectez-vous à ESPresense",
-            "it": "Connettiti a ESPresense",
-            "es": "Conéctate a ESPresense",
-            "pl": "Połącz się z ESPresense",
-            "uk": "Підключіться до ESPresense",
-            "zh-cn": "连接至 ESPresense"
-        },
-        "authors": [
-            "ticaki <github@renopoint.de>"
-        ],
-        "keywords": [
-            "esp",
-            "presense"
-        ],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "build/main.js",
-        "icon": "espresense.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/ticaki/ioBroker.espresense/main/admin/espresense.png",
-        "readme": "https://github.com/ticaki/ioBroker.espresense/blob/main/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "geoposition",
-        "tier": 2,
-        "compact": true,
-        "connectionType": "local",
-        "dataSource": "push",
-        "adminUI": {
-            "config": "json"
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=3.3.22"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=5.1.13"
-            }
-        ],
-        "messagebox": true
+  "common": {
+    "name": "espresense",
+    "version": "0.4.4",
+    "news": {
+      "0.4.4": {
+        "en": "The time period over which incoming Mqtt messages are collected can be configured. min. 1 sec max. (2^31-1) / 1000 sec",
+        "de": "Die Zeitspanne, über die eingehende Mqt-Nachrichten gesammelt werden, kann konfiguriert werden. min. 1 sec max. (2^31-1) / 1000 sec",
+        "ru": "Период времени, в течение которого собираются входящие Mqtt сообщения, может быть настроен. мин. 1 сек макс. (2^31-1) / 1000 сек",
+        "pt": "O período de tempo em que as mensagens Mqtt são coletadas podem ser configuradas. min. 1 seg max. (2^31-1) / 1000 sec",
+        "nl": "De periode waarover inkomende Mqtt-berichten worden verzameld, kan worden geconfigureerd. min. 1 sec max. (2^31-1) / 1000 sec",
+        "fr": "La période pendant laquelle les messages Mqtt entrants sont recueillis peut être configurée. min. 1 sec max. (2^31-1) / 1000 sec",
+        "it": "Il periodo di tempo in cui vengono raccolti i messaggi Mqtt in entrata può essere configurato. min. 1 sec max. (2^31-1) / 1000 sec",
+        "es": "Puede configurarse el período sobre el cual se recopilan los mensajes entrantes de Mqtt. min. 1 sec max. (2^31-1) / 1000 sec",
+        "pl": "Można skonfigurować okres zbierania przychodzących wiadomości Mqtt. min. 1 s maks. (2 ^ 31-1) / 1000 s",
+        "uk": "Часовий період, над яким вхідні повідомлення Mqtt можна налаштувати. 1 сек макс. (2^31-1) / 1000 сек",
+        "zh-cn": "接收到的 Mqtt 信件的时间段可以配置 。 最大1秒(2^31-1)/ 1000秒"
+      },
+      "0.4.3": {
+        "en": "Collect incoming MQTT messages and process them every 5 seconds",
+        "de": "Sammel eingehende MQTT-Nachrichten für 5 Sekunden",
+        "ru": "Собирайте поступающие сообщения MQTT и обрабатывайте их каждые 5 секунд",
+        "pt": "Colete mensagens MQTT recebidas e processá-los a cada 5 segundos",
+        "nl": "Inkomende MQTT-berichten verzamelen en elke 5 seconden verwerken",
+        "fr": "Recueillir les messages MQTT entrants et les traiter toutes les 5 secondes",
+        "it": "Raccogliere messaggi MQTT in arrivo e processarli ogni 5 secondi",
+        "es": "Recoger mensajes entrantes de MQTT y procesarlos cada 5 segundos",
+        "pl": "Zbieraj przychodzące wiadomości MQTT i przetwarzaj je co 5 sekund",
+        "uk": "Зберіть вхідні повідомлення MQTT і обробіть їх кожні 5 секунд",
+        "zh-cn": "收集收到的 MQTT 信件, 每5秒处理一次"
+      },
+      "0.4.2": {
+        "en": "New state for actual distance/conversion factor and calculated distance",
+        "de": "Neuer Zustand für den tatsächlichen Abstand/Umleitungsfaktor und berechneter Abstand",
+        "ru": "Новое состояние для фактического коэффициента расстояния/переключения и расчетного расстояния",
+        "pt": "Novo estado para o fator de distância/conversão real e distância calculada",
+        "nl": "Nieuwe toestand voor werkelijke afstand/omzettingsfactor en berekende afstand",
+        "fr": "Nouvel état pour la distance réelle/facteur de conversion et la distance calculée",
+        "it": "Nuovo stato per la distanza effettiva / fattore di conversione e la distanza calcolata",
+        "es": "Nuevo estado para el factor de distancia/conversión real y distancia calculada",
+        "pl": "Nowy stan dla rzeczywistej odległości / współczynnika konwersji i obliczonej odległości",
+        "uk": "Новий стан для фактичного коефіцієнта дистанції/конверсії",
+        "zh-cn": "实际距离/换算系数和计算距离的新状态"
+      },
+      "0.4.1": {
+        "en": "fixed: no names. (2. try)",
+        "de": "fixiert: keine namen (2. versuch)",
+        "ru": "исправлено: нет имен. (2. попробовать)",
+        "pt": "fixo: sem nomes. (2. tente)",
+        "nl": "geen namen",
+        "fr": "fixe: pas de nom. (2. essai)",
+        "it": "fisso: nessun nome. (2. provare)",
+        "es": "fijo: sin nombres. (2. intento)",
+        "pl": "nie ma nazw (pol.)",
+        "uk": "фіксована: імена імен. (2. спробуйте)",
+        "zh-cn": "固定:没有姓名(2. 审判)"
+      },
+      "0.4.0": {
+        "en": "fixed: no names/ids.\nAdded: global esp32 configuration (retained)",
+        "de": "Behoben: keine Namen/ids.\nHinzugefügt: globale esp32 Konfiguration (retained)",
+        "ru": "исправлено: нет имен.\nДобавлена: глобальная конфигурация esp32 (retained)",
+        "pt": "fixo: nenhum nome.\nAdicionado: global esp32 configuração (retido)",
+        "nl": "geen namen.\nToegevoegd: globale esp32 configuratie (geretineerd)",
+        "fr": "fixe: pas de noms.\nAjouté : configuration globale esp32 (retained)",
+        "it": "fisso: nessun nome.\nAggiunto: global esp32 Configurazione (retenuta)",
+        "es": "fijo: sin nombres.\nAñadido: configuración global de esp32 (retenido)",
+        "pl": "nie ma nazw.\nAdded: konfiguracja globalna esp32",
+        "uk": "фіксована: імена імен.\nДоданий: глобальна конфігурація esp32 (затриманий)",
+        "zh-cn": "固定:无姓名。.\n增 编:全球分组(续会)"
+      },
+      "0.3.0": {
+        "en": "Breaking Change: move datadir from node_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (instance). move the files there and use iobroker fix after it.",
+        "de": "Breaking Change: bewege datadir von node_modules/iobroker.espresense/mydp auf iobroker-data/espresense.0 (Instance). Bewege die Dateien dort hin und verwende anschließend iobroker fix.",
+        "ru": "Изменение: переместить datadir из node_modules/iobroker.espresense/mydp в iobroker-data/espresense.0 (instance). переместить файлы там и использовать iobroker исправить после него.",
+        "pt": "Breaking Change: mover datadir de node_modules/iobroker.espresense/mydp para iobroker-data/espresense.0 (instância). mover os arquivos lá e usar iobroker corrigir depois dele.",
+        "nl": "Verplaats datadir van nodemodules/iobroker. Verplaats de bestanden en gebruik iobroker reparatie daarna.",
+        "fr": "Changement de rupture : déplacer datadir de node_modules/iobroker.espresense/mydp à iobroker-data/espresense.0 (instance). déplacer les fichiers là-bas et utiliser iobroker réparer après.",
+        "it": "Cambiamento di rottura: spostare datadir da node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). spostare i file lì e utilizzare iobroker fix dopo di esso.",
+        "es": "Cambio de ruptura: mueva datadir de node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). mover los archivos allí y utilizar iobroker arreglar después de él.",
+        "pl": "Breaking Change: move datadir from nodes_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (ang.). Przesuwa pliki tam i wykorzystuje iobrokera po nim.",
+        "uk": "Зміна несправностей: переміщення даних з вершини_модулів/iobroker.espresense/mydp до iobroker-data/espresense.0 (інтенсивність). перемістіть файли після цього і використовуйте iobroker.",
+        "zh-cn": "失调:将数据从不de_modules/iobroker.espresense/mydp转向iobroker-data/espresense.0(instance). 将档案移到那里,并在档案之后使用零碎器。."
+      },
+      "0.2.1": {
+        "en": "fixed: object not exist sometimes.",
+        "de": "fix: objekt existiert nicht manchmal.",
+        "ru": "исправлено: объект не существует иногда.",
+        "pt": "corrigido: objeto não existe às vezes.",
+        "nl": "gerepareerd: object bestaat niet.",
+        "fr": "fixe: l'objet n'existe pas parfois.",
+        "it": "fisso: l'oggetto non esiste a volte.",
+        "es": "fijo: el objeto no existe a veces.",
+        "pl": "niekiedy występuje obiekt: obiekt nie istnieje.",
+        "uk": "виправлено: об'єкт не існує іноді.",
+        "zh-cn": "固定:有时不存在目标。."
+      }
     },
-    "protectedNative": [
-        "MQTTPassword"
-    ],
-    "encryptedNative": [
-        "MQTTPassword"
-    ],
-    "native": {
-        "MQTTServerIp": "",
-        "MQTTUsername": "",
-        "MQTTPassword": "",
-        "MQTTUseServer": false,
-        "unseenTime": 30,
-        "selectedDevices": [],
-        "MQTTHandleInterval": 10
+    "titleLang": {
+      "en": "ESPresense",
+      "de": "ESPresense",
+      "ru": "ESPresense",
+      "pt": "ESPresense",
+      "nl": "ESPresense",
+      "fr": "ESPrésense",
+      "it": "ESPresense",
+      "es": "ESPresense",
+      "pl": "ESPresense",
+      "uk": "ESPresense",
+      "zh-cn": "ESPRESENSE"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "Device or service connected",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
-    ]
+    "desc": {
+      "en": "Connect to ESPresense",
+      "de": "Stellen Sie eine Verbindung zu ESPresense her",
+      "ru": "Подключиться к ESPresense",
+      "pt": "Conecte-se ao ESPresense",
+      "nl": "Maak verbinding met ESPresense",
+      "fr": "Connectez-vous à ESPresense",
+      "it": "Connettiti a ESPresense",
+      "es": "Conéctate a ESPresense",
+      "pl": "Połącz się z ESPresense",
+      "uk": "Підключіться до ESPresense",
+      "zh-cn": "连接至 ESPresense"
+    },
+    "authors": [
+      "ticaki <github@renopoint.de>"
+    ],
+    "keywords": [
+      "esp",
+      "presense"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "build/main.js",
+    "icon": "espresense.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/ticaki/ioBroker.espresense/main/admin/espresense.png",
+    "readme": "https://github.com/ticaki/ioBroker.espresense/blob/main/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "geoposition",
+    "tier": 2,
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "adminUI": {
+      "config": "json"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=3.3.22"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=5.1.13"
+      }
+    ],
+    "messagebox": true
+  },
+  "protectedNative": [
+    "MQTTPassword"
+  ],
+  "encryptedNative": [
+    "MQTTPassword"
+  ],
+  "native": {
+    "MQTTServerIp": "",
+    "MQTTUsername": "",
+    "MQTTPassword": "",
+    "MQTTUseServer": false,
+    "unseenTime": 30,
+    "selectedDevices": [],
+    "MQTTHandleInterval": 10
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Device or service connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }

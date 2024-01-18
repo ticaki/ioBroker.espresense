@@ -20,10 +20,13 @@ Connect to [ESPresense](https://espresense.com)
 - `Port, Username & Passowrd` of internal or external mqtt Server
 
 - If devices have been added to the configuration, only these will be displayed in the objects. 
+- The two configuration times are linked, the presence check always runs with the processing of the MQTT messages.
 
 Best practice: Pair the devices to be monitored with espresense and filter the output to avoid unnecessary network traffic.
 
 For help use issue or if u understand german https://forum.iobroker.net/topic/71189/test-adapter-espresense
+
+
 
 * The mqtt-server used is a fully compatible MQTT 3.1 and 3.1.1 server, but the adapter only responds to the topic espresense/#  
 
@@ -32,7 +35,7 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS*
+### 0.4.4 (2024-01-18)
 * (ticaki) The time period over which incoming Mqtt messages are collected can be configured. min. 1 sec max. (2^31-1) / 1000 sec
 
 ### 0.4.3 (2024-01-14)
