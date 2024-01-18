@@ -19,7 +19,7 @@ export class Espresense extends utils.Adapter {
     mqttClient: MQTTClientClass | undefined;
     mqttServer: MQTTServerClass | undefined;
     namedDevices: { [key: string]: string } = {};
-    timeout: ioBroker.Interval | undefined = undefined;
+    timeout: ioBroker.Timeout | undefined = undefined;
     startDelay: ioBroker.Timeout | undefined = undefined;
     unseenCheckTime: number = 5000;
     deviceDB: { [id: string]: { name: string; lc: number } } = {};
@@ -94,6 +94,15 @@ export class Espresense extends utils.Adapter {
                 this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
                 return;
             }
+            testIt = this.config.MQTTHandleInterval;
+            if (typeof testIt != 'number') {
+                this.log.error(`Invalid configuration mqtt handle interval has unexpeted value type ${typeof testIt}`);
+                return;
+            }
+            this.config.MQTTHandleInterval *= 1000;
+            if (this.config.MQTTHandleInterval < 1000) this.config.MQTTHandleInterval = 1000;
+            else if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1) this.config.MQTTHandleInterval = 2 ** 32 / 2 - 1;
+
             testIt = this.config.MQTTUsername;
             if (typeof testIt != 'string') {
                 this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
@@ -148,15 +157,7 @@ export class Espresense extends utils.Adapter {
                 this.config.MQTTUsername,
                 this.config.MQTTPassword,
             );
-            this.timeout = this.setInterval(
-                async () => {
-                    if (this.unload) return;
-                    await this.doDelayedMessage();
-                    await sleep(100);
-                    this.library.garbageColleting('devices.', this.config.unseenTime);
-                },
-                this.unseenCheckTime < 1000 ? 1000 : this.unseenCheckTime,
-            );
+
             if (!this.config.retainGlobal) {
                 for (const id in statesObjects.rooms) {
                     const topic = `espresense/rooms/*/${id}/set`;
@@ -165,20 +166,28 @@ export class Espresense extends utils.Adapter {
                     }
                 }
             }
+            this.doDelayedMessage();
         }, 1000);
     }
 
     private async doDelayedMessage(): Promise<void> {
-        for (const dp in this.delayedMessages) {
-            const cmd = this.delayedMessages[dp];
-            if (cmd !== undefined) {
-                this.delayedMessages[dp] = undefined;
-                await this.handleMessage(dp, cmd, false);
+        this.timeout = this.setTimeout(async () => {
+            if (this.unload) return;
+
+            for (const dp in this.delayedMessages) {
+                const cmd = this.delayedMessages[dp];
+                if (cmd !== undefined) {
+                    this.delayedMessages[dp] = undefined;
+                    await this.handleMessage(dp, cmd, false);
+                }
             }
-        }
-        this.delayedMessages = Object.fromEntries(
-            Object.entries(this.delayedMessages).filter(([_, v]) => v != undefined),
-        );
+            this.delayedMessages = Object.fromEntries(
+                Object.entries(this.delayedMessages).filter(([_, v]) => v != undefined),
+            );
+            await sleep(100);
+            await this.library.garbageColleting('devices.', this.config.unseenTime);
+            this.doDelayedMessage();
+        }, this.config.MQTTHandleInterval);
     }
     async handleMessage(topic: string, message: any, delayed: boolean = true): Promise<void> {
         if (!topic || message == undefined) return;
@@ -268,7 +277,7 @@ export class Espresense extends utils.Adapter {
             this.unload = true;
             if (this.mqttClient) this.mqttClient.destroy();
             if (this.mqttServer) this.mqttServer.destroy();
-            if (this.timeout) this.clearInterval(this.timeout);
+            if (this.timeout) this.clearTimeout(this.timeout);
             if (this.startDelay) this.clearTimeout(this.startDelay);
             this.library.delete();
             callback();

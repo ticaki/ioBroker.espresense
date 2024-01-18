@@ -88,5 +88,6 @@
     "name": "姓名",
     "devices.convert": "换算系数",
     "devices.convert.desc": "在此输入到 ESP 的实际距离（以米为单位），适配器将计算该系数。",
-    "devices.distanceConverted": "换算距离"
+    "devices.distanceConverted": "换算距离",
+    "MQTTHandleInterval": "收集传入 Mqtt 消息的周期 - 减少系统负载。 （以秒为单位，分钟 3）"
 }

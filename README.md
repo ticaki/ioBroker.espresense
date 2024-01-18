@@ -32,6 +32,9 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS*
+* (ticaki) The time period over which incoming Mqtt messages are collected can be configured. min. 1 sec max. (2^31-1) / 1000 sec
+
 ### 0.4.3 (2024-01-14)
 * (ticaki) Collect incoming MQTT messages and process them every 5 seconds
 

@@ -97,6 +97,16 @@ class Espresense extends utils.Adapter {
         this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
         return;
       }
+      testIt = this.config.MQTTHandleInterval;
+      if (typeof testIt != "number") {
+        this.log.error(`Invalid configuration mqtt handle interval has unexpeted value type ${typeof testIt}`);
+        return;
+      }
+      this.config.MQTTHandleInterval *= 1e3;
+      if (this.config.MQTTHandleInterval < 1e3)
+        this.config.MQTTHandleInterval = 1e3;
+      else if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1)
+        this.config.MQTTHandleInterval = 2 ** 32 / 2 - 1;
       testIt = this.config.MQTTUsername;
       if (typeof testIt != "string") {
         this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
@@ -148,16 +158,6 @@ class Espresense extends utils.Adapter {
         this.config.MQTTUsername,
         this.config.MQTTPassword
       );
-      this.timeout = this.setInterval(
-        async () => {
-          if (this.unload)
-            return;
-          await this.doDelayedMessage();
-          await (0, import_library.sleep)(100);
-          this.library.garbageColleting("devices.", this.config.unseenTime);
-        },
-        this.unseenCheckTime < 1e3 ? 1e3 : this.unseenCheckTime
-      );
       if (!this.config.retainGlobal) {
         for (const id in import_definition.statesObjects.rooms) {
           const topic = `espresense/rooms/*/${id}/set`;
@@ -166,19 +166,27 @@ class Espresense extends utils.Adapter {
           }
         }
       }
+      this.doDelayedMessage();
     }, 1e3);
   }
   async doDelayedMessage() {
-    for (const dp in this.delayedMessages) {
-      const cmd = this.delayedMessages[dp];
-      if (cmd !== void 0) {
-        this.delayedMessages[dp] = void 0;
-        await this.handleMessage(dp, cmd, false);
+    this.timeout = this.setTimeout(async () => {
+      if (this.unload)
+        return;
+      for (const dp in this.delayedMessages) {
+        const cmd = this.delayedMessages[dp];
+        if (cmd !== void 0) {
+          this.delayedMessages[dp] = void 0;
+          await this.handleMessage(dp, cmd, false);
+        }
       }
-    }
-    this.delayedMessages = Object.fromEntries(
-      Object.entries(this.delayedMessages).filter(([_, v]) => v != void 0)
-    );
+      this.delayedMessages = Object.fromEntries(
+        Object.entries(this.delayedMessages).filter(([_, v]) => v != void 0)
+      );
+      await (0, import_library.sleep)(100);
+      await this.library.garbageColleting("devices.", this.config.unseenTime);
+      this.doDelayedMessage();
+    }, this.config.MQTTHandleInterval);
   }
   async handleMessage(topic, message, delayed = true) {
     if (!topic || message == void 0)
@@ -265,7 +273,7 @@ class Espresense extends utils.Adapter {
       if (this.mqttServer)
         this.mqttServer.destroy();
       if (this.timeout)
-        this.clearInterval(this.timeout);
+        this.clearTimeout(this.timeout);
       if (this.startDelay)
         this.clearTimeout(this.startDelay);
       this.library.delete();

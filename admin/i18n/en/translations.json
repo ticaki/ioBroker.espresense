@@ -85,5 +85,6 @@
     "name": "Name",
     "devices.convert": "Conversion factor",
     "devices.convert.desc": "Enter the actual distance in metres to the ESP here and the adapter will calculate the factor.",
-    "devices.distanceConverted": "Converted distance"
+    "devices.distanceConverted": "Converted distance",
+    "MQTTHandleInterval": "Period over which incoming Mqtt messages are collected - reduces the system load. (in seconds min. 1)"
 }
