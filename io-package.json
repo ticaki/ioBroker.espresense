@@ -128,9 +128,11 @@
       "esp",
       "presense"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+        "license": "MIT",
+        "type": "free"
+    },
     "platform": "Javascript/Node.js",
-    "main": "build/main.js",
     "icon": "espresense.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/ticaki/ioBroker.espresense/main/admin/espresense.png",
@@ -147,7 +149,7 @@
     },
     "dependencies": [
       {
-        "js-controller": ">=3.3.22"
+        "js-controller": ">=4.0.24"
       }
     ],
     "globalDependencies": [

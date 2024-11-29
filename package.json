@@ -10,7 +10,9 @@
   "license": "MIT",
   "keywords": [
     "esp",
-    "presense"
+    "presence",
+    "ioBroker"
+
   ],
   "repository": {
     "type": "git",
