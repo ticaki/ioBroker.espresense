@@ -11,7 +11,8 @@
             "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "MQTTServerIp": {
             "type": "text",
@@ -21,7 +22,8 @@
             "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "MQTTServerPort": {
             "type": "number",
@@ -33,7 +35,8 @@
             "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "MQTTUsername": {
             "type": "text",
@@ -42,7 +45,8 @@
             "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "MQTTPassword": {
             "type": "password",
@@ -51,7 +55,8 @@
             "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "unseenTime": {
             "type": "number",
@@ -62,7 +67,8 @@
             "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "MQTTHandleInterval": {
             "type": "number",
@@ -72,7 +78,8 @@
             "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "retainGlobal": {
             "type": "checkbox",
@@ -82,7 +89,8 @@
             "newLine": true,
             "sm": 12,
             "md": 6,
-            "lg": 6
+            "lg": 6,
+            "xl": 6
         },
         "devices": {
             "newLine": true,
@@ -101,6 +109,7 @@
             "sm": 12,
             "md": 8,
             "lg": 4,
+            "xl": 6,
             "label": "selectDevice",
             "newLine": true
         },
@@ -114,6 +123,7 @@
             "sm": 6,
             "md": 6,
             "lg": 6,
+            "xl": 6,
             "disabled": "!data.selectDevice",
             "useNative": true
         },
@@ -127,6 +137,7 @@
             "sm": 6,
             "md": 6,
             "lg": 6,
+            "xl": 6,
             "disabled": "!data.selectDevice",
             "useNative": true
         },
@@ -137,6 +148,7 @@
             "sm": 12,
             "md": 12,
             "lg": 12,
+            "xl": 12,
             "noDelete": true,
             "label": "selectedDevices",
             "items": [
