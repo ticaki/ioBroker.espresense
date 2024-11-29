@@ -18,6 +18,10 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
@@ -54,8 +58,11 @@ class Espresense extends utils.Adapter {
     this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
   }
+  /**
+   * Is called when databases are connected and adapter received configuration.
+   */
   async onReady() {
-    this.setStateAsync("info.connection", false, true);
+    await this.setState("info.connection", false, true);
     this.startDelay = this.setTimeout(async () => {
       await this.library.init();
       await this.library.initStates(await this.getStatesAsync("*"));
@@ -103,10 +110,11 @@ class Espresense extends utils.Adapter {
         return;
       }
       this.config.MQTTHandleInterval *= 1e3;
-      if (this.config.MQTTHandleInterval < 1e3)
+      if (this.config.MQTTHandleInterval < 1e3) {
         this.config.MQTTHandleInterval = 1e3;
-      else if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1)
+      } else if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1) {
         this.config.MQTTHandleInterval = 2 ** 32 / 2 - 1;
+      }
       testIt = this.config.MQTTUsername;
       if (typeof testIt != "string") {
         this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
@@ -169,10 +177,11 @@ class Espresense extends utils.Adapter {
       this.doDelayedMessage();
     }, 1e3);
   }
-  async doDelayedMessage() {
+  doDelayedMessage() {
     this.timeout = this.setTimeout(async () => {
-      if (this.unload)
+      if (this.unload) {
         return;
+      }
       for (const dp in this.delayedMessages) {
         const cmd = this.delayedMessages[dp];
         if (cmd !== void 0) {
@@ -189,8 +198,9 @@ class Espresense extends utils.Adapter {
     }, this.config.MQTTHandleInterval);
   }
   async handleMessage(topic, message, delayed = true) {
-    if (!topic || message == void 0)
+    if (!topic || message == void 0) {
       return;
+    }
     if (delayed) {
       this.delayedMessages[topic] = message;
       return;
@@ -201,8 +211,9 @@ class Espresense extends utils.Adapter {
     const topicA = topic.split("/");
     topicA.shift();
     const typTemp = topicA.shift();
-    if (typTemp !== "rooms" && typTemp !== "settings" && typTemp !== "devices")
+    if (typTemp !== "rooms" && typTemp !== "settings" && typTemp !== "devices") {
       return;
+    }
     const typ = typTemp;
     const temp = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
     let device = topicA.shift();
@@ -211,27 +222,32 @@ class Espresense extends utils.Adapter {
       this.namedDevices[message.id] = message.name;
     }
     temp.common.name = this.namedDevices[device] || device;
-    if (typ === "settings" && message.name)
+    if (typ === "settings" && message.name) {
       temp.common.name = message.name;
+    }
     if (typ === "devices") {
       this.deviceDB[device] = { name: this.namedDevices[device] || device, lc: Date.now() };
-      this.library.writedp("deviceDB", JSON.stringify(this.deviceDB), import_definition.genericStateObjects.deviceDB);
+      this.library.writedp("deviceDB", JSON.stringify(this.deviceDB), import_definition.genericStateObjects.deviceDB).catch(() => {
+      });
       if (this.config.selectedDevices.length > 0) {
         if (this.config.selectedDevices.findIndex((i) => {
           return i.id === device;
-        }) == -1)
+        }) == -1) {
           return;
+        }
       }
     }
     device = this.library.cleandp(device, false, true);
-    if (typ !== "rooms" && device != "*")
+    if (typ !== "rooms" && device != "*") {
       await this.library.writedp(`${typ}.${device}`, void 0, temp);
+    }
     if (typ === "rooms") {
       let path = `${typ}.${device}`;
       if (device == "*") {
         path = "global";
-        if (topicA[topicA.length - 1] == "set")
+        if (topicA[topicA.length - 1] == "set") {
           topicA.pop();
+        }
       } else if (topicA[topicA.length - 1] == "set") {
         return;
       }
@@ -257,31 +273,61 @@ class Espresense extends utils.Adapter {
       temp2.common.name = this.namedDevices[subDevice] || subDevice;
       const tempObj = this.library.readdb(`${typ}.${device}.${subDevice}.convert`);
       message.convert = 1;
-      if (tempObj !== void 0 && tempObj !== null)
+      if (tempObj !== void 0 && tempObj !== null) {
         message.convert = tempObj.val;
+      }
       message.distanceConverted = message.distance * message.convert / 100;
       await this.library.writedp(`${typ}.${device}.${subDevice}`, void 0, temp2);
       await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
       await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, import_definition.statesObjects, message);
     }
   }
+  /**
+   * Is called when adapter shuts down - callback has to be called under any circumstances!
+   *
+   * @param callback
+   */
   onUnload(callback) {
     try {
       this.unload = true;
-      if (this.mqttClient)
+      if (this.mqttClient) {
         this.mqttClient.destroy();
-      if (this.mqttServer)
+      }
+      if (this.mqttServer) {
         this.mqttServer.destroy();
-      if (this.timeout)
+      }
+      if (this.timeout) {
         this.clearTimeout(this.timeout);
-      if (this.startDelay)
+      }
+      if (this.startDelay) {
         this.clearTimeout(this.startDelay);
+      }
       this.library.delete();
       callback();
-    } catch (e) {
+    } catch {
       callback();
     }
   }
+  // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
+  // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
+  // /**
+  //  * Is called if a subscribed object changes
+  //  */
+  // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
+  //     if (obj) {
+  //         // The object was changed
+  //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+  //     } else {
+  //         // The object was deleted
+  //         this.log.info(`object ${id} deleted`);
+  //     }
+  // }
+  /**
+   * Is called if a subscribed state changes
+   *
+   * @param id
+   * @param state
+   */
   async onStateChange(id, state) {
     if (state && !state.ack) {
       id = id.replace(`${this.namespace}.`, "");
@@ -298,8 +344,8 @@ class Espresense extends utils.Adapter {
           const convO = this.library.readdb(`${id.substring(0, id.lastIndexOf("."))}.convert`);
           if (dist && val !== void 0 && val !== null && dist.val !== void 0 && dist.val !== null && !isNaN(val) && !isNaN(dist.val) && convO && !Number.isNaN(convO.val)) {
             val = val / dist.val;
-            this.library.writedp(id, val * 100, import_definition.statesObjects.devices.convert, true);
-            this.library.writedp(
+            await this.library.writedp(id, val * 100, import_definition.statesObjects.devices.convert, true);
+            await this.library.writedp(
               `${id.substring(0, id.lastIndexOf("."))}.distanceConverted`,
               val * dist.val,
               import_definition.statesObjects.devices.distanceConverted,
@@ -319,9 +365,15 @@ class Espresense extends utils.Adapter {
       } else {
         this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
       }
-    } else {
     }
   }
+  //If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
+  /**
+   * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
+   * Using this method requires "common.messagebox" property to be set to true in io-package.json
+   *
+   * @param obj
+   */
   onMessage(obj) {
     if (typeof obj === "object" && obj.message) {
       switch (obj.command) {
@@ -340,10 +392,12 @@ class Espresense extends utils.Adapter {
                 delete this.deviceDB[id];
                 continue;
               } else {
-                if (id == "")
+                if (id == "") {
                   continue;
-                if (data.name == "")
+                }
+                if (data.name == "") {
                   data.name = id;
+                }
                 result.push({ label: data.name, value: id });
               }
             }
@@ -352,9 +406,11 @@ class Espresense extends utils.Adapter {
                 return c.value == a.value;
               }) == b
             );
-            this.library.writedp("deviceDB", JSON.stringify(this.deviceDB), import_definition.genericStateObjects.deviceDB);
-            if (obj.callback)
+            this.library.writedp("deviceDB", JSON.stringify(this.deviceDB), import_definition.genericStateObjects.deviceDB).catch(() => {
+            });
+            if (obj.callback) {
               this.sendTo(obj.from, obj.command, result, obj.callback);
+            }
           }
           break;
         case "addDevice":
@@ -367,13 +423,14 @@ class Espresense extends utils.Adapter {
                 name: this.deviceDB[obj.message.id] && this.deviceDB[obj.message.id].name || obj.message.id
               });
             }
-            if (obj.callback)
+            if (obj.callback) {
               this.sendTo(
                 obj.from,
                 obj.command,
                 { native: { selectedDevices: this.config.selectedDevices } },
                 obj.callback
               );
+            }
           }
           break;
         case "removeDevice":
@@ -388,20 +445,22 @@ class Espresense extends utils.Adapter {
                 1
               );
             }
-            if (obj.callback)
+            if (obj.callback) {
               this.sendTo(
                 obj.from,
                 obj.command,
                 { native: { selectedDevices: this.config.selectedDevices } },
                 obj.callback
               );
+            }
           }
           break;
       }
       if (obj.command === "send") {
         this.log.info("send command");
-        if (obj.callback)
+        if (obj.callback) {
           this.sendTo(obj.from, obj.command, "Message received", obj.callback);
+        }
       }
     }
   }

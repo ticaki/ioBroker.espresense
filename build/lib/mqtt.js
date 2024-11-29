@@ -18,6 +18,10 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
@@ -46,7 +50,8 @@ class MQTTClientClass extends import_library.BaseClass {
     });
     this.client.on("connect", () => {
       this.log.info(`Connection is active.`);
-      this.adapter.setState("info.connection", true, true);
+      this.adapter.setState("info.connection", true, true).catch(() => {
+      });
       this.client.subscribe("espresense/#", (err) => {
         if (err) {
           this.log.error(`On subscribe: ${err}`);
@@ -56,14 +61,16 @@ class MQTTClientClass extends import_library.BaseClass {
       });
     });
     this.client.on("disconnect", () => {
-      this.adapter.setState("info.connection", false, true);
+      this.adapter.setState("info.connection", false, true).catch(() => {
+      });
       this.log.debug(`disconnected`);
     });
     this.client.on("error", (err) => {
       this.log.error(`${err}`);
     });
     this.client.on("close", () => {
-      this.adapter.setState("info.connection", false, true);
+      this.adapter.setState("info.connection", false, true).catch(() => {
+      });
       this.log.info(`Connection is closed.`);
     });
     this.client.on("message", (topic, message) => {
@@ -71,10 +78,11 @@ class MQTTClientClass extends import_library.BaseClass {
       let type = "";
       try {
         value = JSON.parse(message.toString());
-        if (typeof value == "string")
+        if (typeof value == "string") {
           throw new Error("nope");
+        }
         type = typeof value;
-      } catch (e) {
+      } catch {
         value = message.toString();
         if (isNaN(value)) {
           if (value == "ON" || value == "OFF") {
@@ -90,9 +98,8 @@ class MQTTClientClass extends import_library.BaseClass {
           value = parseFloat(value);
         }
       }
-      if (false)
-        this.log.debug(`${topic}: ${type} - ${typeof value == "object" ? JSON.stringify(value) : value}`);
-      this.adapter.handleMessage(topic, value);
+      this.adapter.handleMessage(topic, value).catch(() => {
+      });
     });
   }
   async publish(topic, message, opt) {
@@ -116,10 +123,11 @@ class MQTTServerClass extends import_library.BaseClass {
     });
     this.aedes.authenticate = (client, un, pw, callback) => {
       const confirm = username === un && password == pw.toString();
-      if (!confirm)
+      if (!confirm) {
         this.log.warn(`Login denied client: ${client.id}. User name or password wrong!`);
-      else
+      } else {
         this.log.info(`Client ${client.id} login successful.`);
+      }
       callback(null, confirm);
     };
   }

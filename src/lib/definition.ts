@@ -1,4 +1,4 @@
-import { settings, room, additionalDevice } from './types-d';
+import type { settings, room, additionalDevice } from './types-d';
 
 export type ChangeTypeToChannelAndState<Obj> = Obj extends object
     ? {
