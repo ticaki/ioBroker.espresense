@@ -35,7 +35,7 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.4.5 (2024-11-29)
 * (ticaki) dependencies updated
 
 ### 0.4.4 (2024-01-18)

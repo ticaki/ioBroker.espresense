@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.4.4",
+    "version": "0.4.5",
     "news": {
+      "0.4.5": {
+        "en": "dependencies updated",
+        "de": "aktualisierte Abhängigkeiten",
+        "ru": "обновленная информация о зависимостях",
+        "pt": "dependências atualizadas",
+        "nl": "afhankelijkheden bijgewerkt",
+        "fr": "dépendances mises à jour",
+        "it": "dipendenze aggiornate",
+        "es": "dependencias actualizadas",
+        "pl": "zaktualizowane zależności",
+        "uk": "оновлені залежності",
+        "zh-cn": "更新依赖关系"
+      },
       "0.4.4": {
         "en": "The time period over which incoming Mqtt messages are collected can be configured. min. 1 sec max. (2^31-1) / 1000 sec",
         "de": "Die Zeitspanne, über die eingehende Mqt-Nachrichten gesammelt werden, kann konfiguriert werden. min. 1 sec max. (2^31-1) / 1000 sec",
@@ -80,19 +93,6 @@
         "pl": "Breaking Change: move datadir from nodes_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (ang.). Przesuwa pliki tam i wykorzystuje iobrokera po nim.",
         "uk": "Зміна несправностей: переміщення даних з вершини_модулів/iobroker.espresense/mydp до iobroker-data/espresense.0 (інтенсивність). перемістіть файли після цього і використовуйте iobroker.",
         "zh-cn": "失调:将数据从不de_modules/iobroker.espresense/mydp转向iobroker-data/espresense.0(instance). 将档案移到那里,并在档案之后使用零碎器。."
-      },
-      "0.2.1": {
-        "en": "fixed: object not exist sometimes.",
-        "de": "fix: objekt existiert nicht manchmal.",
-        "ru": "исправлено: объект не существует иногда.",
-        "pt": "corrigido: objeto não existe às vezes.",
-        "nl": "gerepareerd: object bestaat niet.",
-        "fr": "fixe: l'objet n'existe pas parfois.",
-        "it": "fisso: l'oggetto non esiste a volte.",
-        "es": "fijo: el objeto no existe a veces.",
-        "pl": "niekiedy występuje obiekt: obiekt nie istnieje.",
-        "uk": "виправлено: об'єкт не існує іноді.",
-        "zh-cn": "固定:有时不存在目标。."
       }
     },
     "titleLang": {
