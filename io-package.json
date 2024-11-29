@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.4.5",
+    "version": "0.4.6",
     "news": {
+      "0.4.6": {
+        "en": "repository checker problems fixed",
+        "de": "repository checker Probleme behoben",
+        "ru": "проблемы репозитория",
+        "pt": "problemas do verificador do repositório corrigidos",
+        "nl": "repository checker problemen opgelost",
+        "fr": "problèmes de contrôle du dépôt corrigés",
+        "it": "repository checker problemi risolto",
+        "es": "problemas de control de depósito fijo",
+        "pl": "problemy ze sprawdzaniem repozytorium",
+        "uk": "проблеми репозиторійного чекера виправлені",
+        "zh-cn": "已修复仓库检查器问题"
+      },
       "0.4.5": {
         "en": "dependencies updated",
         "de": "aktualisierte Abhängigkeiten",
@@ -80,19 +93,6 @@
         "pl": "nie ma nazw.\nAdded: konfiguracja globalna esp32",
         "uk": "фіксована: імена імен.\nДоданий: глобальна конфігурація esp32 (затриманий)",
         "zh-cn": "固定:无姓名。.\n增 编:全球分组(续会)"
-      },
-      "0.3.0": {
-        "en": "Breaking Change: move datadir from node_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (instance). move the files there and use iobroker fix after it.",
-        "de": "Breaking Change: bewege datadir von node_modules/iobroker.espresense/mydp auf iobroker-data/espresense.0 (Instance). Bewege die Dateien dort hin und verwende anschließend iobroker fix.",
-        "ru": "Изменение: переместить datadir из node_modules/iobroker.espresense/mydp в iobroker-data/espresense.0 (instance). переместить файлы там и использовать iobroker исправить после него.",
-        "pt": "Breaking Change: mover datadir de node_modules/iobroker.espresense/mydp para iobroker-data/espresense.0 (instância). mover os arquivos lá e usar iobroker corrigir depois dele.",
-        "nl": "Verplaats datadir van nodemodules/iobroker. Verplaats de bestanden en gebruik iobroker reparatie daarna.",
-        "fr": "Changement de rupture : déplacer datadir de node_modules/iobroker.espresense/mydp à iobroker-data/espresense.0 (instance). déplacer les fichiers là-bas et utiliser iobroker réparer après.",
-        "it": "Cambiamento di rottura: spostare datadir da node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). spostare i file lì e utilizzare iobroker fix dopo di esso.",
-        "es": "Cambio de ruptura: mueva datadir de node_modules/iobroker.espresense/mydp a iobroker-data/espresense.0 (instance). mover los archivos allí y utilizar iobroker arreglar después de él.",
-        "pl": "Breaking Change: move datadir from nodes_modules/iobroker.espresense/mydp to iobroker-data/espresense.0 (ang.). Przesuwa pliki tam i wykorzystuje iobrokera po nim.",
-        "uk": "Зміна несправностей: переміщення даних з вершини_модулів/iobroker.espresense/mydp до iobroker-data/espresense.0 (інтенсивність). перемістіть файли після цього і використовуйте iobroker.",
-        "zh-cn": "失调:将数据从不de_modules/iobroker.espresense/mydp转向iobroker-data/espresense.0(instance). 将档案移到那里,并在档案之后使用零碎器。."
       }
     },
     "titleLang": {
@@ -129,8 +129,8 @@
       "presense"
     ],
     "licenseInformation": {
-        "license": "MIT",
-        "type": "free"
+      "license": "MIT",
+      "type": "free"
     },
     "platform": "Javascript/Node.js",
     "icon": "espresense.png",

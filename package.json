@@ -1,6 +1,6 @@
 {
   "name": "iobroker.espresense",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Connect to ESPresense",
   "author": {
     "name": "ticaki",
@@ -12,7 +12,6 @@
     "esp",
     "presence",
     "ioBroker"
-
   ],
   "repository": {
     "type": "git",
