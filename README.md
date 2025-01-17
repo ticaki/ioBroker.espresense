@@ -35,7 +35,7 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.4.7 (2025-01-17)
 * (ticaki) Removing devices now works.
 
 ### 0.4.6 (2024-11-29)
@@ -90,7 +90,7 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
 ## License
 MIT License
 
-Copyright (c) 2024 ticaki <github@renopoint.de>
+Copyright (c) 2024-2025 ticaki <github@renopoint.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

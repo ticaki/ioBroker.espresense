@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.4.6",
+    "version": "0.4.7",
     "news": {
+      "0.4.7": {
+        "en": "Removing devices now works.",
+        "de": "Das Entfernen von Geräten funktioniert jetzt.",
+        "ru": "Удаление устройств теперь работает.",
+        "pt": "A remoção de dispositivos funciona agora.",
+        "nl": "Het verwijderen van apparaten werkt nu.",
+        "fr": "L'enlèvement des appareils fonctionne maintenant.",
+        "it": "Rimuovere i dispositivi ora funziona.",
+        "es": "Los dispositivos de eliminación ahora funcionan.",
+        "pl": "Usuwanie urządzeń teraz działa.",
+        "uk": "Зняття пристроїв тепер працює.",
+        "zh-cn": "正在删除设备 ."
+      },
       "0.4.6": {
         "en": "repository checker problems fixed",
         "de": "repository checker Probleme behoben",
@@ -80,19 +93,6 @@
         "pl": "nie ma nazw (pol.)",
         "uk": "фіксована: імена імен. (2. спробуйте)",
         "zh-cn": "固定:没有姓名(2. 审判)"
-      },
-      "0.4.0": {
-        "en": "fixed: no names/ids.\nAdded: global esp32 configuration (retained)",
-        "de": "Behoben: keine Namen/ids.\nHinzugefügt: globale esp32 Konfiguration (retained)",
-        "ru": "исправлено: нет имен.\nДобавлена: глобальная конфигурация esp32 (retained)",
-        "pt": "fixo: nenhum nome.\nAdicionado: global esp32 configuração (retido)",
-        "nl": "geen namen.\nToegevoegd: globale esp32 configuratie (geretineerd)",
-        "fr": "fixe: pas de noms.\nAjouté : configuration globale esp32 (retained)",
-        "it": "fisso: nessun nome.\nAggiunto: global esp32 Configurazione (retenuta)",
-        "es": "fijo: sin nombres.\nAñadido: configuración global de esp32 (retenido)",
-        "pl": "nie ma nazw.\nAdded: konfiguracja globalna esp32",
-        "uk": "фіксована: імена імен.\nДоданий: глобальна конфігурація esp32 (затриманий)",
-        "zh-cn": "固定:无姓名。.\n增 编:全球分组(续会)"
       }
     },
     "titleLang": {
