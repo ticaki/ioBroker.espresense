@@ -465,11 +465,7 @@ export class Espresense extends utils.Adapter {
                     break;
                 case 'removeDevice':
                     {
-                        if (
-                            this.config.selectedDevices.findIndex(i => {
-                                i.id == obj.message.id;
-                            }) != -1
-                        ) {
+                        if (this.config.selectedDevices.findIndex(i => i.id == obj.message.id) != -1) {
                             this.config.selectedDevices.splice(
                                 this.config.selectedDevices.findIndex(i => {
                                     i.id == obj.message.id;
