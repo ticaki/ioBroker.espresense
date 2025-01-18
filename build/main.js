@@ -226,13 +226,14 @@ class Espresense extends utils.Adapter {
       temp.common.name = message.name;
     }
     if (typ === "devices") {
+      const index = (this.config.selectedDevices || []).findIndex((i) => i.id === device);
+      this.namedDevices[message.id] = index != -1 ? this.config.selectedDevices[index].name : this.namedDevices[message.id];
+      temp.common.name = this.namedDevices[message.id];
       this.deviceDB[device] = { name: this.namedDevices[device] || device, lc: Date.now() };
       this.library.writedp("deviceDB", JSON.stringify(this.deviceDB), import_definition.genericStateObjects.deviceDB).catch(() => {
       });
       if (this.config.selectedDevices.length > 0) {
-        if (this.config.selectedDevices.findIndex((i) => {
-          return i.id === device;
-        }) == -1) {
+        if (index == -1) {
           return;
         }
       }
