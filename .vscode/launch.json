@@ -1,16 +1,6 @@
 {
     "configurations": [
         {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch ioBroker Adapter2",
-            "skipFiles": ["<node_internals>/**"],
-            "args": ["--debug", "0"],
-            //"outputCapture": "std",
-            "program": "node_modules/iobroker.weather-warnings/build/main.js",
-            "cwd": "${workspaceFolder}/.dev-server/default"
-          },
-        {
             "name": "Attach to remote",
             "port": 9229,
             "request": "attach",

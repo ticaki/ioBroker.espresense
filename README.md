@@ -35,6 +35,10 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### 0.4.8 (2025-01-18)
+* (ticaki) Devices can be renamed in the configuration.
+* (ticaki) Removing devices works now!.
+
 ### 0.4.7 (2025-01-17)
 * (ticaki) Removing devices now works.
 

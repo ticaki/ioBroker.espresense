@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.4.7",
+    "version": "0.4.8",
     "news": {
+      "0.4.8": {
+        "en": "Devices can be renamed in the configuration.\nRemoving devices works now!",
+        "de": "Geräte können in der Konfiguration umbenannt werden.\nEntfernen von Geräten funktioniert jetzt!",
+        "ru": "Устройства могут быть переименованы в конфигурацию.\nУдаление устройств работает сейчас.",
+        "pt": "Os dispositivos podem ser renomeados na configuração.\nRemover dispositivos funciona agora!.",
+        "nl": "Apparaten kunnen hernoemd worden in de configuratie.\nApparaat verwijderen werkt nu!.",
+        "fr": "Les appareils peuvent être renommés dans la configuration.\nSuppression des appareils fonctionne maintenant!.",
+        "it": "I dispositivi possono essere rinominati nella configurazione.\nRimuovere i dispositivi funziona ora!.",
+        "es": "Los dispositivos pueden ser renombrados en la configuración.\nRemoving devices works now!.",
+        "pl": "W konfiguracji można zmienić nazwę urządzeń.\nUsuwanie urządzeń działa teraz!.",
+        "uk": "Пристрої можуть бути перейменовані в конфігурації.\nЗнімання пристроїв працює зараз.",
+        "zh-cn": "设备可以在配置中重新命名.\n拆除设备现在起作用了."
+      },
       "0.4.7": {
         "en": "Removing devices now works.",
         "de": "Das Entfernen von Geräten funktioniert jetzt.",
@@ -80,19 +93,6 @@
         "pl": "Nowy stan dla rzeczywistej odległości / współczynnika konwersji i obliczonej odległości",
         "uk": "Новий стан для фактичного коефіцієнта дистанції/конверсії",
         "zh-cn": "实际距离/换算系数和计算距离的新状态"
-      },
-      "0.4.1": {
-        "en": "fixed: no names. (2. try)",
-        "de": "fixiert: keine namen (2. versuch)",
-        "ru": "исправлено: нет имен. (2. попробовать)",
-        "pt": "fixo: sem nomes. (2. tente)",
-        "nl": "geen namen",
-        "fr": "fixe: pas de nom. (2. essai)",
-        "it": "fisso: nessun nome. (2. provare)",
-        "es": "fijo: sin nombres. (2. intento)",
-        "pl": "nie ma nazw (pol.)",
-        "uk": "фіксована: імена імен. (2. спробуйте)",
-        "zh-cn": "固定:没有姓名(2. 审判)"
       }
     },
     "titleLang": {
