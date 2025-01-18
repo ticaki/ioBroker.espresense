@@ -380,10 +380,10 @@ class Espresense extends utils.Adapter {
         case "getDevices":
           {
             let result = [];
-            for (const id in this.config.selectedDevices) {
+            for (const device of this.config.selectedDevices) {
               result.push({
-                label: this.config.selectedDevices[id].name,
-                value: this.config.selectedDevices[id].id
+                label: device.name,
+                value: device.id
               });
             }
             for (const id in this.deviceDB) {
@@ -437,9 +437,7 @@ class Espresense extends utils.Adapter {
           {
             if (this.config.selectedDevices.findIndex((i) => i.id == obj.message.id) != -1) {
               this.config.selectedDevices.splice(
-                this.config.selectedDevices.findIndex((i) => {
-                  i.id == obj.message.id;
-                }),
+                this.config.selectedDevices.findIndex((i) => i.id == obj.message.id),
                 1
               );
             }
