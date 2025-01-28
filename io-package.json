@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.4.8",
+    "version": "0.5.0",
     "news": {
+      "0.5.0": {
+        "en": "Simple room detection integrated\nFriendly room name added to devices\nglobal commands now work.\nData point var added.",
+        "de": "Einfache Raumerkennung integriert\nFreundlicher Zimmername zu Geräten hinzugefügt\nglobale Befehle funktionieren jetzt(wieder?).\nDatenpunkt var hinzugefügt.",
+        "ru": "Простое обнаружение помещений интегрировано\nДружественное название комнаты добавлено к устройствам\nглобальные команды теперь работают.\nДобавлена точка данных.",
+        "pt": "Detecção simples integrada\nNome de quarto amigável adicionado a dispositivos\ncomandos globais agora funcionam.\nData point var adicionado.",
+        "nl": "Eenvoudige kamerdetectie geïntegreerd\nVriendelijke kamernaam toegevoegd aan apparaten\nglobale commando's werken nu.\nGegevenspunt var toegevoegd.",
+        "fr": "Détection de locaux simple intégrée\nNom de chambre amical ajouté aux appareils\nles commandes globales fonctionnent maintenant.\nPoint de données var ajouté.",
+        "it": "Semplice rilevamento della camera integrata\nNome della camera amichevole aggiunto ai dispositivi\ncomandi globali ora funzionano.\nScheda tecnica var aggiunto.",
+        "es": "Detección de habitación simple integrada\nNombre de habitación amistoso añadido a dispositivos\nlos comandos globales ahora funcionan.\nPunto de datos añadido.",
+        "pl": "Proste wykrywanie pomieszczenia zintegrowane\nPrzyjazna nazwa pokoju dodana do urządzeń\nglobalne komendy działają.\nDodano punkt danych var.",
+        "uk": "Проста система виявлення приміщення\nІм'я одного номера до пристроїв\nглобальні команди зараз працюють.\nДодано точку даних вар.",
+        "zh-cn": "简易房间综合检测\n在设备中添加友好房间名称\n全球指令现在起作用.\n数据点 var 添加."
+      },
       "0.4.8": {
         "en": "Devices can be renamed in the configuration.\nRemoving devices works now!",
         "de": "Geräte können in der Konfiguration umbenannt werden.\nEntfernen von Geräten funktioniert jetzt!",
@@ -80,19 +93,6 @@
         "pl": "Zbieraj przychodzące wiadomości MQTT i przetwarzaj je co 5 sekund",
         "uk": "Зберіть вхідні повідомлення MQTT і обробіть їх кожні 5 секунд",
         "zh-cn": "收集收到的 MQTT 信件, 每5秒处理一次"
-      },
-      "0.4.2": {
-        "en": "New state for actual distance/conversion factor and calculated distance",
-        "de": "Neuer Zustand für den tatsächlichen Abstand/Umleitungsfaktor und berechneter Abstand",
-        "ru": "Новое состояние для фактического коэффициента расстояния/переключения и расчетного расстояния",
-        "pt": "Novo estado para o fator de distância/conversão real e distância calculada",
-        "nl": "Nieuwe toestand voor werkelijke afstand/omzettingsfactor en berekende afstand",
-        "fr": "Nouvel état pour la distance réelle/facteur de conversion et la distance calculée",
-        "it": "Nuovo stato per la distanza effettiva / fattore di conversione e la distanza calcolata",
-        "es": "Nuevo estado para el factor de distancia/conversión real y distancia calculada",
-        "pl": "Nowy stan dla rzeczywistej odległości / współczynnika konwersji i obliczonej odległości",
-        "uk": "Новий стан для фактичного коефіцієнта дистанції/конверсії",
-        "zh-cn": "实际距离/换算系数和计算距离的新状态"
       }
     },
     "titleLang": {
