@@ -1,6 +1,6 @@
 {
     "espresense adapter settings": "Adaptereinstellungen für espresense",
-    "MQTTUseServer": "Starten Sie Ihren eigenen MQTT-Server",
+    "MQTTUseServer": "Verwende den internen MQTT-Server",
     "MQTTUseServerHint": "Geben Sie den hier eingegebenen Benutzernamen, das Passwort und den Port in ESPresence ein. Tragen Sie dort als mqtt-server die Ip des iobrokers ein. Der Port muss auf dem Iobroker frei sein.",
     "MQTTServerIp": "Server-IP des externen MQTT-Servers",
     "MQTTServerPort": "Port (1024-49151)",
@@ -86,5 +86,8 @@
     "devices.convert": "Umrechnungsfaktor",
     "devices.convert.desc": "Geben Sie hier die tatsächliche Entfernung in Metern zum ESP ein und der Adapter berechnet den Faktor.",
     "devices.distanceConverted": "Umgerechnete Entfernung",
-    "MQTTHandleInterval": "Zeitraum, über den eingehende Mqtt-Nachrichten gesammelt werden – reduziert die Systemlast. (in Sekunden min. 1)"
+    "MQTTHandleInterval": "Zeitraum, über den eingehende Mqtt-Nachrichten gesammelt werden – reduziert die Systemlast. (in Sekunden min. 1)",
+    "devices.devices.friendlyName": "Freundlicher Zimmername",
+    "convertFactor": "Konvertierungsfaktor",
+    "room.distanceIoBroker": "Max. Entfernung (Adapter intern)"
 }

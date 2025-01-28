@@ -26,7 +26,6 @@ export class Espresense extends utils.Adapter {
     unseenCheckTime: number = 5000;
     deviceDB: { [id: string]: { name: string; lc: number } } = {};
     delayedMessages: { [key: string]: any } = {};
-
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
@@ -222,7 +221,9 @@ export class Espresense extends utils.Adapter {
         if (message && message.name && message.id) {
             this.namedDevices[message.id] = message.name;
         }
+
         temp.common.name = this.namedDevices[device] || device;
+
         if (typ === 'settings' && message.name) {
             temp.common.name = message.name;
         }
@@ -244,7 +245,16 @@ export class Espresense extends utils.Adapter {
         }
         device = this.library.cleandp(device, false, true);
         if (typ !== 'rooms' && device != '*') {
-            await this.library.writedp(`${typ}.${device}`, undefined, temp);
+            await this.library.writedp(`${typ}.${device}`, undefined, {
+                ...temp,
+                type: 'device',
+                common: {
+                    ...temp.common,
+                    statusStates: {
+                        onlineId: 'presense',
+                    },
+                },
+            });
         }
 
         if (typ === 'rooms') {
@@ -257,10 +267,18 @@ export class Espresense extends utils.Adapter {
                 }
             } else if (topicA[topicA.length - 1] == 'set') {
                 return;
+            } else {
+                await this.library.writedp(
+                    `${typ}.${device}.max_distance_ioBroker`,
+                    undefined,
+                    statesObjects.rooms.max_distance_ioBroker,
+                );
+                await this.library.writedp(`${typ}.${device}`, undefined, temp);
             }
 
             const data: any = {};
-            data[topicA.join('.')] = message;
+            const t = topicA.join('.');
+            data[t] = message;
             try {
                 data.restart = false;
                 await this.library.writeFromJson(path, typ, statesObjects, data);
@@ -274,20 +292,62 @@ export class Espresense extends utils.Adapter {
 
             data[topicA.join('.')] = message;
             await this.library.writeFromJson(`${typ}.${device}`, typ, statesObjects, data);
+            await this.library.writedp(
+                `${typ}.${device}.max_distance_ioBroker`,
+                undefined,
+                statesObjects.rooms.max_distance_ioBroker,
+            );
         } else if (typ === 'devices') {
             let subDevice = topicA.shift();
             subDevice = subDevice ? subDevice : 'no_name';
             subDevice = this.library.cleandp(subDevice, false, true);
             const temp = this.library.cloneGenericObject(statesObjects[typ]._channel) as ioBroker.DeviceObject;
-            temp.common.name = this.namedDevices[subDevice] || subDevice;
-            const tempObj: LibraryStateVal = this.library.readdb(`${typ}.${device}.${subDevice}.convert`);
-            message.convert = 1;
+            temp.common.name = this.namedDevices[`node:${subDevice}`] || subDevice;
+            message.friendlyRoomName = this.namedDevices[`node:${subDevice}`] || 'Error: Report to developer';
+            const tempObj: LibraryStateVal = this.library.readdb(`${typ}.${device}.${subDevice}.convertFactor`);
+            const max_distance_ioBroker: LibraryStateVal = this.library.readdb(
+                `rooms.${subDevice}.max_distance_ioBroker`,
+            );
+            message.convertFactor = 100;
+            message.convert = 0;
             if (tempObj !== undefined && tempObj !== null) {
-                message.convert = tempObj.val;
+                message.convertFactor = tempObj.val;
             }
-            message.distanceConverted = (message.distance * message.convert) / 100;
-            await this.library.writedp(`${typ}.${device}.${subDevice}`, undefined, temp);
-            await this.library.writedp(`${typ}.${device}.presense`, true, genericStateObjects.presense);
+            message.distanceConverted = (message.distance * message.convertFactor) / 100;
+
+            // if max_distance_ioBroker is set, use it to determine presence otherwise use default.
+            if (
+                max_distance_ioBroker !== undefined &&
+                max_distance_ioBroker !== null &&
+                max_distance_ioBroker.val !== undefined &&
+                max_distance_ioBroker.val !== null &&
+                max_distance_ioBroker.val !== -1
+            ) {
+                await this.library.writedp(
+                    `${typ}.${device}.${subDevice}.presense`,
+                    max_distance_ioBroker.val >= message.distanceConverted,
+                    genericStateObjects.presense,
+                );
+                if (max_distance_ioBroker.val >= message.distanceConverted) {
+                    await this.library.writedp(`${typ}.${device}.presense`, true, genericStateObjects.presense);
+                }
+            } else {
+                await this.library.writedp(
+                    `${typ}.${device}.${subDevice}.presense`,
+                    true,
+                    genericStateObjects.presense,
+                );
+                await this.library.writedp(`${typ}.${device}.presense`, true, genericStateObjects.presense);
+            }
+            await this.library.writedp(`${typ}.${device}.${subDevice}`, undefined, {
+                ...temp,
+                common: {
+                    ...temp.common,
+                    statusStates: {
+                        onlineId: 'presense',
+                    },
+                },
+            });
             await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, statesObjects, message);
         }
     }
@@ -353,7 +413,6 @@ export class Espresense extends utils.Adapter {
                 }
                 if (id.endsWith('.convert') && id.startsWith('devices.')) {
                     const dist = this.library.readdb(`${id.substring(0, id.lastIndexOf('.'))}.distance`);
-                    const convO = this.library.readdb(`${id.substring(0, id.lastIndexOf('.'))}.convert`);
                     if (
                         dist &&
                         val !== undefined &&
@@ -361,12 +420,16 @@ export class Espresense extends utils.Adapter {
                         dist.val !== undefined &&
                         dist.val !== null &&
                         !isNaN(val as number) &&
-                        !isNaN(dist.val as number) &&
-                        convO &&
-                        !Number.isNaN(convO.val)
+                        !isNaN(dist.val as number)
                     ) {
                         val = (val as number) / (dist.val as number); // (convO.val as number);
-                        await this.library.writedp(id, val * 100, statesObjects.devices.convert, true);
+                        await this.library.writedp(id, 0, statesObjects.devices.convert, true);
+                        await this.library.writedp(
+                            `${id.substring(0, id.lastIndexOf('.'))}.convertFactor`,
+                            val * 100,
+                            statesObjects.devices.convertFactor,
+                            true,
+                        );
                         await this.library.writedp(
                             `${id.substring(0, id.lastIndexOf('.'))}.distanceConverted`,
                             val * (dist.val as number),
@@ -374,16 +437,19 @@ export class Espresense extends utils.Adapter {
                             true,
                         );
                     }
+                } else if (id.endsWith('.distanceIoBroker') && id.startsWith('rooms.')) {
+                    await this.library.writedp(id, state.val, statesObjects.rooms.max_distance_ioBroker, true);
                 } else {
                     this.library.setdb(id, 'state', state.val, undefined, state.ack, state.ts);
-                    const global = id.split('.')[1] === 'global';
+                    const global = id.split('.')[0] === 'global';
                     const topic = global
-                        ? `espresense/rooms/*/${id.split('.')[2]}/set`
+                        ? `espresense/rooms/*/${id.split('.')[1]}/set`
                         : `espresense/${id.split('.').join('/')}/set`;
                     if (this.mqttClient) {
                         await this.mqttClient.publish(topic, String(val), {
                             retain: id.endsWith('.restart') ? false : !!this.config.retainGlobal,
                         });
+                        await this.library.writedp(id, state.val, undefined, true);
                     }
                 }
             } else {

@@ -2,6 +2,7 @@ export type room = {
     status: string;
     restart: boolean;
     max_distance: number;
+    max_distance_ioBroker: number;
     absorption: number;
     tx_ref_rssi: number;
     rx_adj_rssi: number;
@@ -61,6 +62,8 @@ export type device = {
     rssi: number;
     raw: number;
     distance: number;
+    friendlyRoomName: string;
+    var: number;
     int: number;
     close: boolean;
 };
@@ -68,6 +71,7 @@ export type device = {
 export type additionalDevice = {
     convert: number;
     distanceConverted: number;
+    convertFactor: number;
 } & device;
 
 export type settings = {

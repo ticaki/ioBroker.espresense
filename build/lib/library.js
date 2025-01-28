@@ -520,7 +520,7 @@ class Library extends BaseClass {
       for (const id in this.stateDataBase) {
         if (id.startsWith(prefix)) {
           const state = this.stateDataBase[id];
-          if (!state || state.val == void 0) {
+          if (!state || state.val == void 0 || state.obj && state.obj.native && state.obj.native.noReset) {
             continue;
           }
           if (state.ts < Date.now() - offset) {
@@ -528,38 +528,44 @@ class Library extends BaseClass {
               await this.cleanUpTree([], [id], -1);
               continue;
             }
-            let newVal;
-            switch (state.stateTyp) {
-              case "string":
-                if (typeof state.val == "string") {
-                  if (state.val.startsWith("{") && state.val.endsWith("}")) {
-                    newVal = "{}";
-                  } else if (state.val.startsWith("[") && state.val.endsWith("]")) {
-                    newVal = "[]";
+            let value;
+            if (state.obj && state.obj.common && state.obj.common.def !== void 0) {
+              value = state.obj.common.def;
+            } else {
+              let newVal;
+              switch (state.stateTyp) {
+                case "string":
+                  if (typeof state.val == "string") {
+                    if (state.val.startsWith("{") && state.val.endsWith("}")) {
+                      newVal = "{}";
+                    } else if (state.val.startsWith("[") && state.val.endsWith("]")) {
+                      newVal = "[]";
+                    } else {
+                      newVal = "";
+                    }
                   } else {
                     newVal = "";
                   }
-                } else {
-                  newVal = "";
-                }
-                break;
-              case "bigint":
-              case "number":
-                newVal = -1;
-                break;
-              case "boolean":
-                newVal = false;
-                break;
-              case "symbol":
-              case "object":
-              case "function":
-                newVal = null;
-                break;
-              case "undefined":
-                newVal = void 0;
-                break;
+                  break;
+                case "bigint":
+                case "number":
+                  newVal = -1;
+                  break;
+                case "boolean":
+                  newVal = false;
+                  break;
+                case "symbol":
+                case "object":
+                case "function":
+                  newVal = null;
+                  break;
+                case "undefined":
+                  newVal = void 0;
+                  break;
+              }
+              value = newVal;
             }
-            await this.writedp(id, newVal);
+            await this.writedp(id, value);
           }
         }
       }

@@ -89,5 +89,8 @@
     "devices.convert": "Współczynnik konwersji",
     "devices.convert.desc": "Wprowadź tutaj rzeczywistą odległość w metrach do ESP, a adapter obliczy współczynnik.",
     "devices.distanceConverted": "Przeliczona odległość",
-    "MQTTHandleInterval": "Okres gromadzenia przychodzących komunikatów Mqtt – zmniejsza obciążenie systemu. (w sekundach min. 3)"
+    "MQTTHandleInterval": "Okres gromadzenia przychodzących komunikatów Mqtt – zmniejsza obciążenie systemu. (w sekundach min. 3)",
+    "devices.devices.friendlyName": "Przyjazna nazwa pokoju",
+    "convertFactor": "Współczynnik konwersji",
+    "room.distanceIoBroker": "Obliczone wewnątrz adaptera"
 }

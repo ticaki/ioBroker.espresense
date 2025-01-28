@@ -63,7 +63,8 @@ const genericStateObjects = {
     common: {
       name: "genericStateObjects.presense",
       type: "boolean",
-      role: "text",
+      role: "indicator.reachable",
+      def: false,
       read: true,
       write: false
     },
@@ -214,12 +215,28 @@ const statesObjects = {
       common: {
         name: "room.distance",
         type: "number",
-        role: "value",
+        role: "level",
         unit: "m",
         read: true,
         write: true
       },
       native: {}
+    },
+    max_distance_ioBroker: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "room.distanceIoBroker",
+        type: "number",
+        role: "level",
+        unit: "m",
+        read: true,
+        write: true,
+        def: -1
+      },
+      native: {
+        noReset: true
+      }
     },
     absorption: {
       _id: "",
@@ -227,7 +244,7 @@ const statesObjects = {
       common: {
         name: "room.absorption",
         type: "number",
-        role: "value",
+        role: "level",
         read: true,
         write: true
       },
@@ -708,7 +725,7 @@ const statesObjects = {
   devices: {
     _channel: {
       _id: "",
-      type: "device",
+      type: "channel",
       common: {
         name: "devices.channel"
       },
@@ -750,16 +767,32 @@ const statesObjects = {
       },
       native: {}
     },
+    convertFactor: {
+      _id: "",
+      type: "state",
+      common: {
+        def: 100,
+        name: "devices.convertFactor",
+        type: "number",
+        role: "value",
+        unit: "%",
+        read: true,
+        write: false
+      },
+      native: {
+        noReset: true
+      }
+    },
     convert: {
       _id: "",
       type: "state",
       common: {
-        def: 1,
+        def: 0,
         name: "devices.convert",
-        desc: "devices.convert.desc",
+        desc: "",
         type: "number",
-        role: "value",
-        unit: "% / m",
+        role: "level",
+        unit: "m",
         read: true,
         write: true
       },
@@ -840,6 +873,18 @@ const statesObjects = {
       },
       native: {}
     },
+    var: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "devices.var",
+        type: "number",
+        role: "value",
+        read: true,
+        write: false
+      },
+      native: {}
+    },
     distanceConverted: {
       _id: "",
       type: "state",
@@ -852,6 +897,20 @@ const statesObjects = {
         write: false
       },
       native: {}
+    },
+    friendlyRoomName: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "devices.devices.friendlyName",
+        type: "string",
+        role: "text",
+        read: true,
+        write: false
+      },
+      native: {
+        noReset: true
+      }
     },
     int: {
       _id: "",

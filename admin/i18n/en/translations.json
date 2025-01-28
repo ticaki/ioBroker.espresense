@@ -9,6 +9,7 @@
     "unseenTime": "Time after a device is displayed as absent. (seconds)",
     "deviceHeader": "Devices",
     "genericStateObjects.presense": "Presense",
+    "devices.devices.friendlyName": "Friendly room name",
     "genericStateObjects.customString": "User data point",
     "devices.folder": "Device folder",
     "rooms.folder": "Rooms folder(ESP32)",
@@ -83,8 +84,9 @@
     "retainGlobal": "retained",
     "settings.global": "Global settings",
     "name": "Name",
-    "devices.convert": "Conversion factor",
-    "devices.convert.desc": "Enter the actual distance in metres to the ESP here and the adapter will calculate the factor.",
+    "devices.convert": "Distance adjustment",
     "devices.distanceConverted": "Converted distance",
-    "MQTTHandleInterval": "Period over which incoming Mqtt messages are collected - reduces the system load. (in seconds min. 1)"
+    "MQTTHandleInterval": "Period over which incoming Mqtt messages are collected - reduces the system load. (in seconds min. 1)",
+    "convertFactor": "Conversion factor",
+    "room.distanceIoBroker": "Calculated inside adapter"
 }

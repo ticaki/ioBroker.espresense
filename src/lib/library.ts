@@ -1,7 +1,7 @@
 import _fs from 'fs';
 import type { statesObjectsType } from './definition';
 // eslint-disable-next-line
-import { genericStateObjects } from './definition';
+import { genericStateObjects, statesObjects } from './definition';
 import type { Espresense } from '../main';
 
 // only change this for other adapters
@@ -562,7 +562,11 @@ export class Library extends BaseClass {
             for (const id in this.stateDataBase) {
                 if (id.startsWith(prefix)) {
                     const state = this.stateDataBase[id];
-                    if (!state || state.val == undefined) {
+                    if (
+                        !state ||
+                        state.val == undefined ||
+                        (state.obj && state.obj.native && state.obj.native.noReset)
+                    ) {
                         continue;
                     }
                     if (state.ts < Date.now() - offset) {
@@ -570,39 +574,45 @@ export class Library extends BaseClass {
                             await this.cleanUpTree([], [id], -1);
                             continue;
                         }
-                        let newVal: -1 | '' | '{}' | '[]' | false | null | undefined;
-                        switch (state.stateTyp) {
-                            case 'string':
-                                if (typeof state.val == 'string') {
-                                    if (state.val.startsWith('{') && state.val.endsWith('}')) {
-                                        newVal = '{}';
-                                    } else if (state.val.startsWith('[') && state.val.endsWith(']')) {
-                                        newVal = '[]';
+                        let value: any;
+                        if (state.obj && state.obj.common && state.obj.common.def !== undefined) {
+                            value = state.obj.common.def;
+                        } else {
+                            let newVal: -1 | '' | '{}' | '[]' | false | null | undefined;
+                            switch (state.stateTyp) {
+                                case 'string':
+                                    if (typeof state.val == 'string') {
+                                        if (state.val.startsWith('{') && state.val.endsWith('}')) {
+                                            newVal = '{}';
+                                        } else if (state.val.startsWith('[') && state.val.endsWith(']')) {
+                                            newVal = '[]';
+                                        } else {
+                                            newVal = '';
+                                        }
                                     } else {
                                         newVal = '';
                                     }
-                                } else {
-                                    newVal = '';
-                                }
-                                break;
-                            case 'bigint':
-                            case 'number':
-                                newVal = -1;
-                                break;
+                                    break;
+                                case 'bigint':
+                                case 'number':
+                                    newVal = -1;
+                                    break;
 
-                            case 'boolean':
-                                newVal = false;
-                                break;
-                            case 'symbol':
-                            case 'object':
-                            case 'function':
-                                newVal = null;
-                                break;
-                            case 'undefined':
-                                newVal = undefined;
-                                break;
+                                case 'boolean':
+                                    newVal = false;
+                                    break;
+                                case 'symbol':
+                                case 'object':
+                                case 'function':
+                                    newVal = null;
+                                    break;
+                                case 'undefined':
+                                    newVal = undefined;
+                                    break;
+                            }
+                            value = newVal;
                         }
-                        await this.writedp(id, newVal);
+                        await this.writedp(id, value);
                     }
                 }
             }

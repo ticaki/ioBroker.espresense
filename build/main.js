@@ -240,7 +240,16 @@ class Espresense extends utils.Adapter {
     }
     device = this.library.cleandp(device, false, true);
     if (typ !== "rooms" && device != "*") {
-      await this.library.writedp(`${typ}.${device}`, void 0, temp);
+      await this.library.writedp(`${typ}.${device}`, void 0, {
+        ...temp,
+        type: "device",
+        common: {
+          ...temp.common,
+          statusStates: {
+            onlineId: "presense"
+          }
+        }
+      });
     }
     if (typ === "rooms") {
       let path = `${typ}.${device}`;
@@ -251,9 +260,17 @@ class Espresense extends utils.Adapter {
         }
       } else if (topicA[topicA.length - 1] == "set") {
         return;
+      } else {
+        await this.library.writedp(
+          `${typ}.${device}.max_distance_ioBroker`,
+          void 0,
+          import_definition.statesObjects.rooms.max_distance_ioBroker
+        );
+        await this.library.writedp(`${typ}.${device}`, void 0, temp);
       }
       const data = {};
-      data[topicA.join(".")] = message;
+      const t = topicA.join(".");
+      data[t] = message;
       try {
         data.restart = false;
         await this.library.writeFromJson(path, typ, import_definition.statesObjects, data);
@@ -266,20 +283,54 @@ class Espresense extends utils.Adapter {
       this.namedDevices[message.id] = message.name;
       data[topicA.join(".")] = message;
       await this.library.writeFromJson(`${typ}.${device}`, typ, import_definition.statesObjects, data);
+      await this.library.writedp(
+        `${typ}.${device}.max_distance_ioBroker`,
+        void 0,
+        import_definition.statesObjects.rooms.max_distance_ioBroker
+      );
     } else if (typ === "devices") {
       let subDevice = topicA.shift();
       subDevice = subDevice ? subDevice : "no_name";
       subDevice = this.library.cleandp(subDevice, false, true);
       const temp2 = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
-      temp2.common.name = this.namedDevices[subDevice] || subDevice;
-      const tempObj = this.library.readdb(`${typ}.${device}.${subDevice}.convert`);
-      message.convert = 1;
+      temp2.common.name = this.namedDevices[`node:${subDevice}`] || subDevice;
+      message.friendlyRoomName = this.namedDevices[`node:${subDevice}`] || "Error: Report to developer";
+      const tempObj = this.library.readdb(`${typ}.${device}.${subDevice}.convertFactor`);
+      const max_distance_ioBroker = this.library.readdb(
+        `rooms.${subDevice}.max_distance_ioBroker`
+      );
+      message.convertFactor = 100;
+      message.convert = 0;
       if (tempObj !== void 0 && tempObj !== null) {
-        message.convert = tempObj.val;
+        message.convertFactor = tempObj.val;
       }
-      message.distanceConverted = message.distance * message.convert / 100;
-      await this.library.writedp(`${typ}.${device}.${subDevice}`, void 0, temp2);
-      await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
+      message.distanceConverted = message.distance * message.convertFactor / 100;
+      if (max_distance_ioBroker !== void 0 && max_distance_ioBroker !== null && max_distance_ioBroker.val !== void 0 && max_distance_ioBroker.val !== null && max_distance_ioBroker.val !== -1) {
+        await this.library.writedp(
+          `${typ}.${device}.${subDevice}.presense`,
+          max_distance_ioBroker.val >= message.distanceConverted,
+          import_definition.genericStateObjects.presense
+        );
+        if (max_distance_ioBroker.val >= message.distanceConverted) {
+          await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
+        }
+      } else {
+        await this.library.writedp(
+          `${typ}.${device}.${subDevice}.presense`,
+          true,
+          import_definition.genericStateObjects.presense
+        );
+        await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
+      }
+      await this.library.writedp(`${typ}.${device}.${subDevice}`, void 0, {
+        ...temp2,
+        common: {
+          ...temp2.common,
+          statusStates: {
+            onlineId: "presense"
+          }
+        }
+      });
       await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, import_definition.statesObjects, message);
     }
   }
@@ -342,10 +393,15 @@ class Espresense extends utils.Adapter {
         }
         if (id.endsWith(".convert") && id.startsWith("devices.")) {
           const dist = this.library.readdb(`${id.substring(0, id.lastIndexOf("."))}.distance`);
-          const convO = this.library.readdb(`${id.substring(0, id.lastIndexOf("."))}.convert`);
-          if (dist && val !== void 0 && val !== null && dist.val !== void 0 && dist.val !== null && !isNaN(val) && !isNaN(dist.val) && convO && !Number.isNaN(convO.val)) {
+          if (dist && val !== void 0 && val !== null && dist.val !== void 0 && dist.val !== null && !isNaN(val) && !isNaN(dist.val)) {
             val = val / dist.val;
-            await this.library.writedp(id, val * 100, import_definition.statesObjects.devices.convert, true);
+            await this.library.writedp(id, 0, import_definition.statesObjects.devices.convert, true);
+            await this.library.writedp(
+              `${id.substring(0, id.lastIndexOf("."))}.convertFactor`,
+              val * 100,
+              import_definition.statesObjects.devices.convertFactor,
+              true
+            );
             await this.library.writedp(
               `${id.substring(0, id.lastIndexOf("."))}.distanceConverted`,
               val * dist.val,
@@ -353,14 +409,17 @@ class Espresense extends utils.Adapter {
               true
             );
           }
+        } else if (id.endsWith(".distanceIoBroker") && id.startsWith("rooms.")) {
+          await this.library.writedp(id, state.val, import_definition.statesObjects.rooms.max_distance_ioBroker, true);
         } else {
           this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
-          const global = id.split(".")[1] === "global";
-          const topic = global ? `espresense/rooms/*/${id.split(".")[2]}/set` : `espresense/${id.split(".").join("/")}/set`;
+          const global = id.split(".")[0] === "global";
+          const topic = global ? `espresense/rooms/*/${id.split(".")[1]}/set` : `espresense/${id.split(".").join("/")}/set`;
           if (this.mqttClient) {
             await this.mqttClient.publish(topic, String(val), {
               retain: id.endsWith(".restart") ? false : !!this.config.retainGlobal
             });
+            await this.library.writedp(id, state.val, void 0, true);
           }
         }
       } else {

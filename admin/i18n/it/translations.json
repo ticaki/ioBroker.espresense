@@ -89,5 +89,8 @@
     "devices.convert": "Fattore di conversione",
     "devices.convert.desc": "Inserisci qui la distanza effettiva in metri dall'ESP e l'adattatore calcolerà il fattore.",
     "devices.distanceConverted": "Distanza convertita",
-    "MQTTHandleInterval": "Periodo durante il quale vengono raccolti i messaggi Mqtt in entrata: riduce il carico del sistema. (in secondi minimo 3)"
+    "MQTTHandleInterval": "Periodo durante il quale vengono raccolti i messaggi Mqtt in entrata: riduce il carico del sistema. (in secondi minimo 3)",
+    "devices.devices.friendlyName": "Nome della stanza amichevole",
+    "convertFactor": "Fattore di conversione",
+    "room.distanceIoBroker": "Calcolato all'interno dell'adattatore"
 }
