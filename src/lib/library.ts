@@ -343,6 +343,13 @@ export class Library extends BaseClass {
         return true;
     }
 
+    /**
+     * Retrieves the states from the state database that match the given string pattern.
+     *
+     * @param str - The string pattern to search for within the state database keys.
+     * @returns An object containing the matching states, where the keys are the state database keys
+     *          and the values are the corresponding `LibraryStateVal` objects.
+     */
     getStates(str: string): { [key: string]: LibraryStateVal } {
         const result: { [key: string]: LibraryStateVal } = {};
         for (const dp in this.stateDataBase) {

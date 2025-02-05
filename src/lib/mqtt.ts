@@ -8,7 +8,7 @@ import aedesPersistencelevel from 'aedes-persistence-level';
 
 import type { AdapterClassDefinition } from './library';
 // eslint-disable-next-line
-    import { BaseClass } from './library';
+import { BaseClass } from './library';
 
 import type { Client } from 'aedes';
 // eslint-disable-next-line

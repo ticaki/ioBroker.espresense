@@ -36,6 +36,7 @@ var import_library = require("./lib/library.js");
 var import_mqtt = require("./lib/mqtt.js");
 var import_definition = require("./lib/definition.js");
 var import_register = require("source-map-support/register");
+var import_tools = require("./lib/tools.js");
 class Espresense extends utils.Adapter {
   library;
   unload = false;
@@ -47,6 +48,8 @@ class Espresense extends utils.Adapter {
   unseenCheckTime = 5e3;
   deviceDB = {};
   delayedMessages = {};
+  roomDB = {};
+  calculateDelayTimeout = {};
   constructor(options = {}) {
     super({
       ...options,
@@ -73,7 +76,7 @@ class Espresense extends utils.Adapter {
       await this.library.writedp("global", void 0, import_definition.genericStateObjects.global);
       for (const id in import_definition.statesObjects.rooms) {
         const obj = import_definition.statesObjects.rooms[id];
-        if (obj && obj.common && obj.common.write === true) {
+        if (obj && obj.common && obj.common.write === true && id !== "max_distance_ioBroker") {
           const val = this.library.readdb(`global.${id}`);
           if (val == void 0) {
             const val2 = obj.common.type == "string" ? "" : obj.common.type == "number" ? -1 : obj.common.type == "boolean" ? false : null;
@@ -110,9 +113,7 @@ class Espresense extends utils.Adapter {
         return;
       }
       this.config.MQTTHandleInterval *= 1e3;
-      if (this.config.MQTTHandleInterval < 1e3) {
-        this.config.MQTTHandleInterval = 1e3;
-      } else if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1) {
+      if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1) {
         this.config.MQTTHandleInterval = 2 ** 32 / 2 - 1;
       }
       testIt = this.config.MQTTUsername;
@@ -150,6 +151,19 @@ class Espresense extends utils.Adapter {
         );
       }
       await this.library.initStates(await this.getStatesAsync("*"));
+      const rooms = this.library.getStates("rooms.*.positionsArray");
+      for (const id in rooms) {
+        const data = rooms[id];
+        if (data && data.val && typeof data.val == "string") {
+          try {
+            this.roomDB[id.split(".")[1]] = JSON.parse(data.val);
+          } catch (e) {
+            this.log.error(e);
+            this.log.error(`Not a array in Room: ${id} data: ${data.val}`);
+          }
+        }
+      }
+      this.log.debug(`Rooms: ${JSON.stringify(rooms)}`);
       if (this.config.MQTTUseServer) {
         this.mqttServer = new import_mqtt.MQTTServerClass(
           this,
@@ -201,22 +215,22 @@ class Espresense extends utils.Adapter {
     if (!topic || message == void 0) {
       return;
     }
-    if (delayed) {
+    if (delayed && this.config.MQTTHandleInterval > 0) {
       this.delayedMessages[topic] = message;
       return;
     }
     this.log.debug(
       `${topic}: ${typeof message} - ${typeof message == "object" ? JSON.stringify(message) : message}`
     );
-    const topicA = topic.split("/");
-    topicA.shift();
-    const typTemp = topicA.shift();
-    if (typTemp !== "rooms" && typTemp !== "settings" && typTemp !== "devices") {
+    const parts = topic.split("/");
+    parts.shift();
+    if (parts[0] !== "rooms" && parts[0] !== "settings" && parts[0] !== "devices") {
       return;
     }
-    const typ = typTemp;
+    const typ = parts[0];
+    parts.shift();
     const temp = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
-    let device = topicA.shift();
+    let device = parts.shift();
     device = device ? device : "no_name";
     if (message && message.name && message.id) {
       this.namedDevices[message.id] = message.name;
@@ -251,87 +265,156 @@ class Espresense extends utils.Adapter {
         }
       });
     }
-    if (typ === "rooms") {
-      let path = `${typ}.${device}`;
-      if (device == "*") {
-        path = "global";
-        if (topicA[topicA.length - 1] == "set") {
-          topicA.pop();
-        }
-      } else if (topicA[topicA.length - 1] == "set") {
-        return;
-      } else {
-        await this.library.writedp(
-          `${typ}.${device}.max_distance_ioBroker`,
-          void 0,
-          import_definition.statesObjects.rooms.max_distance_ioBroker
-        );
-        await this.library.writedp(`${typ}.${device}`, void 0, temp);
-      }
-      const data = {};
-      const t = topicA.join(".");
-      data[t] = message;
-      try {
-        data.restart = false;
-        await this.library.writeFromJson(path, typ, import_definition.statesObjects, data);
-      } catch (e) {
-        this.log.error(e);
-        this.log.error(`Topic:${topic} data: ${JSON.stringify(data)}`);
-      }
-    } else if (typ === "settings") {
-      const data = {};
-      this.namedDevices[message.id] = message.name;
-      data[topicA.join(".")] = message;
-      await this.library.writeFromJson(`${typ}.${device}`, typ, import_definition.statesObjects, data);
-      await this.library.writedp(
-        `${typ}.${device}.max_distance_ioBroker`,
-        void 0,
-        import_definition.statesObjects.rooms.max_distance_ioBroker
-      );
-    } else if (typ === "devices") {
-      let subDevice = topicA.shift();
-      subDevice = subDevice ? subDevice : "no_name";
-      subDevice = this.library.cleandp(subDevice, false, true);
-      const temp2 = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
-      temp2.common.name = this.namedDevices[`node:${subDevice}`] || subDevice;
-      message.friendlyRoomName = this.namedDevices[`node:${subDevice}`] || "Error: Report to developer";
-      const tempObj = this.library.readdb(`${typ}.${device}.${subDevice}.convertFactor`);
-      const max_distance_ioBroker = this.library.readdb(
-        `rooms.${subDevice}.max_distance_ioBroker`
-      );
-      message.convertFactor = 100;
-      message.convert = 0;
-      if (tempObj !== void 0 && tempObj !== null) {
-        message.convertFactor = tempObj.val;
-      }
-      message.distanceConverted = message.distance * message.convertFactor / 100;
-      if (max_distance_ioBroker !== void 0 && max_distance_ioBroker !== null && max_distance_ioBroker.val !== void 0 && max_distance_ioBroker.val !== null && max_distance_ioBroker.val !== -1) {
-        await this.library.writedp(
-          `${typ}.${device}.${subDevice}.presense`,
-          max_distance_ioBroker.val >= message.distanceConverted,
-          import_definition.genericStateObjects.presense
-        );
-        if (max_distance_ioBroker.val >= message.distanceConverted) {
-          await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
-        }
-      } else {
-        await this.library.writedp(
-          `${typ}.${device}.${subDevice}.presense`,
-          true,
-          import_definition.genericStateObjects.presense
-        );
-        await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
-      }
-      await this.library.writedp(`${typ}.${device}.${subDevice}`, void 0, {
-        ...temp2,
-        common: {
-          ...temp2.common,
-          statusStates: {
-            onlineId: "presense"
+    switch (typ) {
+      case "rooms":
+        {
+          let path = `${typ}.${device}`;
+          if (device == "*") {
+            path = "global";
+            if (parts[parts.length - 1] == "set") {
+              parts.pop();
+            }
+          } else if (parts[parts.length - 1] == "set") {
+            return;
+          } else {
+            await this.library.writedp(
+              `${typ}.${device}.max_distance_ioBroker`,
+              void 0,
+              import_definition.statesObjects.rooms.max_distance_ioBroker
+            );
+            await this.library.writedp(
+              `${typ}.${device}.positionsArray`,
+              void 0,
+              import_definition.statesObjects.rooms.positionsArray
+            );
+            await this.library.writedp(`${typ}.${device}`, void 0, temp);
+          }
+          const data = {};
+          const t = parts.join(".");
+          data[t] = message;
+          try {
+            data.restart = false;
+            await this.library.writeFromJson(path, typ, import_definition.statesObjects, data);
+          } catch (e) {
+            this.log.error(e);
+            this.log.error(`Topic:${topic} data: ${JSON.stringify(data)}`);
           }
         }
-      });
-      await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, import_definition.statesObjects, message);
+        break;
+      case "settings":
+        {
+          const data = {};
+          this.namedDevices[message.id] = message.name;
+          data[parts.join(".")] = message;
+          await this.library.writeFromJson(`${typ}.${device}`, typ, import_definition.statesObjects, data);
+          await this.library.writedp(
+            `${typ}.${device}.max_distance_ioBroker`,
+            void 0,
+            import_definition.statesObjects.rooms.max_distance_ioBroker
+          );
+        }
+        break;
+      case "devices": {
+        if (this.calculateDelayTimeout[device] !== void 0) {
+          this.clearTimeout(this.calculateDelayTimeout[device]);
+        }
+        let subDevice = parts.shift();
+        subDevice = subDevice ? subDevice : "no_name";
+        subDevice = this.library.cleandp(subDevice, false, true);
+        const temp2 = this.library.cloneGenericObject(import_definition.statesObjects[typ]._channel);
+        temp2.common.name = this.namedDevices[`node:${subDevice}`] || subDevice;
+        message.friendlyRoomName = this.namedDevices[`node:${subDevice}`] || "Error: Report to developer";
+        const tempObj = this.library.readdb(`${typ}.${device}.${subDevice}.convertFactor`);
+        const max_distance_ioBroker = this.library.readdb(
+          `rooms.${subDevice}.max_distance_ioBroker`
+        );
+        message.convertFactor = 100;
+        message.convert = 0;
+        if (tempObj !== void 0 && tempObj !== null) {
+          message.convertFactor = tempObj.val;
+        }
+        message.distanceConverted = message.distance * message.convertFactor / 100;
+        if (max_distance_ioBroker !== void 0 && max_distance_ioBroker !== null && max_distance_ioBroker.val !== void 0 && max_distance_ioBroker.val !== null && max_distance_ioBroker.val !== -1) {
+          await this.library.writedp(
+            `${typ}.${device}.${subDevice}.presense`,
+            max_distance_ioBroker.val >= message.distanceConverted,
+            import_definition.genericStateObjects.presense
+          );
+          if (max_distance_ioBroker.val >= message.distanceConverted) {
+            await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
+          }
+        } else {
+          await this.library.writedp(
+            `${typ}.${device}.${subDevice}.presense`,
+            true,
+            import_definition.genericStateObjects.presense
+          );
+          await this.library.writedp(`${typ}.${device}.presense`, true, import_definition.genericStateObjects.presense);
+        }
+        await this.library.writedp(`${typ}.${device}.${subDevice}`, void 0, {
+          ...temp2,
+          common: {
+            ...temp2.common,
+            statusStates: {
+              onlineId: "presense"
+            }
+          }
+        });
+        await this.library.writeFromJson(`${typ}.${device}.${subDevice}`, typ, import_definition.statesObjects, message);
+        this.calculateDelayTimeout[device] = this.setTimeout(
+          async (_device) => {
+            const roomsToUse = Object.keys(this.roomDB).filter((a) => {
+              const data = this.roomDB[a];
+              if (data && typeof data === "object" && Array.isArray(data)) {
+                return true;
+              }
+              return false;
+            }).map((a) => {
+              return {
+                name: a,
+                pos: this.roomDB[a],
+                distance: (this.library.readdb(`devices.${_device}.${a}.distanceConverted`) || {}).val,
+                presense: !!(this.library.readdb(`devices.${_device}.${a}.presense`) || {}).val
+              };
+            }).filter((a) => a.presense && typeof a.distance === "number" && a.pos && Array.isArray(a.pos));
+            if (roomsToUse.length < 4) {
+              return;
+            }
+            roomsToUse.sort((a, b) => {
+              if (a.distance < b.distance) {
+                return -1;
+              } else if (a.distance > b.distance) {
+                return 1;
+              }
+              return 0;
+            });
+            const rooms = roomsToUse.slice(0, 4);
+            const position = (0, import_tools.trilaterate4)(
+              rooms[0].pos,
+              rooms[0].distance,
+              rooms[1].pos,
+              rooms[1].distance,
+              rooms[2].pos,
+              rooms[2].distance,
+              rooms[3].pos,
+              rooms[3].distance
+            );
+            if (position) {
+              position[0] = Math.round(position[0] * 100) / 100;
+              position[1] = Math.round(position[1] * 100) / 100;
+              position[2] = Math.round(position[2] * 100) / 100;
+            }
+            this.log.debug(`Position: ${JSON.stringify(position)}`);
+            await this.library.writedp(
+              `devices.${_device}.position`,
+              JSON.stringify(position),
+              import_definition.genericStateObjects.position
+            );
+          },
+          150,
+          device
+        );
+      }
     }
   }
   /**
@@ -411,6 +494,17 @@ class Espresense extends utils.Adapter {
           }
         } else if (id.endsWith(".distanceIoBroker") && id.startsWith("rooms.")) {
           await this.library.writedp(id, state.val, import_definition.statesObjects.rooms.max_distance_ioBroker, true);
+        } else if (id.endsWith(".positionsArray") && id.startsWith("rooms.")) {
+          const data = state.val;
+          if (typeof data == "string") {
+            try {
+              this.roomDB[id.split(".")[1]] = JSON.parse(data);
+              await this.library.writedp(id, state.val, void 0, true);
+            } catch (e) {
+              this.log.error(e);
+              this.log.error(`Not a array in Room: ${id} data: ${data}`);
+            }
+          }
         } else {
           this.library.setdb(id, "state", state.val, void 0, state.ack, state.ts);
           const global = id.split(".")[0] === "global";

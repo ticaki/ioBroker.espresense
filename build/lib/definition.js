@@ -82,6 +82,18 @@ const genericStateObjects = {
     },
     native: {}
   },
+  position: {
+    _id: "",
+    type: "state",
+    common: {
+      name: "device.position",
+      type: "array",
+      role: "list",
+      read: true,
+      write: false
+    },
+    native: {}
+  },
   devices: {
     _id: "",
     type: "folder",
@@ -145,6 +157,18 @@ const statesObjects = {
         type: "boolean",
         role: "button",
         read: false,
+        write: true
+      },
+      native: {}
+    },
+    positionsArray: {
+      _id: "",
+      type: "state",
+      common: {
+        name: "room.positionsArray",
+        type: "array",
+        role: "list",
+        read: true,
         write: true
       },
       native: {}

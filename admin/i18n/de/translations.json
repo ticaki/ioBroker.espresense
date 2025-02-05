@@ -86,7 +86,7 @@
     "devices.convert": "Umrechnungsfaktor",
     "devices.convert.desc": "Geben Sie hier die tatsächliche Entfernung in Metern zum ESP ein und der Adapter berechnet den Faktor.",
     "devices.distanceConverted": "Umgerechnete Entfernung",
-    "MQTTHandleInterval": "Zeitraum, über den eingehende Mqtt-Nachrichten gesammelt werden – reduziert die Systemlast. (in Sekunden min. 1)",
+    "MQTTHandleInterval": "Zeitraum, über den eingehende Mqtt-Nachrichten gesammelt werden – reduziert die Systemlast. (in Sekunden 0 = aus)",
     "devices.devices.friendlyName": "Freundlicher Zimmername",
     "convertFactor": "Konvertierungsfaktor",
     "room.distanceIoBroker": "Max. Entfernung (Adapter intern)"

@@ -33,6 +33,7 @@ export const genericStateObjects: {
     global: ioBroker.FolderObject;
     presense: ioBroker.StateObject;
     deviceDB: ioBroker.StateObject;
+    position: ioBroker.StateObject;
 } = {
     default: {
         _id: 'No_definition',
@@ -78,6 +79,18 @@ export const genericStateObjects: {
             name: 'genericStateObjects.customString',
             type: 'string',
             role: 'text',
+            read: true,
+            write: false,
+        },
+        native: {},
+    },
+    position: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'device.position',
+            type: 'array',
+            role: 'list',
             read: true,
             write: false,
         },
@@ -154,6 +167,18 @@ export const statesObjects: statesObjectsType = {
                 type: 'boolean',
                 role: 'button',
                 read: false,
+                write: true,
+            },
+            native: {},
+        },
+        positionsArray: {
+            _id: '',
+            type: 'state',
+            common: {
+                name: 'room.positionsArray',
+                type: 'array',
+                role: 'list',
+                read: true,
                 write: true,
             },
             native: {},

@@ -86,7 +86,7 @@
     "name": "Name",
     "devices.convert": "Distance adjustment",
     "devices.distanceConverted": "Converted distance",
-    "MQTTHandleInterval": "Period over which incoming Mqtt messages are collected - reduces the system load. (in seconds min. 1)",
+    "MQTTHandleInterval": "Period over which incoming Mqtt messages are collected - reduces the system load. (in seconds 0 = off)",
     "convertFactor": "Conversion factor",
     "room.distanceIoBroker": "Calculated inside adapter"
 }

@@ -40,6 +40,9 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (ticaki) Position determination with permitted massive deviation added.
+
 ### 0.5.0 (2025-01-28)
 * (ticaki) Simple room detection integrated
 * (ticaki) Friendly room name added to devices

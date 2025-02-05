@@ -50,6 +50,7 @@ export type room = {
         loopStack: number;
         bleStack: number;
     };
+    positionsArray: string;
 };
 
 export type device = {
