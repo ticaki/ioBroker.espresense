@@ -40,7 +40,7 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.6.0 (2025-02-05)
 * (ticaki) Position determination with permitted massive deviation added.
 
 ### 0.5.0 (2025-01-28)

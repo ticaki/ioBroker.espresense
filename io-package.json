@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "news": {
+      "0.6.0": {
+        "en": "Position determination with permitted massive deviation added.",
+        "de": "Positionsbestimmung mit erlaubter massiver Abweichung hinzugefügt.",
+        "ru": "Определение позиции с разрешенным массовым отклонением добавлено.",
+        "pt": "Determinação de posição com desvio massivo permitido adicionado.",
+        "nl": "Positiebepaling met toegestane massale afwijking toegevoegd.",
+        "fr": "Détermination de la position avec écart massif autorisé ajouté.",
+        "it": "Determinazione della posizione con deviazione massiccia consentita aggiunto.",
+        "es": "Determinación de posición con desviación masiva permitida.",
+        "pl": "Określenie położenia z dopuszczalnym masywnym odchyleniem.",
+        "uk": "Визначення позиції з дозволеним масовим відхиленням.",
+        "zh-cn": "增加了允许大规模偏移的位置确定."
+      },
       "0.5.0": {
         "en": "Simple room detection integrated\nFriendly room name added to devices\nglobal commands now work.\nData point var added.",
         "de": "Einfache Raumerkennung integriert\nFreundlicher Zimmername zu Geräten hinzugefügt\nglobale Befehle funktionieren jetzt(wieder?).\nDatenpunkt var hinzugefügt.",
@@ -80,19 +93,6 @@
         "pl": "Można skonfigurować okres zbierania przychodzących wiadomości Mqtt. min. 1 s maks. (2 ^ 31-1) / 1000 s",
         "uk": "Часовий період, над яким вхідні повідомлення Mqtt можна налаштувати. 1 сек макс. (2^31-1) / 1000 сек",
         "zh-cn": "接收到的 Mqtt 信件的时间段可以配置 。 最大1秒(2^31-1)/ 1000秒"
-      },
-      "0.4.3": {
-        "en": "Collect incoming MQTT messages and process them every 5 seconds",
-        "de": "Sammel eingehende MQTT-Nachrichten für 5 Sekunden",
-        "ru": "Собирайте поступающие сообщения MQTT и обрабатывайте их каждые 5 секунд",
-        "pt": "Colete mensagens MQTT recebidas e processá-los a cada 5 segundos",
-        "nl": "Inkomende MQTT-berichten verzamelen en elke 5 seconden verwerken",
-        "fr": "Recueillir les messages MQTT entrants et les traiter toutes les 5 secondes",
-        "it": "Raccogliere messaggi MQTT in arrivo e processarli ogni 5 secondi",
-        "es": "Recoger mensajes entrantes de MQTT y procesarlos cada 5 segundos",
-        "pl": "Zbieraj przychodzące wiadomości MQTT i przetwarzaj je co 5 sekund",
-        "uk": "Зберіть вхідні повідомлення MQTT і обробіть їх кожні 5 секунд",
-        "zh-cn": "收集收到的 MQTT 信件, 每5秒处理一次"
       }
     },
     "titleLang": {
