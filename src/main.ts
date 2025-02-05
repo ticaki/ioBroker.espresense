@@ -11,8 +11,6 @@ import { Library, sleep } from './lib/library.js';
 import { MQTTClientClass, MQTTServerClass } from './lib/mqtt.js';
 import { genericStateObjects, statesObjects } from './lib/definition.js';
 import 'source-map-support/register';
-import { count } from 'console';
-import { stringify } from 'querystring';
 import { trilaterate4 } from './lib/tools.js';
 
 // Load your modules here, e.g.:
