@@ -428,7 +428,7 @@ export class Espresense extends utils.Adapter {
                             rooms[3].pos,
                             rooms[3].distance as number,
                         );
-                        const position = result.position
+                        const position = result.position;
                         if (position) {
                             position[0] = Math.round(position[0] * 100) / 100;
                             position[1] = Math.round(position[1] * 100) / 100;

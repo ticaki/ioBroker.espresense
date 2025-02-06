@@ -40,7 +40,7 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.6.2 (2025-02-06)
+### 0.6.3 (2025-02-06)
 * (ticaki) Position quality added. 0 is best value
 
 ### 0.6.1 (2025-02-06)
