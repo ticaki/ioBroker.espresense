@@ -1,4 +1,5 @@
 type Point = [number, number, number];
+type ReturnPoint = { position: [number, number, number] | null; zSquared: number };
 
 /**
  * Trilaterates the position based on four points and their distances.
@@ -22,7 +23,7 @@ export function trilaterate4(
     d3: number,
     p4: Point,
     d4: number,
-): Point | null {
+): ReturnPoint {
     const ex = normalize(subtract(p2, p1));
     const i = dot(ex, subtract(p3, p1));
     const ey = normalize(subtract(subtract(p3, p1), scale(ex, i)));
@@ -37,14 +38,14 @@ export function trilaterate4(
 
     if (zSquared < -16) {
         // Allow a small tolerance for floating-point errors
-        return null;
+        return { position: null, zSquared: zSquared };
     }
 
     const z = Math.sqrt(Math.max(zSquared, 0)); // Ensure non-negative value for sqrt
     const pA = add(p1, add(scale(ex, x), add(scale(ey, y), scale(ez, z))));
     const pB = add(p1, add(scale(ex, x), add(scale(ey, y), scale(ez, -z))));
 
-    return chooseCorrectPoint(pA, pB, p4, d4);
+    return { position: chooseCorrectPoint(pA, pB, p4, d4), zSquared: zSquared };
 }
 
 /**

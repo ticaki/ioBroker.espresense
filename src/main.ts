@@ -418,7 +418,7 @@ export class Espresense extends utils.Adapter {
                         });
                         const rooms = roomsToUse.slice(0, 4);
 
-                        const position = trilaterate4(
+                        const result = trilaterate4(
                             rooms[0].pos,
                             rooms[0].distance as number,
                             rooms[1].pos,
@@ -428,6 +428,7 @@ export class Espresense extends utils.Adapter {
                             rooms[3].pos,
                             rooms[3].distance as number,
                         );
+                        const position = result.position
                         if (position) {
                             position[0] = Math.round(position[0] * 100) / 100;
                             position[1] = Math.round(position[1] * 100) / 100;
@@ -438,6 +439,11 @@ export class Espresense extends utils.Adapter {
                             `devices.${_device}.position`,
                             JSON.stringify(position),
                             genericStateObjects.position,
+                        );
+                        await this.library.writedp(
+                            `devices.${_device}.positionQuality`,
+                            result.zSquared,
+                            genericStateObjects.positionQuality,
                         );
                     },
                     150,

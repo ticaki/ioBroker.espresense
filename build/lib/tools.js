@@ -32,12 +32,12 @@ function trilaterate4(p12, d12, p22, d22, p32, d32, p42, d42) {
   const y = (d12 ** 2 - d32 ** 2 + i ** 2 + j ** 2) / (2 * j) - i / j * x;
   const zSquared = d12 ** 2 - x ** 2 - y ** 2;
   if (zSquared < -16) {
-    return null;
+    return { position: null, zSquared };
   }
   const z = Math.sqrt(Math.max(zSquared, 0));
   const pA = add(p12, add(scale(ex, x), add(scale(ey, y), scale(ez, z))));
   const pB = add(p12, add(scale(ex, x), add(scale(ey, y), scale(ez, -z))));
-  return chooseCorrectPoint(pA, pB, p42, d42);
+  return { position: chooseCorrectPoint(pA, pB, p42, d42), zSquared };
 }
 function chooseCorrectPoint(pA, pB, p42, d42) {
   const dA = distance(pA, p42);

@@ -34,6 +34,7 @@ export const genericStateObjects: {
     presense: ioBroker.StateObject;
     deviceDB: ioBroker.StateObject;
     position: ioBroker.StateObject;
+    positionQuality: ioBroker.StateObject;
 } = {
     default: {
         _id: 'No_definition',
@@ -91,6 +92,19 @@ export const genericStateObjects: {
             name: 'device.position',
             type: 'array',
             role: 'list',
+            read: true,
+            write: false,
+        },
+        native: {},
+    },
+    positionQuality: {
+        _id: '',
+        type: 'state',
+        common: {
+            name: 'device.positionQuality',
+            type: 'number',
+            role: 'value',
+            def: -100,
             read: true,
             write: false,
         },

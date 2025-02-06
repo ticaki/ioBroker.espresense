@@ -94,6 +94,19 @@ const genericStateObjects = {
     },
     native: {}
   },
+  positionQuality: {
+    _id: "",
+    type: "state",
+    common: {
+      name: "device.positionQuality",
+      type: "number",
+      role: "value",
+      def: -100,
+      read: true,
+      write: false
+    },
+    native: {}
+  },
   devices: {
     _id: "",
     type: "folder",

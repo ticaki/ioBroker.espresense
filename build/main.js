@@ -389,7 +389,7 @@ class Espresense extends utils.Adapter {
               return 0;
             });
             const rooms = roomsToUse.slice(0, 4);
-            const position = (0, import_tools.trilaterate4)(
+            const result = (0, import_tools.trilaterate4)(
               rooms[0].pos,
               rooms[0].distance,
               rooms[1].pos,
@@ -399,6 +399,7 @@ class Espresense extends utils.Adapter {
               rooms[3].pos,
               rooms[3].distance
             );
+            const position = result.position;
             if (position) {
               position[0] = Math.round(position[0] * 100) / 100;
               position[1] = Math.round(position[1] * 100) / 100;
@@ -409,6 +410,11 @@ class Espresense extends utils.Adapter {
               `devices.${_device}.position`,
               JSON.stringify(position),
               import_definition.genericStateObjects.position
+            );
+            await this.library.writedp(
+              `devices.${_device}.positionQuality`,
+              result.zSquared,
+              import_definition.genericStateObjects.positionQuality
             );
           },
           150,
