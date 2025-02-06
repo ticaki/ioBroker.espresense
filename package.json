@@ -1,6 +1,6 @@
 {
   "name": "iobroker.espresense",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Connect to ESPresense",
   "author": {
     "name": "ticaki",
@@ -24,7 +24,7 @@
     "@iobroker/adapter-core": "^3.2.2",
     "aedes": "^0.51.3",
     "aedes-persistence-level": "^8.0.1",
-    "level": "^9.0.0",
+    "level": "^8.0.1",
     "mqtt": "^5.10.3"
   },
   "devDependencies": {

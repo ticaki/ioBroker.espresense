@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "espresense",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "news": {
+      "0.6.1": {
+        "en": "downgrade level to 8.0.1",
+        "de": "tiefenstand bis 8.0.1",
+        "ru": "уровень понижения до 8,0,1",
+        "pt": "nível de downgrade para 8.0.1",
+        "nl": "downgradeniveau tot 8.0.1",
+        "fr": "niveau inférieur à 8.0.1",
+        "it": "livello di downgrade a 8.0.1",
+        "es": "nivel de reducción a 8.0.1",
+        "pl": "poziom obniżony do 8.0.1",
+        "uk": "рівень до 8.0.1",
+        "zh-cn": "降级至8.0.1级"
+      },
       "0.6.0": {
         "en": "Position determination with permitted massive deviation added.",
         "de": "Positionsbestimmung mit erlaubter massiver Abweichung hinzugefügt.",
@@ -80,19 +93,6 @@
         "pl": "zaktualizowane zależności",
         "uk": "оновлені залежності",
         "zh-cn": "更新依赖关系"
-      },
-      "0.4.4": {
-        "en": "The time period over which incoming Mqtt messages are collected can be configured. min. 1 sec max. (2^31-1) / 1000 sec",
-        "de": "Die Zeitspanne, über die eingehende Mqt-Nachrichten gesammelt werden, kann konfiguriert werden. min. 1 sec max. (2^31-1) / 1000 sec",
-        "ru": "Период времени, в течение которого собираются входящие Mqtt сообщения, может быть настроен. мин. 1 сек макс. (2^31-1) / 1000 сек",
-        "pt": "O período de tempo em que as mensagens Mqtt são coletadas podem ser configuradas. min. 1 seg max. (2^31-1) / 1000 sec",
-        "nl": "De periode waarover inkomende Mqtt-berichten worden verzameld, kan worden geconfigureerd. min. 1 sec max. (2^31-1) / 1000 sec",
-        "fr": "La période pendant laquelle les messages Mqtt entrants sont recueillis peut être configurée. min. 1 sec max. (2^31-1) / 1000 sec",
-        "it": "Il periodo di tempo in cui vengono raccolti i messaggi Mqtt in entrata può essere configurato. min. 1 sec max. (2^31-1) / 1000 sec",
-        "es": "Puede configurarse el período sobre el cual se recopilan los mensajes entrantes de Mqtt. min. 1 sec max. (2^31-1) / 1000 sec",
-        "pl": "Można skonfigurować okres zbierania przychodzących wiadomości Mqtt. min. 1 s maks. (2 ^ 31-1) / 1000 s",
-        "uk": "Часовий період, над яким вхідні повідомлення Mqtt можна налаштувати. 1 сек макс. (2^31-1) / 1000 сек",
-        "zh-cn": "接收到的 Mqtt 信件的时间段可以配置 。 最大1秒(2^31-1)/ 1000秒"
       }
     },
     "titleLang": {
