@@ -16,19 +16,6 @@
         "uk": "Додана якість позицій. 0 найкраща вартість",
         "zh-cn": "位置质量增加。 0为最大值"
       },
-      "0.6.2": {
-        "en": "Position quality added. 0 is best value",
-        "de": "Positionsqualität hinzugefügt. 0 ist der beste Wert",
-        "ru": "Добавлено качество позиции. 0 - лучшая ценность",
-        "pt": "Qualidade de posição adicionada. 0 é o melhor valor",
-        "nl": "Positiekwaliteit toegevoegd. 0 is de beste waarde",
-        "fr": "Qualité de position ajoutée. 0 est la meilleure valeur",
-        "it": "Qualità di posizione aggiunta. 0 è il miglior valore",
-        "es": "Calidad de posición añadido. 0 es el mejor valor",
-        "pl": "Dodano jakość pozycji. 0 to najlepsza wartość",
-        "uk": "Додана якість позицій. 0 найкраща вартість",
-        "zh-cn": "位置质量增加。 0为最大值"
-      },
       "0.6.1": {
         "en": "downgrade level to 8.0.1",
         "de": "tiefenstand bis 8.0.1",
