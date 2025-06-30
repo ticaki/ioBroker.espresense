@@ -48,147 +48,147 @@ export class Espresense extends utils.Adapter {
     private async onReady(): Promise<void> {
         // Reset the connection indicator during startup
         await this.setState('info.connection', false, true);
-        this.startDelay = this.setTimeout(async () => {
-            await this.library.init();
-            await this.library.initStates(await this.getStatesAsync('*'));
-            this.library.defaults.updateStateOnChangeOnly = false;
+        await this.library.init();
+        this.log.info(`Starting ${this.name} adapter v${this.version}`);
+        await this.library.initStates(await this.getStatesAsync('*'));
+        this.library.defaults.updateStateOnChangeOnly = false;
 
-            await this.library.writedp('devices', undefined, genericStateObjects.devices);
-            await this.library.writedp('rooms', undefined, genericStateObjects.rooms);
-            await this.library.writedp('settings', undefined, genericStateObjects.settings);
-            await this.library.writedp('global', undefined, genericStateObjects.global);
-            for (const id in statesObjects.rooms) {
-                //@ts-expect-error id is keyof
-                const obj = statesObjects.rooms[id];
-                if (obj && obj.common && obj.common.write === true && id !== 'max_distance_ioBroker') {
-                    const val = this.library.readdb(`global.${id}`);
-                    if (val == undefined) {
-                        const val: any =
-                            obj.common.type == 'string'
-                                ? ''
-                                : obj.common.type == 'number'
-                                  ? -1
-                                  : obj.common.type == 'boolean'
-                                    ? false
-                                    : null;
-                        await this.library.writedp(`global.${id}`, val, obj, false);
-                    }
+        await this.library.writedp('devices', undefined, genericStateObjects.devices);
+        await this.library.writedp('rooms', undefined, genericStateObjects.rooms);
+        await this.library.writedp('settings', undefined, genericStateObjects.settings);
+        await this.library.writedp('global', undefined, genericStateObjects.global);
+        for (const id in statesObjects.rooms) {
+            //@ts-expect-error id is keyof
+            const obj = statesObjects.rooms[id];
+            if (obj && obj.common && obj.common.write === true && id !== 'max_distance_ioBroker') {
+                const val = this.library.readdb(`global.${id}`);
+                if (val == undefined) {
+                    const val: any =
+                        obj.common.type == 'string'
+                            ? ''
+                            : obj.common.type == 'number'
+                              ? -1
+                              : obj.common.type == 'boolean'
+                                ? false
+                                : null;
+                    await this.library.writedp(`global.${id}`, val, obj, false);
                 }
             }
-            const temp = this.library.readdb('deviceDB');
-            if (temp && temp.val && typeof temp.val == 'string') {
-                this.deviceDB = JSON.parse(temp.val);
-            }
-            await this.subscribeStatesAsync('devices.*');
-            await this.subscribeStatesAsync('rooms.*');
-            await this.subscribeStatesAsync('global.*');
-            this.namedDevices = {};
-            //check config
-            let testIt: any = this.config.MQTTServerIp;
-            if ((testIt == '' || typeof testIt != 'string') && !this.config.MQTTUseServer) {
-                this.log.error(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
-                return;
-            }
-            testIt = this.config.MQTTServerPort;
-            if (typeof testIt != 'number' || testIt <= 1023) {
-                this.log.error(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
-                return;
-            }
-            testIt = this.config.MQTTPassword;
-            if (typeof testIt != 'string') {
-                this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
-                return;
-            }
-            testIt = this.config.MQTTHandleInterval;
-            if (typeof testIt != 'number') {
-                this.log.error(`Invalid configuration mqtt handle interval has unexpeted value type ${typeof testIt}`);
-                return;
-            }
+        }
+        const temp = this.library.readdb('deviceDB');
+        if (temp && temp.val && typeof temp.val == 'string') {
+            this.deviceDB = JSON.parse(temp.val);
+        }
+        await this.subscribeStatesAsync('devices.*');
+        await this.subscribeStatesAsync('rooms.*');
+        await this.subscribeStatesAsync('global.*');
+        this.namedDevices = {};
+        //check config
+        let testIt: any = this.config.MQTTServerIp;
+        if ((testIt == '' || typeof testIt != 'string') && !this.config.MQTTUseServer) {
+            this.log.error(`Invalid configuration mqtt server ip has unexpeted value: ${testIt}`);
+            return;
+        }
+        testIt = this.config.MQTTServerPort;
+        if (typeof testIt != 'number' || testIt <= 1023) {
+            this.log.error(`Invalid configuration mqtt server port has unexpeted value: ${testIt}`);
+            return;
+        }
+        testIt = this.config.MQTTPassword;
+        if (typeof testIt != 'string') {
+            this.log.error(`Invalid configuration mqtt server password has unexpeted value type ${typeof testIt}`);
+            return;
+        }
+        testIt = this.config.MQTTHandleInterval;
+        if (typeof testIt != 'number') {
+            this.log.error(`Invalid configuration mqtt handle interval has unexpeted value type ${typeof testIt}`);
+            return;
+        }
 
-            this.config.MQTTHandleInterval *= 1000;
-            if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1) {
-                this.config.MQTTHandleInterval = 2 ** 32 / 2 - 1;
-            }
+        this.config.MQTTHandleInterval *= 1000;
+        if (this.config.MQTTHandleInterval > 2 ** 32 / 2 - 1) {
+            this.config.MQTTHandleInterval = 2 ** 32 / 2 - 1;
+        }
 
-            testIt = this.config.MQTTUsername;
-            if (typeof testIt != 'string') {
-                this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
-                return;
-            }
-            testIt = this.config.unseenTime;
-            if (isNaN(testIt) || testIt == '' || testIt < 5) {
-                this.config.unseenTime = 20;
-            }
-            testIt = this.config.selectedDevices;
-            if (typeof testIt != 'object' || !Array.isArray(testIt)) {
-                this.config.selectedDevices = [];
-            } else {
-                const oldConfig = JSON.stringify(this.config.selectedDevices);
-                this.config.selectedDevices = this.config.selectedDevices.filter(a => {
-                    return typeof a.id == 'string' && a.id != '';
-                });
-                if (oldConfig != JSON.stringify(this.config.selectedDevices)) {
-                    const obj = await this.getForeignObjectAsync(`system.adapter.${this.name}.${this.instance}`);
-                    if (obj && obj.native) {
-                        obj.native.selectedDevices = this.config.selectedDevices;
-                        await this.setForeignObjectAsync(`system.adapter.${this.name}.${this.instance}`, obj);
-                        this.log.warn('Fixed configuration for selected devices! ');
-                    }
+        testIt = this.config.MQTTUsername;
+        if (typeof testIt != 'string') {
+            this.log.error(`Invalid configuration mqtt username has unexpeted value typ: ${typeof testIt}`);
+            return;
+        }
+        testIt = this.config.unseenTime;
+        if (isNaN(testIt) || testIt == '' || testIt < 5) {
+            this.config.unseenTime = 20;
+        }
+        testIt = this.config.selectedDevices;
+        if (typeof testIt != 'object' || !Array.isArray(testIt)) {
+            this.config.selectedDevices = [];
+        } else {
+            const oldConfig = JSON.stringify(this.config.selectedDevices);
+            this.config.selectedDevices = this.config.selectedDevices.filter(a => {
+                return typeof a.id == 'string' && a.id != '';
+            });
+            if (oldConfig != JSON.stringify(this.config.selectedDevices)) {
+                const obj = await this.getForeignObjectAsync(`system.adapter.${this.name}.${this.instance}`);
+                if (obj && obj.native) {
+                    obj.native.selectedDevices = this.config.selectedDevices;
+                    await this.setForeignObjectAsync(`system.adapter.${this.name}.${this.instance}`, obj);
+                    this.log.warn('Fixed configuration for selected devices! ');
                 }
             }
-            this.config.unseenTime *= 1000;
-            // configuration ok
-            // refresh states
-            if ((this.config.selectedDevices || []).length > 0) {
-                await this.library.cleanUpTree(
-                    this.config.selectedDevices.map(a => `devices.${this.library.cleandp(a.id, false, true)}`),
-                    [`devices.`],
-                    -1,
-                );
-            }
-            await this.library.initStates(await this.getStatesAsync('*'));
+        }
+        this.config.unseenTime *= 1000;
+        // configuration ok
+        // refresh states
+        if ((this.config.selectedDevices || []).length > 0) {
+            await this.library.cleanUpTree(
+                this.config.selectedDevices.map(a => `devices.${this.library.cleandp(a.id, false, true)}`),
+                [`devices.`],
+                -1,
+            );
+        }
+        await this.library.initStates(await this.getStatesAsync('*'));
 
-            const rooms = this.library.getStates('rooms.*.positionsArray');
-            for (const id in rooms) {
-                const data = rooms[id];
-                if (data && data.val && typeof data.val == 'string') {
-                    try {
-                        this.roomDB[id.split('.')[1]] = JSON.parse(data.val);
-                    } catch (e: any) {
-                        this.log.error(e);
-                        this.log.error(`Not a array in Room: ${id} data: ${data.val}`);
-                    }
+        const rooms = this.library.getStates('rooms.*.positionsArray');
+        for (const id in rooms) {
+            const data = rooms[id];
+            if (data && data.val && typeof data.val == 'string') {
+                try {
+                    this.roomDB[id.split('.')[1]] = JSON.parse(data.val);
+                } catch (e: any) {
+                    this.log.error(e);
+                    this.log.error(`Not a array in Room: ${id} data: ${data.val}`);
                 }
             }
-            this.log.debug(`Rooms: ${JSON.stringify(rooms)}`);
+        }
+        this.log.debug(`Rooms: ${JSON.stringify(rooms)}`);
 
-            if (this.config.MQTTUseServer) {
-                this.mqttServer = new MQTTServerClass(
-                    this,
-                    this.config.MQTTServerPort,
-                    this.config.MQTTUsername,
-                    this.config.MQTTPassword,
-                    utils.getAbsoluteInstanceDataDir(this),
-                );
-            }
-            this.mqttClient = new MQTTClientClass(
+        if (this.config.MQTTUseServer) {
+            this.mqttServer = new MQTTServerClass(
                 this,
-                this.config.MQTTUseServer ? '127.0.0.1' : this.config.MQTTServerIp,
                 this.config.MQTTServerPort,
                 this.config.MQTTUsername,
                 this.config.MQTTPassword,
+                utils.getAbsoluteInstanceDataDir(this),
             );
+        }
+        await this.delay(200);
+        this.mqttClient = new MQTTClientClass(
+            this,
+            this.config.MQTTUseServer ? '127.0.0.1' : this.config.MQTTServerIp,
+            this.config.MQTTServerPort,
+            this.config.MQTTUsername,
+            this.config.MQTTPassword,
+        );
 
-            if (!this.config.retainGlobal) {
-                for (const id in statesObjects.rooms) {
-                    const topic = `espresense/rooms/*/${id}/set`;
-                    if (this.mqttClient) {
-                        await this.mqttClient.publish(topic, '', { retain: true });
-                    }
+        if (!this.config.retainGlobal) {
+            for (const id in statesObjects.rooms) {
+                const topic = `espresense/rooms/*/${id}/set`;
+                if (this.mqttClient) {
+                    await this.mqttClient.publish(topic, '', { retain: true });
                 }
             }
-            this.doDelayedMessage();
-        }, 1000);
+        }
+        this.doDelayedMessage();
     }
 
     private doDelayedMessage(): void {
