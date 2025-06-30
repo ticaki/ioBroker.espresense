@@ -615,7 +615,7 @@ export class Espresense extends utils.Adapter {
                             .writedp('deviceDB', JSON.stringify(this.deviceDB), genericStateObjects.deviceDB)
                             .catch(() => {});
                         if (obj.callback) {
-                            this.log.info(result ? JSON.stringify(result) : 'invalid result');
+                            this.log.debug(result ? JSON.stringify(result) : 'invalid result');
                             this.sendTo(obj.from, obj.command, result ?? [], obj.callback);
                         }
                     }
