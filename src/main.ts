@@ -579,6 +579,7 @@ export class Espresense extends utils.Adapter {
      */
     private onMessage(obj: ioBroker.Message): void {
         if (typeof obj === 'object' && obj.message) {
+            this.log.debug(`Message: ${JSON.stringify(obj)}`);
             switch (obj.command) {
                 case 'getDevices':
                     {

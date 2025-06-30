@@ -536,6 +536,7 @@ class Espresense extends utils.Adapter {
    */
   onMessage(obj) {
     if (typeof obj === "object" && obj.message) {
+      this.log.debug(`Message: ${JSON.stringify(obj)}`);
       switch (obj.command) {
         case "getDevices":
           {
