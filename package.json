@@ -18,10 +18,10 @@
     "url": "git@github.com:ticaki/ioBroker.espresense.git"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 20"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.2.3",
+    "@iobroker/adapter-core": "^3.3.1",
     "aedes": "^0.51.3",
     "aedes-persistence-level": "^8.0.1",
     "level": "^8.0.1",
@@ -35,7 +35,7 @@
     "@iobroker/adapter-dev": "^1.4.0",
     "@iobroker/eslint-config": "^2.0.2",
     "@iobroker/testing": "^5.0.4",
-    "@tsconfig/node18": "^18.2.4",
+    "@tsconfig/node20": "^20.1.6",
     "@types/chai": "^4.3.9",
     "@types/chai-as-promised": "^8.0.2",
     "@types/mocha": "^10.0.6",
