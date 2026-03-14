@@ -281,6 +281,14 @@ export class Library extends BaseClass {
                 throw new Error('writedp try to create a state without object informations.');
             }
             obj._id = `${this.adapter.name}.${this.adapter.instance}.${dp}`;
+            if (!obj.common) {
+                this.log.warn(`writedp try to create a state without common object, set default values for ${dp}!`);
+                obj.common = {
+                    name: dp.split('.').slice(-1)[0],
+                    type: 'string',
+                    role: 'state',
+                };
+            }
             if (typeof obj.common.name == 'string') {
                 obj.common.name = await this.getTranslationObj(obj.common.name);
             }
