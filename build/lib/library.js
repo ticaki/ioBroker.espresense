@@ -178,7 +178,7 @@ class Library extends BaseClass {
   // eslint-disable-next-line
   async getObjectDefFromJson(key, def, data) {
     let result = this.deepJsonValue(key, def);
-    if (result === null || result === void 0) {
+    if (result === null || result === void 0 || !result.type) {
       const k = key.split(".");
       if (k && k[k.length - 1].startsWith("_")) {
         result = import_definition.genericStateObjects.customString;
@@ -265,18 +265,11 @@ class Library extends BaseClass {
     let node = this.readdb(dp);
     const del = !this.isDirAllowed(dp);
     if (node === void 0) {
-      if (!obj) {
-        throw new Error("writedp try to create a state without object informations.");
+      if (!obj || !obj.common || !obj.type) {
+        this.log.warn(`writedp try to create a state without object informations, skipping ${dp}!`);
+        return;
       }
       obj._id = `${this.adapter.name}.${this.adapter.instance}.${dp}`;
-      if (!obj.common) {
-        this.log.warn(`writedp try to create a state without common object, set default values for ${dp}!`);
-        obj.common = {
-          name: dp.split(".").slice(-1)[0],
-          type: "string",
-          role: "state"
-        };
-      }
       if (typeof obj.common.name == "string") {
         obj.common.name = await this.getTranslationObj(obj.common.name);
       }
@@ -288,7 +281,7 @@ class Library extends BaseClass {
       }
       const stateType = obj && obj.common && obj.common.type;
       node = this.setdb(dp, obj.type, void 0, stateType, true, Date.now(), obj);
-    } else if (node.init && obj) {
+    } else if (node.init && obj && obj.common) {
       if (typeof obj.common.name == "string") {
         obj.common.name = await this.getTranslationObj(obj.common.name);
       }
