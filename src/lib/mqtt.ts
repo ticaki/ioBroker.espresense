@@ -13,9 +13,9 @@ import { BaseClass } from './library';
 import type { Client } from 'aedes';
 // eslint-disable-next-line
 import Aedes from 'aedes';
-import type { Server } from 'net';
+import type { Server } from 'node:net';
 // eslint-disable-next-line
-import { createServer } from 'net';
+import { createServer } from 'node:net';
 import type { Espresense } from '../main';
 
 export class MQTTClientClass extends BaseClass {

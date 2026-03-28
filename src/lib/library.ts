@@ -1,4 +1,4 @@
-import _fs from 'fs';
+import _fs from 'node:fs';
 import type { statesObjectsType } from './definition';
 // eslint-disable-next-line
 import { genericStateObjects, statesObjects } from './definition';
