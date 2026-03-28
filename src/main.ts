@@ -14,7 +14,7 @@ import 'source-map-support/register';
 import { trilaterate4 } from './lib/tools.js';
 
 // Load your modules here, e.g.:
-// import * as fs from "fs";
+// import * as fs from "node:fs";
 
 export class Espresense extends utils.Adapter {
     library: Library;
