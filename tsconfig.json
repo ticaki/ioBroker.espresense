@@ -8,6 +8,10 @@
         // the compilation is configured in tsconfig.build.json
         "noEmit": true,
 
+        // Use CommonJS module format and classic node resolution for ESM-only dependencies (e.g. aedes 1.x)
+        "module": "CommonJS",
+        "moduleResolution": "node",
+
         // check JS files, but do not compile them => tsconfig.build.json
         "allowJs": true,
         "checkJs": true,

@@ -170,6 +170,7 @@ export class Espresense extends utils.Adapter {
                 this.config.MQTTPassword,
                 utils.getAbsoluteInstanceDataDir(this),
             );
+            await this.mqttServer.start();
         }
         await this.delay(200);
         this.mqttClient = new MQTTClientClass(

@@ -1,5 +1,4 @@
 import type { IClientPublishOptions } from 'mqtt';
-// eslint-disable-next-line
 import mqtt from 'mqtt'; // import namespace "mqtt"
 import { Level } from 'level';
 
@@ -7,14 +6,11 @@ import { Level } from 'level';
 import aedesPersistencelevel from 'aedes-persistence-level';
 
 import type { AdapterClassDefinition } from './library';
-// eslint-disable-next-line
 import { BaseClass } from './library';
 
+import { Aedes } from 'aedes';
 import type { Client } from 'aedes';
-// eslint-disable-next-line
-import Aedes from 'aedes';
 import type { Server } from 'node:net';
-// eslint-disable-next-line
 import { createServer } from 'node:net';
 import type { Espresense } from '../main';
 
@@ -95,15 +91,14 @@ export class MQTTClientClass extends BaseClass {
 export class MQTTServerClass extends BaseClass {
     aedes: Aedes;
     server: Server;
+    private port: number;
     constructor(adapter: Espresense, port: number, username: string, password: string, path: string) {
         super(adapter, 'mqttServer');
+        this.port = port;
         const persistence = aedesPersistencelevel(new Level(path));
         this.aedes = new Aedes({ persistence: persistence });
         this.server = createServer(this.aedes.handle);
 
-        this.server.listen(port, () => {
-            this.log.info(`Started and listening on port ${port}`);
-        });
         this.aedes.authenticate = (
             client: Client,
             un: Readonly<string | undefined>,
@@ -119,6 +114,20 @@ export class MQTTServerClass extends BaseClass {
             callback(null, confirm);
         };
     }
+
+    async start(): Promise<void> {
+        // aedes 1.x: broker.closed = true until listen() is called
+        await this.aedes.listen();
+        await new Promise<void>((resolve, reject) => {
+            this.server.once('error', reject);
+            this.server.listen(this.port, () => {
+                this.server.removeListener('error', reject);
+                this.log.info(`Started and listening on port ${this.port}`);
+                resolve();
+            });
+        });
+    }
+
     destroy(): void {
         this.aedes.close();
         this.server.close();

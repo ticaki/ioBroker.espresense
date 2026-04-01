@@ -36,8 +36,8 @@ var import_mqtt = __toESM(require("mqtt"));
 var import_level = require("level");
 var import_aedes_persistence_level = __toESM(require("aedes-persistence-level"));
 var import_library = require("./library");
-var import_aedes = __toESM(require("aedes"));
-var import_net = require("net");
+var import_aedes = require("aedes");
+var import_node_net = require("node:net");
 class MQTTClientClass extends import_library.BaseClass {
   client;
   data = {};
@@ -113,14 +113,13 @@ class MQTTClientClass extends import_library.BaseClass {
 class MQTTServerClass extends import_library.BaseClass {
   aedes;
   server;
+  port;
   constructor(adapter, port, username, password, path) {
     super(adapter, "mqttServer");
+    this.port = port;
     const persistence = (0, import_aedes_persistence_level.default)(new import_level.Level(path));
-    this.aedes = new import_aedes.default({ persistence });
-    this.server = (0, import_net.createServer)(this.aedes.handle);
-    this.server.listen(port, () => {
-      this.log.info(`Started and listening on port ${port}`);
-    });
+    this.aedes = new import_aedes.Aedes({ persistence });
+    this.server = (0, import_node_net.createServer)(this.aedes.handle);
     this.aedes.authenticate = (client, un, pw, callback) => {
       const confirm = username === un && password == pw.toString();
       if (!confirm) {
@@ -130,6 +129,17 @@ class MQTTServerClass extends import_library.BaseClass {
       }
       callback(null, confirm);
     };
+  }
+  async start() {
+    await this.aedes.listen();
+    await new Promise((resolve, reject) => {
+      this.server.once("error", reject);
+      this.server.listen(this.port, () => {
+        this.server.removeListener("error", reject);
+        this.log.info(`Started and listening on port ${this.port}`);
+        resolve();
+      });
+    });
   }
   destroy() {
     this.aedes.close();
