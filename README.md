@@ -114,6 +114,8 @@ For help use issue or if u understand german https://forum.iobroker.net/topic/71
 ### 0.0.2 (2023-12-18)
 * (ticaki) initial release
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 MIT License
 
